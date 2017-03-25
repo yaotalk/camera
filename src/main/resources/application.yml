@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+spring:
+  thymeleaf.cache: false
+  jpa:
+    hibernate.ddl-auto: update
+  datasource:
+    #url: jdbc:h2:file:~/.h2/camaraplat;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;
+    #url: jdbc:mysql://192.168.123.12:3306/camera?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://localhost:3306/camera?characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+    username: root
+    password: root
+logging:
+  level: 
+    org.springframework.web: TRACE
+system:
+  photo:
+    store: E://camera/image
+myprops:
+  filepath :
+     /test/
+faceservice:
+    address: 127.0.0.1
+    port: 8081
+    apiKey : test
+    apiSecret : test

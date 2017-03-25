@@ -1,0 +1,237 @@
+<!DOCTYPE div >
+
+<div xmlns:th="http://www.thymeleaf.org"
+     id="sidebar" class="sidebar responsive ace-save-state" th:fragment="sidebar">
+    <script type="text/javascript">
+		try{ace.settings.loadState('sidebar')}catch(e){}
+
+    </script>
+
+    <!-- <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+        <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+            <button class="btn btn-success">
+                <i class="ace-icon fa fa-signal"></i>
+            </button>
+
+            <button class="btn btn-info">
+                <i class="ace-icon fa fa-pencil"></i>
+            </button>
+
+            #section:basics/sidebar.layout.shortcuts
+            <button class="btn btn-warning">
+                <i class="ace-icon fa fa-users"></i>
+            </button>
+
+            <button class="btn btn-danger">
+                <i class="ace-icon fa fa-cogs"></i>
+            </button>
+
+            /section:basics/sidebar.layout.shortcuts
+        </div>
+
+        <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+            <span class="btn btn-success"></span>
+
+            <span class="btn btn-info"></span>
+
+            <span class="btn btn-warning"></span>
+
+            <span class="btn btn-danger"></span>
+        </div>
+    </div> -->
+    <!-- /.sidebar-shortcuts -->
+
+    <ul class="nav nav-list" id="face" style="display:none">
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-desktop"></i>
+                <span class="menu-text"> 库管理 </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="/faceset/getFaceset">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        人脸库注册
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="/faceset/getFace">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        人脸库查询
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-desktop"></i>
+                <span class="menu-text"> 人员管理 </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="/faceset/face">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        单人注册
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="#">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        批量注册
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+    </ul><!-- /.nav-list -->
+     <ul class="nav nav-list" id="sys" style="display:none">
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-desktop"></i>
+                <span class="menu-text"> 系统管理 </span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="/sysmanage/region">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        区域管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="/sysmanage/analyser">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        人脸分析仪管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="/sysmanage/camera">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        摄像机管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="/sysmanage/treeview">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        摄像机关联
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="/sysmanage/user">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        用户管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="/sysmanage/syslog">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        操作日志
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <ul class="nav nav-list" id="str" style="display:none">
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-desktop"></i>
+                <span class="menu-text">布控管理</span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+                <li class="">
+                    <a href="/strategy/strcontrol">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        布控策略管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+
+                <li class="">
+                    <a href="/strategy/scheme">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        时间方案
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <!-- #section:basics/sidebar.layout.minimize -->
+    <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+        <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state"
+           data-icon1="ace-icon fa fa-angle-double-left"
+           data-icon2="ace-icon fa fa-angle-double-right"></i>
+    </div>
+    <script>
+   $(function(){
+         $("ul.nav.nav-list").each(function(index,data){
+            $(data).css("display","none");
+            if($(data).attr("id") == $.cookie("selectedId")){
+                  $(data).css("display",'inline');
+            }
+         })
+       if($.cookie("selectedId") == "" || typeof($.cookie("selectedId")) == 'undefined'){
+	        $("ul.nav.nav-list").first().css("display",'inline');
+	    }
+	    $(".submenu li").each(function(index,data){
+	        $(data).removeClass("active");
+	        if($(data).find("a").attr("href") ==  $.cookie("selectedurl") ){
+	            $(data).parents("li").find("a").trigger("click");
+	            $(data).addClass("active");
+	        }
+	    })
+
+	    $(".submenu li").on('click',function(){
+	        $.cookie("selectedurl",$(this).find("a").attr("href"));　
+	    })
+
+   })
+
+    </script>
+    <!-- /section:basics/sidebar.layout.minimize -->
+</div>

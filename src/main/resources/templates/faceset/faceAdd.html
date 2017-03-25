@@ -1,0 +1,184 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}" >
+<div layout:fragment="sidebar" th:replace="layout/sidebar">
+</div>
+<div layout:fragment="content">
+		<!-- #section:elements.form -->
+		<div class="row">
+			<div class="col-sm-8">
+				<!--<div class="widget-box">-->
+					 <div class="widget-body">
+						<!--<div class="widget-main">-->
+							<div class="form-group">
+								<div class="col-xs-12">
+									<div >
+									<form id="addform" class="form-horizontal" enctype="multipart/form-data">
+										<div style="float:left;width: 40%;margin-top: 30px;margin-left: 80px;">
+											<div class="form-group">
+												<div class="col-sm-9">
+													 <input type="file" name="myfile" id="my-file-input" />
+												</div>
+											</div>
+										</div>
+										<div style="width: 50%;margin-top: 30px;float: right;">
+											<div class="form-group">
+												<label for="recipient-name" class="col-sm-2 control-label">姓名:</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" name="name">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="recipient-name" class="col-sm-2 control-label">性别:</label>
+												<div class="col-sm-9">
+													<select name="sex" class="chosen-select form-control">
+														<option value="0">男</option>
+														<option value="1">女</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="recipient-name" class="col-sm-2 control-label">身份证号:</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" name="idCard">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="recipient-name" class="col-sm-2 control-label">电话:</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" name="phoneNumber">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="recipient-name" class="col-sm-2 control-label">人脸库:</label>
+												<div class="col-sm-9">
+													  <select class="chosen-select form-control" name="facesetToken"></select>
+												</div>
+											</div>
+											<div class="form-group" style="float: right;padding-right: 12%;">
+												<button type="button" class="btn btn-primary" id="add_submit">提交</button>
+											</div>
+										</div>
+									</form>
+										<!--<div class="modal-footer"style="margin-left:50%">-->
+											<!--<button type="button" class="btn btn-primary" id="add_submit">提交</button>-->
+										<!--</div>-->
+								</div>
+							<!--</div>-->
+						 </div>
+					<!--</div>-->
+				</div>
+			</div>
+
+		</div>
+		<script type="text/javascript">
+			$(function(){
+					$.getJSON('getFaceset',function(json){
+						$(json.facesets).each(function(index,data){
+								var optionvalue = "<option value="+data.token+">"+data.name+"</option>";
+								 $(optionvalue).appendTo($('#addform select[name="facesetToken"]'));
+
+						})
+					})
+			function reset(){
+			       var validator = {
+                        message: '值有错误',
+                        feedbackIcons: {
+                            valid: 'glyphicon glyphicon-ok',
+                            invalid: 'glyphicon glyphicon-remove',
+                            validating: 'glyphicon glyphicon-refresh'
+                        },
+                        fields: {
+                       		 myfile: {
+                                validators: {
+                                	notEmpty: {
+                                        message: '图片不能为空'
+                                 	   }
+                                }
+                            },
+                            name: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '姓名不能为空'
+                                    }
+                                }
+                            },
+                             idCard: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '身份证号不能为空'
+                                    },
+                                    regexp: {
+											regexp:  /^(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)$/,
+											message: '请输入正确位数'
+                        				}
+                                }
+                            } ,
+                             phoneNumber: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '电话不能为空'
+                                    },
+                                     regexp: {
+											regexp:  /^[0-9]*$/,
+											message: '请输入数字'
+                        			}
+                                }
+                            }
+                        }
+                    }
+                     $('#addform').bootstrapValidator(validator);
+            }
+                reset();
+						var data = 	$('#addform').serialize();
+			     	     $(".btn.btn-primary").on('click',function(){
+			     	     $('#addform').bootstrapValidator('validate');
+				         var bootstrapValidator = $("#addform").data('bootstrapValidator');
+                         if(bootstrapValidator.isValid())
+                       {
+			     	         $("#addform").ajaxSubmit({
+										type: 'post',
+										url: 'addFace',
+										data: data,
+										success: function(data) {
+										if(data == "success"){
+											$("#addform").resetForm();
+											$("#addform").data('bootstrapValidator').destroy();
+                      					    $('#addform').data('bootstrapValidator', reset());
+                      					    $('#my-file-input').ace_file_input('reset_input');
+                      					    $.alert("注册成功");
+                      					    return;
+										}
+											$.alert(data);
+										}
+									});
+									return false; // 阻止表单自动提交事件
+
+							 }
+						  else return;
+								});
+					$('#my-file-input').ace_file_input({
+					style: 'well',
+					no_file: 'Click to choose or drag & drop',
+					droppable: true, //html5 browsers only
+					btn_choose:"上传图片",
+					thumbnail: 'fit', //html5 browsers only
+					maxSize: 5*1024*1024, //~100 KB
+					allowExt:  ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'bmp'],
+					allowMime: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/tif', 'image/tiff', 'image/bmp'] //html5 browsers only
+				}).on('change',function(e){
+				     $('#addform').data('bootstrapValidator')
+                    .updateStatus('myfile', 'NOT_VALIDATED',null)
+                    .validateField('myfile');
+				}).on('file.error.ace', function(e, info) {
+				     //e.preventDefault();
+				 })
+				$(".remove").on('click',function(){
+					 $('#addform').data('bootstrapValidator')
+                    .updateStatus('myfile', 'NOT_VALIDATED',null)
+                    .validateField('myfile');
+					})
+				$(".ace-file-container").attr("data-title",'上传图片').css("height","200px")
+			});
+		</script>
+</div>
+</body>
+</html>

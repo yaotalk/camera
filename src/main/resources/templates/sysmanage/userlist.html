@@ -1,0 +1,477 @@
+	<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}" >
+		<div layout:fragment="sidebar" th:replace="layout/sidebar">
+		</div>
+		<div layout:fragment="content">
+			<!-- <div th:replace="fragments :: navbar"></div> -->
+			<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
+			<div class="page-header">
+				<h1>用户列表 </h1>
+			</div>
+			
+			<div class="clearfix">
+				<div class="pull-left tableTools-container" id="btns-left"></div>
+				<div class="pull-right tableTools-container" id="btns-right"></div>
+			</div>
+			<div class="table-header">
+				用户列表
+			</div>
+			<div >
+				<table id="dynamic-table" class="table  table-bordered table-hover">
+					<thead>
+						<tr>
+							<th class="center">
+							</th>
+							<th>用户名称</th>
+							<th>用户密码</th>
+							<th>用户角色</th>
+						</tr>
+					</thead>
+
+					<!--／-->
+				</table>
+			</div>
+			
+			
+		<div class="modal fade" id="add_modal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="addModalLabel">新建用户</h4>
+		      </div>
+		      <div class="modal-body">
+		        <form id="add_form" class="form-horizontal">
+					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">用户名:</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="username">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">密码:</label>
+						<div class="col-sm-9">
+							<input type="password" class="form-control" name="password">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">用户角色:</label>
+						<div class="col-sm-9">
+						   <select name="roleid" class="chosen-select form-control">
+							   <option value="0">超级管理员</option>
+							   <option value="1">管理员</option>
+							   <option value="2">普通用户</option>
+						   </select>
+						</div>
+					</div>
+		        </form>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-primary" id="add_submit">提交</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		
+		<div class="modal fade" id="edit_modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="editModalLabel">用户修改</h4>
+		      </div>
+		      <div class="modal-body">
+		        <form id="edit_form" class="form-horizontal">
+					<input type="hidden" name="id" id="id">
+		          <input type="hidden" name="_method" value="patch">
+				<div class="form-group">
+					<label for="username" class="col-sm-2 control-label">用户名:</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" name="username" id="username">
+					</div>
+				</div>
+					<div class="form-group">
+						<label for="password" class="col-sm-2 control-label">密码:</label>
+						<div class="col-sm-9">
+							<input type="password" class="form-control" name="password" id="password">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">用户角色:</label>
+						<div class="col-sm-9">
+							<select name="roleid" class="chosen-select form-control" autocomplete="off">
+								<option value="0">超级管理员</option>
+								<option value="1">管理员</option>
+								<option value="2">普通用户</option>
+							</select>
+						</div>
+					</div>
+		        </form>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-primary" id="edit_submit">提交</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<script type="text/javascript">
+             $(function(){
+             function reset(){
+                        $('#add_form').bootstrapValidator({
+                        message: '值有错误',
+                        feedbackIcons: {
+                            valid: 'glyphicon glyphicon-ok',
+                            invalid: 'glyphicon glyphicon-remove',
+                            validating: 'glyphicon glyphicon-refresh'
+                        },
+                        fields: {
+                            username: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '用户名不能为空'
+                                    }
+                                }
+                            },
+                             password: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '密码不能为空'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                     $('#edit_form').bootstrapValidator({
+                        message: '值有错误',
+                         excluded: [':disabled'] ,
+                        feedbackIcons: {
+                            valid: 'glyphicon glyphicon-ok',
+                            invalid: 'glyphicon glyphicon-remove',
+                            validating: 'glyphicon glyphicon-refresh'
+                        },
+                        fields: {
+                            username: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '用户名不能为空'
+                                    }
+                                }
+                            },
+                             password: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '密码不能为空'
+                                    }
+                                }
+                            }
+                        }
+                    });
+            }
+                reset();
+				var myTable =
+					$('#dynamic-table').DataTable( {
+						bAutoWidth: false,
+						ajax: {
+					        dataSrc: 'user'
+					    },
+						columns: [
+						    { 
+						    	bSortable: false,
+						    	className: 'center',
+						    	defaultContent: '<label class="pos-rel"><input type="checkbox" class="ace"><span class="lbl"></span></label>'
+						    },
+				            { data: "username"},
+				            { data: "password"},
+				            { data: "roleid",
+				             render : function (data, type, row) {
+                                     if(data == 0){
+                                     	return '超级管理员';
+                                     	}
+									 else if(data == 1){
+                                     	return '管理员';
+                                     }
+                                     else if(data ==2 ){
+                                   		  return '普通用户';
+                                   		  }
+                                    }}],
+				language : {
+							url: '/datatables/zh_cn.json',
+							buttons: {
+								copyTitle: '复制到剪切板',
+								copySuccess: '复制了 %d行'
+							}
+						},
+						/* "aoColumns": [
+						  { "bSortable": false },
+						  { "bSortable": false }, null,null, null, null, null,
+						  { "bSortable": false }
+						], */
+						"aaSorting": [],
+						select: {
+							style: 'single'
+						}
+				    } );
+					
+ 					$.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
+					
+					var btn1 = new $.fn.dataTable.Buttons( myTable, {
+						buttons: [
+						  {
+							 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
+							 className: "btn btn-white btn-primary btn-bold",
+							 action: function ( e, dt, node, config ) {
+							    dt.ajax.url('/faceset').load();
+							 }
+						  },
+						  {
+							extend: "colvis",
+							text: "<i class='fa fa-search bigger-110 blue'></i> <span class='hidden'>显示/隐藏 列</span>",
+							className: "btn btn-white btn-primary btn-bold",
+							columns: ':not(:first):not(:last)'
+						  },
+						  {
+							extend: "copy",
+							text: "<i class='fa fa-copy bigger-110 pink'></i> <span class='hidden'>复制到前切板</span>",
+							className: "btn btn-white btn-primary btn-bold"
+						  },
+						  {
+							extend: "csv",
+							text: "<i class='fa fa-database bigger-110 orange'></i> <span class='hidden'>导出 到CSV</span>",
+							className: "btn btn-white btn-primary btn-bold"
+						  },
+						  {
+							extend: "excel",
+							text: "<i class='fa fa-file-excel-o bigger-110 green'></i> <span class='hidden'>导出到 Excel</span>",
+							className: "btn btn-white btn-primary btn-bold"
+						  },
+						  {
+							extend: "pdf",
+							text: "<i class='fa fa-file-pdf-o bigger-110 red'></i> <span class='hidden'>导出到PDF</span>",
+							className: "btn btn-white btn-primary btn-bold"
+						  },
+						  {
+							extend: "print",
+							text: "<i class='fa fa-print bigger-110 grey'></i> <span class='hidden'>打印</span>",
+							className: "btn btn-white btn-primary btn-bold",
+							autoPrint: false,
+							message: 'This print was produced using the Print button for DataTables'
+						  }		  
+						]
+					} );
+					btn1.container().appendTo( $('#btns-right') );
+					
+					var defaultCopyAction = myTable.button(1).action();
+					myTable.button(1).action(function (e, dt, button, config) {
+						defaultCopyAction(e, dt, button, config);
+						$('.dt-button-info').addClass('gritter-item-wrapper gritter-info gritter-center white');
+					});
+					
+					
+					var defaultColvisAction = myTable.button(0).action();
+					myTable.button(0).action(function (e, dt, button, config) {
+						
+						defaultColvisAction(e, dt, button, config);
+						
+						
+						if($('.dt-button-collection > .dropdown-menu').length == 0) {
+							$('.dt-button-collection')
+							.wrapInner('<ul class="dropdown-menu dropdown-light dropdown-caret dropdown-caret" />')
+							.find('a').attr('href', '#').wrap("<li />")
+						}
+						$('.dt-button-collection').appendTo('.tableTools-container .dt-buttons')
+					});
+					
+					
+					var btn2 = new $.fn.dataTable.Buttons( myTable, {
+						buttons: [
+				            {
+				            	text: "<i class='fa fa-plus bigger-110 green'></i> <span class='hidden'>新增用户</span>",
+				                className: "btn btn-white btn-primary btn-bold",
+				                action: function ( e, dt, node, config ) {
+				                	$('#add_modal :input[name="username"]').val('');
+				                	$('#add_modal :input[name="password"]').val('');
+				                	$('#add_modal').modal('show');
+				                	$('#add_modal select[name="roleid"]').children().each(function (index,data) {
+												  $(data).removeAttr("selected");
+                                        })
+				                }
+				            },
+				            {
+				                text: "<i class='fa fa-edit bigger-110 green'></i> <span class='hidden'>编辑用户</span>",
+				                className: "btn btn-white btn-primary btn-bold",
+				                action: function ( e, dt, node, config ) {
+				                	var d = dt.rows( { selected: true } ).data();
+				                	if(d.length === 0){
+				                    	alert( '请选择一行' );
+				                	}else{
+				                		$('#edit_modal #id').val(d[0].id);
+				                		$('#edit_modal #username').val(d[0].username);
+				                		$('#edit_modal #password').val(d[0].password);
+				                	   	 $('#edit_modal select[name="roleid"]').children().each(function (index,data) {
+												if($(data).val() == d[0].roleid){
+                                                    $(data).attr("selected","selected");
+												}
+                                        })
+
+
+				                		$('#edit_modal').modal('show');
+				                	}
+				                }
+				            },
+				            {
+				                text: "<i class='fa fa-trash bigger-110 red'></i> <span class='hidden'>删除人脸分析仪</span>",
+				                className: "btn btn-white btn-primary btn-bold",
+				                action: function ( e, dt, node, config ) {
+				                	var d = dt.rows( { selected: true } ).data();
+				                	if(d.length === 0){
+				                    	alert( '请选择一行' );
+				                	}else{
+				                		$.ajax({
+				                			url: '/sysmanage/delUser',
+				                		    type: 'post',
+				                		    //contentType: 'application/json; charset=UTF-8',
+				                		    data:{
+				                		    	 id: d[0].id,
+				                		    	_method: 'DELETE'
+				                		    },
+				                		    success: function(result) {
+				                		    	if(result == "success"){
+				                		    		$.alert({
+				                		    		    title: '提示',
+				                		    		    content: '删除成功',
+				                		    		});
+				                   		    		dt.ajax.url('/sysmanage/delUser').load();
+				                   		    	}
+				                		    }
+				                		});
+				                	}
+				                }
+				            }
+				        ]
+					} );
+					
+					btn2.container().appendTo( $('#btns-left') );
+				
+					////
+				
+					setTimeout(function() {
+						$($('.tableTools-container')).find('a.dt-button').each(function() {
+							var div = $(this).find(' > div').first();
+							if(div.length == 1) div.tooltip({container: 'body', title: div.parent().text()});
+							else $(this).tooltip({container: 'body', title: $(this).text()});
+						});
+					}, 500);
+					
+					
+					myTable.on( 'select', function ( e, dt, type, index ) {
+						if ( type === 'row' ) {
+							$( myTable.row( index ).node() ).find('input:checkbox').prop('checked', true);
+						}
+					} );
+					myTable.on( 'deselect', function ( e, dt, type, index ) {
+						if ( type === 'row' ) {
+							$( myTable.row( index ).node() ).find('input:checkbox').prop('checked', false);
+						}
+					} );
+					
+					
+					
+				   $('th input[type=checkbox], td input[type=checkbox]').prop('checked', false);
+				   
+				   /* $('#dynamic-table > thead > tr > th input[type=checkbox], #dynamic-table_wrapper input[type=checkbox]').eq(0).on('click', function(){
+				      var th_checked = this.checked;//checkbox inside "TH" table header
+				      
+				      $('#dynamic-table').find('tbody > tr').each(function(){
+				         var row = this;
+				         if(th_checked) myTable.row(row).select();
+				         else myTable.row(row).deselect();
+				      });
+				   }); */
+				   
+				   //select/deselect a row when the checkbox is checked/unchecked
+				   $('#dynamic-table').on('click', 'td input[type=checkbox]', function(e){
+					  var row = $(this).closest('tr').get(0);
+				      if(this.checked) myTable.row(row).deselect();
+				      else myTable.row(row).select();
+				      e.stopImmediatePropagation();
+				      e.stopPropagation();
+				      e.preventDefault();
+				   });
+
+				   $(document).on('click', '#dynamic-table .dropdown-toggle', function(e) {
+				      e.stopImmediatePropagation();
+				      e.stopPropagation();
+				      e.preventDefault();
+				   });
+				   $('#add_modal').on('shown.bs.modal', function(e){
+					   $('#add_modal :input[name="name"]').focus();
+				   })
+				   $('#add_modal').on('hidden.bs.modal', function(e){
+				        $("#add_form").data('bootstrapValidator').destroy();
+                        $('#add_form').data('bootstrapValidator', reset());
+				   })
+				    $('#edit_modal').on('hidden.bs.modal', function(e){
+				        $("#edit_form").data('bootstrapValidator').destroy();
+                        $('#edit_form').data('bootstrapValidator', reset());
+				   })
+				     $('#edit_modal').on('shown.bs.modal', function(e){
+					   $('#edit_modal :input[name="name"]').focus();
+				   })
+				   $('#add_submit').click(function(e){
+				       $('#add_form').bootstrapValidator('validate');
+				       var bootstrapValidator = $("#add_form").data('bootstrapValidator');
+                       if(bootstrapValidator.isValid())
+                       {
+                           var data = $('#add_form').serializeArray();
+                           $.ajax({
+                                url: '/sysmanage/addUser',
+                                data: data,
+                                type: 'POST',
+                                success: function(result) {
+                                    if(result == "success"){
+                                        $('#add_modal').modal('hide');
+                                        $.alert({
+                                            title: '提示',
+                                            content: '创建成功',
+                                        });
+                                        myTable.ajax.url('/sysmanage/user').load();
+                                    }
+                                }
+                            });
+                          }
+                       else return;
+				   })
+				   
+				   $('#edit_submit').click(function(e){
+					   $('#edit_form').bootstrapValidator('validate');
+					   var bootstrapValidator = $("#edit_form").data('bootstrapValidator');
+                       if(bootstrapValidator.isValid())
+                       {
+                       		  var data = $('#edit_form').serializeArray();
+                               $.ajax({
+                                    url: '/sysmanage/updateUser',
+                                    data: data,
+                                    type: 'POST',
+                                    success: function(result) {
+                                        if(result == "success"){
+                                            $('#edit_modal').modal('hide');
+                                            $.alert({
+                                                title: '提示',
+                                                content: '修改成功',
+                                            });
+                                            myTable.ajax.url('/sysmanage/user').load();
+                                        }
+                                    }
+                              });
+                              }
+                            else  return ;
+				            })
+
+
+			})
+		
+		</script>
+		
+		</div>
+	</html>	

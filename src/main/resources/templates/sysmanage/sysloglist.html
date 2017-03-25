@@ -1,0 +1,87 @@
+	<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}" >
+		<div layout:fragment="sidebar" th:replace="layout/sidebar">
+		</div>
+		<div layout:fragment="content">
+			<!-- <div th:replace="fragments :: navbar"></div> -->
+			<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
+			<div class="page-header">
+				<h1>操作日志列表 </h1>
+			</div>
+			
+			<div class="clearfix">
+				<div class="pull-left tableTools-container" id="btns-left"></div>
+				<div class="pull-right tableTools-container" id="btns-right"></div>
+			</div>
+			<div class="table-header">
+				操作日志列表
+			</div>
+			<div >
+				<table id="dynamic-table" class="table  table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>用户名</th>
+							<th>ip地址</th>
+							<th>访问时间</th>
+							<th>用户操作模块</th>
+							<th>信息</th>
+						</tr>
+					</thead>
+					<tbody>
+					<!--<tr th:each="syslog : ${syslog}">-->
+						<!--<td th:text="${syslog.user.username}">-->
+						<!--</td>-->
+						<!--<td th:text="${syslog.modelName}">10002</td>-->
+						<!--<td th:text="${syslog.opration}">通缉犯</td>-->
+						<!--<td th:text="${syslog.createTime}">通缉犯</td>-->
+
+					<!--</tr>-->
+					<!--</tbody>-->
+
+					<!--／-->
+				</table>
+			</div>
+
+		
+		<script type="text/javascript">
+			$(function(){
+				var myTable =
+					$('#dynamic-table').DataTable( {
+						bAutoWidth: false,
+						ajax: {
+					        dataSrc: 'syslog'
+					    },
+						columns: [
+							{ data:"id"},
+							{ data:"user.username"},
+							{ data:"ip"},
+						    { data: "createTime"},
+				            { data: "modelName"},
+				            { data: "opration"}
+
+				        ],
+						language : {
+							url: '/datatables/zh_cn.json',
+							buttons: {
+								copyTitle: '复制到剪切板',
+								copySuccess: '复制了 %d行'
+							}
+						},
+						"aaSorting": [],
+						select: {
+							style: 'single'
+						}
+				    } );
+
+				   $(document).on('click', '#dynamic-table .dropdown-toggle', function(e) {
+				      e.stopImmediatePropagation();
+				      e.stopPropagation();
+				      e.preventDefault();
+				   });
+
+			})
+
+		</script>
+		
+		</div>
+	</html>	
