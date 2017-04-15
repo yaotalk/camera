@@ -123,6 +123,12 @@ public class Packet<T> {
       public static final int UPDATE_CAMERA = 2;
       public static final int DEL_CAMERA = 3;
       public static final int STATUS_INFO = 4;
+      
+      //public static final int STRATEGY_ADD = 5;
+      //public static final int STRATEGY_DELETE = 6;
+      
+      public static final int REC_INFO = 7;
+      public static final int REC_COMPLETE = 8;
     }
     
     public static class Type{

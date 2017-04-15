@@ -88,5 +88,10 @@ public class Face {
         this.faceSet = faceSet;
     }
 
+    @Override
+    public String toString() {
+      return "Face [name=" + name + ", sex=" + sex + ", idCard=" + idCard + ", phoneNumber="
+          + phoneNumber + "]";
+    }
 
 }

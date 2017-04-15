@@ -1,5 +1,7 @@
 package com.minivision.camaraplat.domain;
 
+import com.minivision.camaraplat.config.EncodeConfig;
+
 import javax.persistence.Entity;
 
 /**
@@ -10,6 +12,15 @@ public class User extends IdEntity {
   private String username;
   private String password;
   private String roleid;
+  private boolean autologin;
+
+  public boolean isAutologin() {
+    return autologin;
+  }
+
+  public void setAutologin(boolean autologin) {
+    this.autologin = autologin;
+  }
 
   public String getUsername() {
     return username;
@@ -24,6 +35,7 @@ public class User extends IdEntity {
   }
 
   public void setPassword(String password) {
+    password = EncodeConfig.EncodeByMd5(password);
     this.password = password;
   }
 

@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-@Repository public interface RegionRepository extends PagingAndSortingRepository<Region, Long> {
+public interface RegionRepository extends PagingAndSortingRepository<Region, Long> {
     List<Region> findAll();
 
     Region findOne(long id);

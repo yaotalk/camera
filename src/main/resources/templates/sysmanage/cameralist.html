@@ -4,6 +4,16 @@
 		<div layout:fragment="content">
 			<!-- <div th:replace="fragments :: navbar"></div> -->
 			<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
+			<div class="loadEffect">
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
 			<div class="page-header">
 				<h1>摄像机列表</h1>
 			</div>
@@ -47,7 +57,7 @@
 		          <div class="form-group">
 		            <label for="recipient-name" class="col-sm-2 control-label">设备类型：</label>
 		            <div class="col-sm-9">
-						<select name="camtype" class="chosen-select form-control">
+						<select name="type" class="chosen-select form-control">
 							<option value="1">海康</option>
 							<option value="2">大华</option>
 							<option value="3">科达</option>
@@ -99,6 +109,12 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">Web端口:</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="webPort">
+						</div>
+					</div>
+					<div class="form-group">
 						<label for="recipient-name" class="col-sm-2 control-label">RTSP端口:</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control" name="rtspPort">
@@ -115,14 +131,14 @@
 						<table id="add-table2" class="table  table-bordered table-hover">
 							<thead >
 							<tr >
-								<th class="center" style="width:7.3%">
+								<th class="center" style="width:7.1%">
 									<label class="pos-rel">
 										<input type="checkbox" class="ace" id="addtopcheck">
 										<span class="lbl"></span>
 									</label>
 								</th>
-								<th style="width:57.2%">人脸库ID</th>
-								<th style="width:14.5%">名称</th>
+								<th style="width:55.4%">人脸库ID</th>
+								<th style="width:14.1%">名称</th>
 
 								<th>
 									<i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
@@ -153,9 +169,11 @@
 		        </form>
 		      </div>
 		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary" id="add_submit">提交</button>
+		        <!--<button type="button" class="btn btn-primary" id="add_submit">提交</button>-->
+				  <button class="btn btn-primary ladda-button" data-style="slide-up" data-size="l" id="add_submit"><span class="ladda-label">提交</span></button>
 		      </div>
-		    </div>
+
+			</div>
 		  </div>
 		</div>
 		
@@ -226,6 +244,12 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">Web端口:</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="webPort">
+						</div>
+					</div>
+					<div class="form-group">
 						<label for="password" class="col-sm-2 control-label">RTSP端口:</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control" name="rtspPort">
@@ -242,14 +266,14 @@
 					<table id="edit-table2" class="table  table-bordered table-hover">
 						<thead>
 						<tr>
-							<th class="center"  style="width:7.3%">
+							<th class="center"  style="width:7.1%">
 								<label class="pos-rel">
 									<input type="checkbox" class="ace" id="edittopcheck">
 									<span class="lbl"></span>
 								</label>
 							</th>
-							<th  style="width:57.2%">人脸库ID</th>
-							<th style="width:14.5%">名称</th>
+							<th  style="width:55.4%">人脸库ID</th>
+							<th style="width:14.1%">名称</th>
 							<th>
 								<i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
 								创建时间
@@ -281,14 +305,13 @@
 		        </form>
 		      </div>
 		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary" id="edit_submit">提交</button>
+		        <!--<button type="button" class="btn btn-primary" id="edit_submit">提交</button>-->
+				  <button class="btn btn-primary ladda-button" data-style="slide-up" data-size="l" id="edit_submit"><span class="ladda-label">提交</span></button>
 		      </div>
 		    </div>
 		  </div>
 		</div>
-			<!--<script th:inline="javascript">-->
-                <!--var facelist = [[${list}]];-->
-			           <!--</script>-->
+
 		<script type="text/javascript">
 			$("#addtopcheck").click(function(){
 				if($(this).prop("checked")){
@@ -307,6 +330,7 @@
 				}
 			})
 			$(function(){
+			$.ajaxSetup({ cache: false });
 			 function reset(){
 			 var validator = {
                         message: '值有错误',
@@ -359,6 +383,17 @@
                                     }
                                 }
                                },
+                               webPort: {
+                            		validators: {
+                                   	    notEmpty: {
+                                        message: 'webPort不能为空'
+                                    },
+                                    regexp: {
+                                    	regexp:/^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$/,
+                                    	message: '请输入正确端口'
+                                    }
+                                }
+                               },
                                 rtspPort: {
                             		validators: {
                                    	    notEmpty: {
@@ -372,7 +407,7 @@
                                }
                         }
                     };
-                        $('#add_form').bootstrapValidator(validator);
+                     $('#add_form').bootstrapValidator(validator);
                      $('#edit_form').bootstrapValidator( validator);
             }
                 reset();
@@ -388,19 +423,28 @@
 						    	className: 'center',
 						    	defaultContent: '<label class="pos-rel"><input type="checkbox" class="ace"><span class="lbl"></span></label>'
 						    },
-				            { data: "id"},
-				            { data: "deviceName"},
-				            { data: "ip"},
+				            { data: "camera.id"},
+				            { data: "camera.deviceName"},
+				            { data: "camera.ip"},
                             {
-                               data:"strategy.name",
+                               data:"camera.strategy_name",
                                defaultContent: ''
                             },
                             {
-                                data: "analyser.name",
+                                data: "camera.analyser.name",
                                 defaultContent: ''
                             },
 				            {
-				            	defaultContent: 'status'
+				                data: "online",
+				                render:function(data){
+                                      if(data == false){
+                                         return '<span class="label label-sm label-success">离线</span>'
+                                      }
+                                      else if(data == true){
+                                         return '<span class="label label-sm label-inverse arrowed-in">在线</span>'
+                                      }
+				                },
+				            	defaultContent: ''
 				            }
 				        ],
 						language : {
@@ -462,7 +506,7 @@
 						  }		  
 						]
 					} );
-					btn1.container().appendTo( $('#btns-right') );
+					//btn1.container().appendTo( $('#btns-right') );
 					
 					var defaultCopyAction = myTable.button(1).action();
 					myTable.button(1).action(function (e, dt, button, config) {
@@ -531,16 +575,17 @@
 				                	if(d.length === 0){
 				                    	$.alert( '请选择一行' );
 				                	}else{
-                                        $('#edit_modal :input[name="id"]').val(d[0].id);
-                                        $('#edit_modal :input[name="deviceName"]').val(d[0].deviceName);
-                                        $('#edit_modal :input[name="ip"]').val(d[0].ip);
-                                        $('#edit_modal :input[name="username"]').val(d[0].username);
-                                        $('#edit_modal :input[name="password"]').val(d[0].password);
-                                        $('#edit_modal :input[name="port"]').val(d[0].port);
-                                        $('#edit_modal :input[name="rtspPort"]').val(d[0].rtspPort);
-                                        $('#edit_modal select[name="camtype"]').children().remove("selected")
-                                        $('#edit_modal select[name="camtype"]').children().each(function (index,data) {
-												if($(data).text() == d[0].camtype){
+                                        $('#edit_modal :input[name="id"]').val(d[0].camera.id);
+                                        $('#edit_modal :input[name="deviceName"]').val(d[0].camera.deviceName);
+                                        $('#edit_modal :input[name="ip"]').val(d[0].camera.ip);
+                                        $('#edit_modal :input[name="username"]').val(d[0].camera.username);
+                                        $('#edit_modal :input[name="password"]').val(d[0].camera.password);
+                                        $('#edit_modal :input[name="port"]').val(d[0].camera.port);
+                                        $('#edit_modal :input[name="webPort"]').val(d[0].camera.webPort);
+                                        $('#edit_modal :input[name="rtspPort"]').val(d[0].camera.rtspPort);
+                                        $('#edit_modal select[name="type"]').children().remove("selected")
+                                        $('#edit_modal select[name="type"]').children().each(function (index,data) {
+												if($(data).text() == d[0].camera.type){
                                                     $(data).attr("selected","selected");
 												}
                                         })
@@ -553,7 +598,7 @@
                                                  $(optionvalue).appendTo($('#edit_modal select[name="analyser.id"]'));
                                             })
                                             $('#edit_modal select[name="analyser.id"]').children().each(function (index,data) {
-                                                if(d[0].analyser != null && $(data).text() == d[0].analyser.name){
+                                                if(d[0].camera.analyser != null && $(data).text() == d[0].camera.analyser.name){
                                                     $(data).attr("selected","selected");
                                                 }
                                             })
@@ -564,7 +609,7 @@
 										$.getJSON("/strategy/strcontrol",function (json) {
 											$(json.strategy).each(function (strindex,strdata) {
 												 optionvalue = "<option value="+strdata.id+">"+strdata.name+"</option>";
-												 if(d[0].strategy != null && strdata.id == d[0].strategy.id){
+												 if(d[0].camera.strategy_id != null && strdata.id == d[0].camera.strategy_id){
                                                    optionvalue = "<option value="+strdata.id+" selected='selected'>"+strdata.name+"</option>";
                                                 }
 												$(optionvalue).appendTo($('#edit_modal select[name="strategy.id"]'));
@@ -576,7 +621,7 @@
                                                 var optionvalue = "<option value=" + regiondata.id + ">" + regiondata.name + "</option>";
                                                 $(optionvalue).appendTo($('#edit_modal select[name="region.id"]'));
                                                 $('#edit_modal select[name="region.id"]').children().each(function (index, data) {
-                                                    if (d[0].region !=null && $(data).text() == d[0].region.name) {
+                                                    if (d[0].camera.region !=null && $(data).text() == d[0].camera.region.name) {
                                                         $(data).attr("selected", "selected");
                                                     }
                                                 })
@@ -584,10 +629,10 @@
                                         })
 
                                         $('#editcheck :checkbox').prop('checked',false);
-                                        //$.getJSON("getCamara?id="+d[0].id,function(camedata){
-												 for(var camindex in  d[0].faceSets){
+                                        //$.getJSON("getCamara?id="+d[0].camera.id,function(camedata){
+												 for(var camindex in  d[0].camera.faceSets){
 														 $('#editcheck :checkbox').each(function(index,data){
-													 	 	if($(this).val() == d[0].faceSets[camindex].token){
+													 	 	if($(this).val() == d[0].camera.faceSets[camindex].token){
 													 			$(this).prop('checked',true)
 													 	}
 													 })
@@ -609,9 +654,10 @@
 				                		$.ajax({
 				                			url: '/sysmanage/delCamera',
 				                		    type: 'post',
+				                		    dataType:"text",
 				                		    //contentType: 'application/json; charset=UTF-8',
 				                		    data:{
-				                		    	 id: d[0].id,
+				                		    	 id: d[0].camera.id,
 				                		    	_method: 'DELETE'
 				                		    },
 				                		    success: function(result) {
@@ -626,7 +672,15 @@
 				                		});
 				                	}
 				                }
-				            }
+				            },
+				             {
+									 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
+									 className: "btn btn-white btn-primary btn-bold",
+									 action: function ( e, dt, node, config )
+									  {
+										dt.ajax.url('camera').load();
+							 		  }
+							 }
 				        ]
 					} );
 					
@@ -709,10 +763,13 @@
 									}
 								   })
 								   data.push({name:"faceSets",value:faceSetIds});
+								   var l = Ladda.create(document.querySelector('#add_submit'));
+									l.start();
 								   $.ajax({
 										url: '/sysmanage/addCamera',
 										data: data,
 										type: 'POST',
+										dataType:"text",
 										success: function(result) {
 											if(result == "success"){
 												$('#add_modal').modal('hide');
@@ -722,6 +779,13 @@
 												});
 												myTable.ajax.url('/sysmanage/camera').load();
 											}
+											else{
+												$.alert({
+													title: '警告',
+													content: '创建失败，请求超时',
+												});
+											}
+											 l.stop();
 										}
 								  });
 
@@ -742,11 +806,14 @@
 										faceSetIds.push($(this).val());
 									}
 								   })
-								   data.push({name:"faceSets",value:faceSetIds});
+								data.push({name:"faceSets",value:faceSetIds});
+							 	var l = Ladda.create(document.querySelector('#edit_submit'));
+								l.start();
 							   $.ajax({
 									url: '/sysmanage/updateCamera',
 									data: data,
 									type: 'POST',
+									dataType:"text",
 									success: function(result) {
 										if(result == "success"){
 											$('#edit_modal').modal('hide');
@@ -756,6 +823,13 @@
 											});
 											myTable.ajax.url('/sysmanage/camera').load();
 										}
+										else{
+												$.alert({
+													title: '警告',
+													content: '创建失败，请求超时',
+												});
+											}
+											l.stop();
 									}
 							  });
 							  }

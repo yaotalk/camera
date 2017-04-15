@@ -51,7 +51,7 @@ public class Swagger2 {
               .globalResponseMessage(RequestMethod.GET, responses)
               .globalResponseMessage(RequestMethod.POST, responses)
               .select()
-              .apis(RequestHandlerSelectors.basePackage("com.minivision.camaraplat"))
+              .apis(RequestHandlerSelectors.basePackage("com.minivision.camaraplat.rest"))
               .paths(PathSelectors.any())
               .build();
     }

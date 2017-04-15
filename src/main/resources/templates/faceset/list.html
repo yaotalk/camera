@@ -286,7 +286,7 @@
 						  }		  
 						]
 					} );
-					btn1.container().appendTo( $('#btns-right') );
+					//btn1.container().appendTo( $('#btns-right') );
 					
 					var defaultCopyAction = myTable.button(1).action();
 					myTable.button(1).action(function (e, dt, button, config) {
@@ -351,7 +351,7 @@
 											$.ajax({
 				                			url: '/faceset/delFaceset',
 				                		    type: 'post',
-				                		    //contentType: 'application/json; charset=UTF-8',
+				                		    dataType:"text",
 				                		    data:{
 				                		    	token: d[0].token,
 				                		    	_method: 'DELETE'
@@ -364,6 +364,10 @@
 				                		    		});
 				                   		    		dt.ajax.url('getFaceset').load();
 				                   		    	}
+										else $.alert({
+														title: '提示',
+														content: '删除失败',
+													});
 				                		    }
 				                		});
 											},
@@ -375,14 +379,18 @@
 
 				                	}
 				                }
-				            }
+				            },
+				            {
+							 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
+							 className: "btn btn-white btn-primary btn-bold",
+							 action: function ( e, dt, node, config ) {
+							    dt.ajax.url('getFaceset').load();
+							 }
+						  }
 				        ]
 					} );
 					
 					btn2.container().appendTo( $('#btns-left') );
-				
-					////
-				
 					setTimeout(function() {
 						$($('.tableTools-container')).find('a.dt-button').each(function() {
 							var div = $(this).find(' > div').first();
@@ -447,6 +455,7 @@
 	               			url: '/faceset/addFaceset',
 	               			data: data,
 	               		    type: 'POST',
+	               		    dataType:"text",
 	               		    success: function(result) {
 	               		    	if(result == "success"){
 	               		    		$('#add_modal').modal('hide');
@@ -473,6 +482,7 @@
 	               			url: '/faceset/updateFaceset',
 	               			data: data,
 	               		    type: 'POST',
+	               		    dataType:"text",
 	               		    success: function(result) {
 	               		    	if(result == "success"){
 	               		    		$('#edit_modal').modal('hide');
@@ -482,6 +492,7 @@
 	            		    		});
 	               		    		myTable.ajax.url('getFaceset').load();
 	               		    	}
+
 	               		    }
                		  });
 				   })

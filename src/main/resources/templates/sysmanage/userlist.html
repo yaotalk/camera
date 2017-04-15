@@ -195,7 +195,7 @@
                                    		  return '普通用户';
                                    		  }
                                     }}],
-				language : {
+						language : {
 							url: '/datatables/zh_cn.json',
 							buttons: {
 								copyTitle: '复制到剪切板',
@@ -259,7 +259,7 @@
 						  }		  
 						]
 					} );
-					btn1.container().appendTo( $('#btns-right') );
+					//btn1.container().appendTo( $('#btns-right') );
 					
 					var defaultCopyAction = myTable.button(1).action();
 					myTable.button(1).action(function (e, dt, button, config) {
@@ -320,7 +320,7 @@
 				                }
 				            },
 				            {
-				                text: "<i class='fa fa-trash bigger-110 red'></i> <span class='hidden'>删除人脸分析仪</span>",
+				                text: "<i class='fa fa-trash bigger-110 red'></i> <span class='hidden'>删除用户</span>",
 				                className: "btn btn-white btn-primary btn-bold",
 				                action: function ( e, dt, node, config ) {
 				                	var d = dt.rows( { selected: true } ).data();
@@ -330,7 +330,7 @@
 				                		$.ajax({
 				                			url: '/sysmanage/delUser',
 				                		    type: 'post',
-				                		    //contentType: 'application/json; charset=UTF-8',
+				                		    dataType:"text",
 				                		    data:{
 				                		    	 id: d[0].id,
 				                		    	_method: 'DELETE'
@@ -341,20 +341,24 @@
 				                		    		    title: '提示',
 				                		    		    content: '删除成功',
 				                		    		});
-				                   		    		dt.ajax.url('/sysmanage/delUser').load();
+				                   		    		dt.ajax.url('/sysmanage/user').load();
 				                   		    	}
 				                		    }
 				                		});
 				                	}
 				                }
-				            }
+				            },
+				            {
+							 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
+							 className: "btn btn-white btn-primary btn-bold",
+							 action: function ( e, dt, node, config ) {
+							    dt.ajax.url('user').load();
+							 }
+						  }
 				        ]
 					} );
 					
 					btn2.container().appendTo( $('#btns-left') );
-				
-					////
-				
 					setTimeout(function() {
 						$($('.tableTools-container')).find('a.dt-button').each(function() {
 							var div = $(this).find(' > div').first();
@@ -428,6 +432,7 @@
                                 url: '/sysmanage/addUser',
                                 data: data,
                                 type: 'POST',
+                                dataType:"text",
                                 success: function(result) {
                                     if(result == "success"){
                                         $('#add_modal').modal('hide');
@@ -453,6 +458,7 @@
                                     url: '/sysmanage/updateUser',
                                     data: data,
                                     type: 'POST',
+                                    dataType:"text",
                                     success: function(result) {
                                         if(result == "success"){
                                             $('#edit_modal').modal('hide');

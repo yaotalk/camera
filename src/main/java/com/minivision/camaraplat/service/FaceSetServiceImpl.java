@@ -1,26 +1,40 @@
 package com.minivision.camaraplat.service;
 
+import com.minivision.camaraplat.domain.Camera;
 import com.minivision.camaraplat.domain.FaceSet;
+import com.minivision.camaraplat.faceplat.client.FacePlatClient;
+import com.minivision.camaraplat.faceplat.result.detect.faceset.SetCreateResult;
+import com.minivision.camaraplat.faceplat.result.detect.faceset.SetDeleteResult;
+import com.minivision.camaraplat.faceplat.result.detect.faceset.SetDetailResult;
+import com.minivision.camaraplat.mvc.ex.ServiceException;
+import com.minivision.camaraplat.repository.CameraRepository;
 import com.minivision.camaraplat.repository.FaceSetRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.io.File;
 import java.util.*;
 
-import javax.transaction.Transactional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 //TODO with redis
 public class FaceSetServiceImpl implements FaceSetService {
 
     private final FaceSetRepository faceSetRepository;
 
+    private static  final Logger log = LoggerFactory.getLogger(FaceSetServiceImpl.class);
     @Autowired
-    private FacePlatService facePlatService;
+    private FacePlatClient facePlatClient;
+    @Autowired
+    private CameraRepository cameraRepository ;
 
     public FaceSetServiceImpl(FaceSetRepository faceSetRepository) {
         this.faceSetRepository = faceSetRepository;
@@ -35,11 +49,17 @@ public class FaceSetServiceImpl implements FaceSetService {
         List<FaceSet> faceSets = faceSetRepository.findAll();
         for(FaceSet faceSet: faceSets)
             try {
-                Map map = facePlatService.getFaceSetDetail(faceSet.getToken());
-                faceSet.setFaceCount((Integer)map.get("faceCount"));
-                faceSet.setName(String.valueOf(map.get("displayName")));
+                 SetDetailResult setDetailResult = facePlatClient.getFaceSetDetail(faceSet.getToken());
+                if(setDetailResult.getFacesetToken() != null){
+                    faceSet.setFaceCount(setDetailResult.getFaceCount());
+                    if(faceSet.getName() == null){
+                        faceSet.setName(setDetailResult.getDisplayName());
+                    }
+                }
+                else  faceSet.setFaceCount(-1);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Fail to get Detail for faceset");
+                faceSet.setFaceCount(-1);
             }
         return faceSets;
     }
@@ -47,14 +67,16 @@ public class FaceSetServiceImpl implements FaceSetService {
     @Override public FaceSet update(FaceSet faceSet) {
         Assert.notNull(faceSet, "faceSet must not be null");
         Assert.notNull(faceSet.getToken(), "faceSet must not be null");
+        FaceSet oldfaceset = faceSetRepository.findOne(faceSet.getToken());
+        faceSet.setCreateTime(oldfaceset.getCreateTime());
         return faceSetRepository.save(faceSet);
     }
 
     public FaceSet create(FaceSet faceSet) {
         Assert.notNull(faceSet, "faceSet must not be null");
-        String  facetoen = facePlatService.createFaceset(faceSet);
-        if(facetoen !=null){
-            faceSet.setToken(facetoen);
+        SetCreateResult setCreateResult = facePlatClient.createFaceset(faceSet);
+        if(setCreateResult !=null && setCreateResult.getFacesetToken() !=null){
+            faceSet.setToken(setCreateResult.getFacesetToken());
             return faceSetRepository.save(faceSet);
         }
         return null;
@@ -65,18 +87,18 @@ public class FaceSetServiceImpl implements FaceSetService {
         return faceSetRepository.findOne(token);
     }
 
-    @Override public void delete(String token) {
+    @Override public void delete(String token) throws ServiceException {
         Assert.notNull(token, "token must not be null");
-        try {
-            facePlatService.delFaceset(token,true);
-        } catch (Exception e) {
-            e.printStackTrace();
+        List<Camera> cameras = cameraRepository.findByfaceSetsToken(token);
+        FaceSet faceSet = faceSetRepository.findOne(token);
+        for(Camera camera : cameras){
+                camera.getFaceSets().remove(faceSet);
         }
         faceSetRepository.delete(token);
-    }
-
-    @Override public Page<FaceSet> findFaceSets(Pageable pageable) {
-        return faceSetRepository.findAll(pageable);
+        SetDeleteResult deleteResult = facePlatClient.delFaceset(token,true);
+        if(deleteResult ==null || deleteResult.getFacesetToken() ==null){
+                throw new ServiceException("fail to delete faceset on redis");
+        }
     }
 
     @Override public Set<FaceSet> findAll(String ids) {
@@ -91,5 +113,20 @@ public class FaceSetServiceImpl implements FaceSetService {
         return set;
     }
 
+    @Override public Page<FaceSet> findAll(int page,int size) {
+        Pageable pageable = new PageRequest(page,size);
+        return faceSetRepository.findAll(pageable);
+    }
+
+    @Override public List<File> getSubFile(String filepath) {
+         File[] files = null;
+        if("".equals(filepath)) {
+            files = Arrays.stream(File.listRoots()).filter(file -> file.canRead()).toArray(File[]::new);
+        }
+        else{
+            files = new File(filepath).listFiles(childfile -> childfile.isDirectory()&& !childfile.isHidden());
+        }
+            return files !=null ?Arrays.asList(files):new ArrayList<>();
+    }
 
 }

@@ -9,48 +9,49 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Created by Administrator on 2017/3/13 0013.
- */
 @Service
 @Transactional
 public class SchemeServiceImpl implements SchemeService {
 
-    @Autowired
-    private SchemeRepository schemeRepository;
+  @Autowired
+  private SchemeRepository schemeRepository;
 
-    @Autowired
-    private PeriodRepository periodRepository;
+  @Autowired
+  private PeriodRepository periodRepository;
 
-    @Override public List<Scheme> findAll() {
-        return schemeRepository.findAll();
+  @Override
+  public List<Scheme> findAll() {
+    return schemeRepository.findAll();
+  }
+
+  @Override
+  public Scheme findOne(long id) {
+    return schemeRepository.findOne(id);
+  }
+
+  @Override
+  public Scheme create(Scheme scheme) {
+    return schemeRepository.save(scheme);
+  }
+
+  @Override
+  public Scheme update(Scheme scheme) {
+    return schemeRepository.save(scheme);
+  }
+
+  @Override
+  public void delete(String id) {
+    List<Long> ids = new ArrayList<Long>();
+    for (String index : id.split(",")) {
+      ids.add(Long.valueOf(index));
+      Scheme scheme = schemeRepository.findOne(Long.valueOf(index));
+      for (Scheme.Period period : scheme.getPeriod()) {
+        periodRepository.delete(period.getId());
+      }
     }
-
-    @Override public Scheme findOne(long id) {
-        return schemeRepository.findOne(id);
-    }
-
-    @Override public Scheme create(Scheme scheme) {
-        return schemeRepository.save(scheme);
-    }
-
-    @Override public Scheme update(Scheme scheme) {
-        return schemeRepository.save(scheme);
-    }
-
-    @Override public void delete(String id) {
-        List<Long> ids = new ArrayList<Long>();
-        for(String  index : id.split(",")){
-            ids.add(Long.valueOf(index));
-            Scheme scheme = schemeRepository.findOne(Long.valueOf(index));
-            for(Scheme.Period period : scheme.getPeriod()){
-                periodRepository.delete(period.getId());
-            }
-        }
-            schemeRepository.deleteByIdIn(ids);
-    }
+    schemeRepository.deleteByIdIn(ids);
+  }
 
 
 }

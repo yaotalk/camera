@@ -1,179 +1,225 @@
 package com.minivision.camaraplat.service;
 
+import com.minivision.camaraplat.domain.Camera;
 import com.minivision.camaraplat.domain.Face;
 import com.minivision.camaraplat.domain.FaceSet;
-import com.minivision.camaraplat.repository.FaceSetRepository;
+import com.minivision.camaraplat.domain.record.MonitorRecord;
+import com.minivision.camaraplat.domain.record.SnapshotRecord.FacePos;
+import com.minivision.camaraplat.faceplat.client.FacePlatClient;
+import com.minivision.camaraplat.faceplat.ex.FacePlatException;
+import com.minivision.camaraplat.faceplat.result.FailureDetail;
+import com.minivision.camaraplat.faceplat.result.detect.DetectResult;
+import com.minivision.camaraplat.faceplat.result.detect.DetectedFace;
+import com.minivision.camaraplat.faceplat.result.detect.SearchResult;
+import com.minivision.camaraplat.faceplat.result.detect.SearchResult.Result;
+import com.minivision.camaraplat.faceplat.result.detect.faceset.AddFaceResult;
+import com.minivision.camaraplat.faceplat.result.detect.faceset.RemoveFaceResult;
+import com.minivision.camaraplat.mvc.ex.ServiceException;
+import com.minivision.camaraplat.repository.CameraRepository;
 import com.minivision.camaraplat.repository.FaceRepository;
-import org.apache.log4j.Logger;
+
+import com.minivision.camaraplat.repository.MonitorRecordRepository;
+import com.minivision.camaraplat.rest.param.alarm.AlarmFaceParam;
+import com.minivision.camaraplat.rest.param.faceset.FaceSearchParam;
+import com.minivision.camaraplat.rest.result.alarm.AlarmFacesResult;
+import com.minivision.camaraplat.rest.result.faceset.FaceSearchResult;
+import com.minivision.camaraplat.util.ChunkRequest;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * Created by Administrator on 2017/3/16 0016.
- */
 @Transactional
 @Service
-@ConfigurationProperties(prefix="myprops")
 public class FaceServiceImpl implements FaceService {
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    @Autowired
-    private FaceRepository faceRepository;
+  private Logger logger = LoggerFactory.getLogger(FaceServiceImpl.class);
+  @Autowired
+  private FaceRepository faceRepository;
 
-    @Autowired
-    private FaceSetRepository faceSetRepository;
+  @Autowired
+  private FacePlatClient facePlatClient;
 
-    @Autowired
-    private FacePlatService facePlatService;
+  @Autowired
+  private MonitorRecordRepository  monitorRecordRepository;
+  @Autowired
+  private CameraRepository cameraRepository;
 
-    public String getFilepath() {
-        return filepath;
+  @Value("${system.store.people}")
+  private String filepath;
+
+  @Value("${system.store.snapshot}")
+  private String snapfilepath;
+  /**
+   * 保存人脸
+   */
+  @Override
+  public void save(Face face, String facesetToken, byte[] imgData, String fileType) throws ServiceException{
+    DetectResult detectResult = facePlatClient.detect(imgData);
+    List<DetectedFace> faces = detectResult.getFaces();
+    if (faces.isEmpty()) {
+      throw new ServiceException("no face detected");
     }
+    DetectedFace detectedFace = faces.get(0);
 
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+    String fileName = facesetToken + "/" + detectedFace.getFaceToken() + fileType;
+    File imgfile = new File(filepath, fileName);
+    try {
+      FileUtils.writeByteArrayToFile(imgfile, imgData);
+    } catch (IOException e) {
+      throw new ServiceException("image file upload fail", e);
     }
+    
+    AddFaceResult addFaceResult = facePlatClient.addFace(facesetToken, detectedFace.getFaceToken());
 
-    private String filepath;
+    if(addFaceResult.getFacesetToken() == null){
+        throw new ServiceException("add face to faceset fail");
+    }
+    if (addFaceResult.getFailureDetail() != null ) {
+      FailureDetail failureDetail = addFaceResult.getFailureDetail().get(0);
+      logger.warn("add face[{}] to faceset[{}] fail, {}", failureDetail.getFaceToken(),
+          facesetToken, failureDetail.getReason());
+      throw new ServiceException("add face to faceset fail, " + failureDetail.getReason());
+    }
+    
+    face.setId(detectedFace.getFaceToken());
+    face.setImgpath(fileName);
+    face.setFaceSet(new FaceSet(facesetToken));
+    faceRepository.save(face);
+  }
 
-    /**
-     * 保存人脸
-     * @param face
-     * @param mfile
-     * @param facesetToken
-     * @return
-     */
-    @Override public String save(Face face,MultipartFile mfile,String facesetToken) {
-        String fileType = mfile.getOriginalFilename().substring(mfile.getOriginalFilename().lastIndexOf("."));
-        if(!StringUtils.isEmpty(facesetToken)){
-            FaceSet faceSet = faceSetRepository.findOne(facesetToken);
-            face.setFaceSet(faceSet);
+  @Override
+  public void update(Face face) {
+       Face oldface = faceRepository.findOne(face.getId());
+       face.setFaceSet(oldface.getFaceSet());
+       faceRepository.save(face);
+  }
+
+  /**
+   * 删除人脸
+   * 
+   * @param facesetToken
+   * @param faceToken
+   */
+  public void delete(String facesetToken, String faceToken) {
+    RemoveFaceResult removeFaceResult = facePlatClient.removeFace(facesetToken,faceToken);
+    if(removeFaceResult.getFailureDetail() == null) {
+      faceRepository.deleteByIdIn(Arrays.asList(faceToken.split(",")));
+    }
+  }
+
+  @Override
+  public Face find(String faceToken) {
+    return faceRepository.findOne(faceToken);
+  }
+
+  @Override public Page<Face> findByFacesetId(String facesetToken, int offset, int limit) {
+    Pageable pageable = new ChunkRequest(offset, limit);
+    return faceRepository.findByFaceSetToken(facesetToken,pageable);
+  }
+
+  @Override
+  public List<FaceSearchResult> searchByPlat(FaceSearchParam faceSearchParam) throws ServiceException {
+    List<Result> results = null;
+    try {
+          List<FaceSearchResult> fsr = new ArrayList<>();
+          List<FaceSearchResult> faceSearchResults = new ArrayList<>();
+          for(String facesetToken : faceSearchParam.getFacesetTokens().split(",")){
+              SearchResult searchResult = facePlatClient.search(facesetToken, faceSearchParam.getImgfile().getBytes(),
+                      faceSearchParam.getLimit());
+              if(searchResult.getResults() != null){
+              results = searchResult.getResults();
+              for(Result result : results) {
+                  double confidence = result.getConfidence();
+                  if ((double) faceSearchParam.getThreshold() / 100 <= confidence) {
+                    String faceToken = result.getFaceToken();
+                    Face face = faceRepository.findOne(faceToken);
+                    FaceSearchResult fs =  new FaceSearchResult();
+                    if(face!=null) {
+                      fs.setFacesetToken(face.getFaceSet().getToken());
+                      fs.setFaceToken(faceToken);
+                      fs.setName(face.getName());
+                      fs.setSex(face.getSex());
+                      fs.setIdCard(face.getIdCard());
+                      fs.setImgpath(face.getImgpath());
+                      fs.setConfidence(confidence);
+                      fsr.add(fs);
+                  }
+               }
+           }
         }
-            String name = face.getName()+new SimpleDateFormat("YYYYMMddHHmmssSSS").format(new Date());
-            File file = new File(filepath);
-            if(file.exists()) {
-                if (!file.isDirectory()) {
-                    throw new RuntimeException("无法创建文件,文件已存在且不是文件夹类型");
-                }
+      }
+      fsr.stream().sorted(Comparator.comparing(FaceSearchResult::getConfidence).reversed()).limit(faceSearchParam.getLimit()).forEach(faceSearchResults :: add);
+      return  faceSearchResults;
+    }catch (IOException e){
+        throw new ServiceException("File upload failed");
+    }catch (FacePlatException e){
+        throw  new ServiceException(e.getMessage());
+    }
+  }
+
+  @Override public List<AlarmFacesResult> searchByFlatForAlarm(AlarmFaceParam alarmFaceParam) {
+    MonitorRecord monitorRecord = monitorRecordRepository.findOne(alarmFaceParam.getLogid());
+    FacePos facepos = monitorRecord.getSnapshot().getFacePosition();
+    String snapPath = snapfilepath+File.separator+monitorRecord.getSnapshot().getPhotoFileName();
+    BufferedImage image = null;
+    byte[] bytes = null;
+    try {
+      image =  ImageIO.read(new File(snapPath));
+      int  left =  facepos.getLeft()-facepos.getWidth()/2>0?facepos.getLeft()-facepos.getWidth()/2:0;
+      int  width_dis = facepos.getWidth()+facepos.getWidth()/2;
+      int  width = left+width_dis>image.getWidth()?image.getWidth()-left:width_dis;
+      int  top = facepos.getTop()-facepos.getHeight()/2>0?facepos.getTop()-facepos.getHeight()/2:0;
+      int  height_dis = facepos.getHeight()+facepos.getHeight()/2;
+      int  height = top+height_dis>image.getHeight()?image.getHeight()-top:height_dis;
+      BufferedImage image1 = image.getSubimage(left,top,width,height);
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      //ImageIO.write(image1, "jpg", new File("D://a.jpg"));
+      ImageIO.write(image1, "jpg", out);
+      bytes = out.toByteArray();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+    Camera camera = cameraRepository.findOne(monitorRecord.getSnapshot().getCameraId());
+    List<AlarmFacesResult> afrs = new ArrayList<>();
+    List<AlarmFacesResult> alarmFacesResults = new ArrayList<>();
+    for(FaceSet faceSet : camera.getFaceSets()){
+      List<Result> results = null;
+      SearchResult searchResult = facePlatClient.search(faceSet.getToken(),bytes, alarmFaceParam.getLimit());
+      if (searchResult.getResults() != null) {
+          results = searchResult.getResults();
+          for (Result result : results) {
+            double confidence = result.getConfidence();
+            String faceToken = result.getFaceToken();
+            Face face = faceRepository.findOne(faceToken);
+            AlarmFacesResult afr = new AlarmFacesResult();
+            if(face != null) {
+              afr.setId(face.getId());
+              afr.setName(face.getName());
+              afr.setUserImgUrl(face.getImgpath());
+              afr.setConfidence(confidence);
+              afrs.add(afr);
             }
-             else  file.mkdir();
-             File imgfile = new File(file.getAbsolutePath()+File.separator+name+fileType);
-             face.setImgpath(imgfile.getPath());
-             logger.info("____________________________存储路径为:   "+imgfile.getAbsolutePath());
-             logger.info("____________________________存储文件名为:  "+imgfile.getName());
-             String faceToken;
-                try {
-                    mfile.transferTo(imgfile);
-                    faceToken = facePlatService.faceDetect(imgfile);
-                }
-                catch (IOException e){
-                    logger.info(e.getMessage());
-                    return "图片上传失败！";
-                }
-                catch (Exception e){
-                    imgfile.delete();
-                    logger.info(e.getMessage());
-                    return "注册失败，未检测到人脸！";
-                }
-                if(!StringUtils.isEmpty(faceToken)) {
-                    logger.info("人脸检测完成，开始进行人脸入库_____________");
-                    try {
-                        Map map = facePlatService.addFace(facesetToken,faceToken);
-                    } catch (Exception e) {
-                        imgfile.delete();
-                        return "注册失败："+e.getMessage();
-                    }
-                    face.setId(faceToken);
-                    faceRepository.save(face);
-                    logger.info("人脸入库完成_____________");
-                }
-                 return "success";
-    }
-
-    @Override public String update(Face face, MultipartFile mfile, String facesetToken) {
-                String fileType = mfile.getOriginalFilename().substring(mfile.getOriginalFilename().lastIndexOf("."));
-                if(!StringUtils.isEmpty(facesetToken)){
-                    FaceSet faceSet = faceSetRepository.findOne(facesetToken);
-                    face.setFaceSet(faceSet);
-                }
-                String name = face.getName()+new SimpleDateFormat("YYYYMMddHHmmssSSS").format(new Date());
-                File file = new File(filepath);
-                if(file.exists()) {
-                    if (!file.isDirectory()) {
-                        throw new RuntimeException("无法创建文件,文件已存在且不是文件夹类型");
-                    }
-                }
-                else  file.mkdir();
-                File imgfile = new File(file.getAbsolutePath()+File.separator+name+fileType);
-                Face oldFace = faceRepository.findOne(face.getId());
-                String oldPath = oldFace.getImgpath();
-                logger.info("以前的路径为"+oldPath);
-                face.setImgpath(imgfile.getPath());
-                logger.info("____________________________存储路径为:   "+imgfile.getAbsolutePath());
-                logger.info("____________________________存储文件名为:  "+imgfile.getName());
-                String faceToken;
-                try {
-                    mfile.transferTo(imgfile);
-                    faceToken = facePlatService.faceDetect(imgfile);
-                    //删除以前的图片
-                    File oldImage = new File(oldPath);
-                    if(oldImage.exists()){
-                          oldImage.delete();
-                    }
-                }
-                catch (IOException e){
-                    logger.info(e.getMessage());
-                    return "图片上传失败！";
-                }
-                catch (Exception e){
-                    imgfile.delete();
-                    logger.info(e.getMessage());
-                    return "注册失败，未检测到人脸！";
-                }
-                if(!StringUtils.isEmpty(faceToken)) {
-                    logger.info("人脸检测完成，开始进行人脸入库_____________");
-                    try {
-                        //添加新脸
-                        Map addmap = facePlatService.addFace(facesetToken,faceToken);
-                        logger.info("新人脸添加成功_____________");
-                        //删除旧脸
-                        String oldfaceToken = oldFace.getId();
-                        Map delmap = facePlatService.delFace(facesetToken,oldfaceToken);
-                        logger.info("旧人脸删除成功_____________");
-                    } catch (Exception e) {
-                        imgfile.delete();
-                        return "注册失败："+e.getMessage();
-                    }
-                    faceRepository.delete(oldFace.getId());
-                    face.setId(faceToken);
-                    faceRepository.save(face);
-                    logger.info("人脸入库完成_____________");
-                }
-                return "success";
-    }
-
-    /**
-     * 删除人脸
-     * @param facesetToken
-     * @param faceToken
-     */
-    public void delete(String facesetToken,String faceToken){
-        try {
-            facePlatService.delFace(facesetToken,faceToken);
-        } catch (Exception e) {
-            e.printStackTrace();
-             return;
         }
-             faceRepository.deleteByIdIn(Arrays.asList(faceToken.split(",")));
-        }
-
+      }
+    }
+    afrs.stream().sorted(Comparator.comparing(AlarmFacesResult ::getConfidence).reversed())
+        .limit(alarmFaceParam.getLimit())
+        .forEach(alarmFacesResults::add);
+     return alarmFacesResults;
+  }
 }

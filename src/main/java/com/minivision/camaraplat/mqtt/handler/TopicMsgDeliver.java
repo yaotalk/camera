@@ -1,6 +1,5 @@
 package com.minivision.camaraplat.mqtt.handler;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -9,11 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.StandardAnnotationMetadata;
@@ -21,6 +18,7 @@ import org.springframework.core.type.StandardMethodMetadata;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.minivision.camaraplat.domain.MonitorImage;
+import com.minivision.camaraplat.faceplat.ex.FacePlatException;
 import com.minivision.camaraplat.mqtt.MessageContext;
 import com.minivision.camaraplat.mqtt.RequestFuture;
 import com.minivision.camaraplat.mqtt.handler.MqttMessageHandler.CodeHandler;
@@ -37,11 +35,6 @@ import com.minivision.camaraplat.mqtt.service.PublishMessageTemplate;
 @MqttMessageHandler
 public class TopicMsgDeliver {
 
-  @Value("${system.photo.store}")
-  private String imageFilePath = ".";
-
-  private String imageFileType = "jpg";
-  
   @Autowired
   private PacketUtils packetUtils;
   
@@ -58,6 +51,8 @@ public class TopicMsgDeliver {
   
   private static final Logger logger = LoggerFactory.getLogger(TopicMsgDeliver.class);
   
+  @Autowired
+  private CameraImageHandler imageHandler;
   
   @PostConstruct
   private void init(){
@@ -118,13 +113,14 @@ public class TopicMsgDeliver {
   }
 
   @TopicHandler("/s")
-  public void statusReport(@MqttMessageParam(ParamType.clientId) String clientId,
+  public void msgProcess(@MqttMessageParam(ParamType.clientId) String clientId,
       @MqttMessageParam(ParamType.username) String username,
       ByteBuffer payload) {
 
     try {
       JsonParser parser = packetUtils.createParser(payload.array());
       Head head = packetUtils.parseHead(parser);
+      logger.trace("receive a packet, head : {}", head);
       int code = head.getCode();
       int type = head.getType();
       
@@ -174,16 +170,16 @@ public class TopicMsgDeliver {
       @MqttMessageParam(ParamType.username) String username, @MqttMessageImage MonitorImage image) {
     logger.trace("receive an image, clientId:{}, username:{}, cameraId:{}, serialNo:{}", clientId,
         username, image.getCameraId(), image.getSerialNo());
-
-    String fileName = image.getCameraId() + "_" + image.getSerialNo() + "." + imageFileType;
-    File imgFile = new File(imageFilePath + "/" + username, fileName);
+    
     try {
-      FileUtils.touch(imgFile);
-      FileUtils.writeByteArrayToFile(imgFile, image.getImage());
-    } catch (IOException e) {
-      e.printStackTrace();
+      imageHandler.onImageReceive(image, clientId);
+    } catch (FacePlatException e) {
+      logger.error("image process error, clientId:{}, username:{}, cameraId:{}, serialNo:{}", clientId,
+          username, image.getCameraId(), image.getSerialNo(), e);
     }
-    //TODO FaceDetect
   }
-
+  
+  
+  
+  
 }

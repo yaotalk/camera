@@ -2,7 +2,9 @@ package com.minivision.camaraplat.mqtt;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minivision.camaraplat.domain.Analyser;
 import com.minivision.camaraplat.domain.AnalyserStatus;
+import com.minivision.camaraplat.domain.AnalyserStatus.CameraStatus;
 import com.minivision.camaraplat.mqtt.message.Packet;
 import com.minivision.camaraplat.mqtt.message.Packet.Head;
 import com.minivision.camaraplat.mqtt.message.Packet.Head.Code;
@@ -28,10 +31,10 @@ public class MqttSimulator {
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
   public static final String TOPIC = "s/t";
-  private static final String clientid = "1";
+  private static final String clientid = "8";
 
   private MqttClient client;
-  private String userName = "test_analyser";
+  private String userName = "sim";
   private String passWord = "test";
 
 
@@ -55,6 +58,13 @@ public class MqttSimulator {
             throws Exception {
           System.out.println("receive a message on : "+ topic);
           System.out.println(new String(message.getPayload()));
+          ObjectMapper oMapper = new ObjectMapper();
+          Packet<?> packet = oMapper.readValue(message.getPayload(), Packet.class);
+          Head head = packet.getHead();
+          head.setType(Type.RESPONSE_OK);
+          Packet<Void> rePacket = new Packet<>();
+          rePacket.setHead(head);
+          publishObject("/s", rePacket);
         }
         @Override
         public void deliveryComplete(IMqttDeliveryToken token) {
@@ -66,7 +76,7 @@ public class MqttSimulator {
         }
       });
       client.connect(options);
-      client.subscribe("/d/1");
+      client.subscribe("/d/"+clientid);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -89,7 +99,7 @@ public class MqttSimulator {
     ByteBuffer buffer = ByteBuffer.allocate(128+image.length);
     buffer.putLong(10000001l);
     buffer.putLong(System.currentTimeMillis());
-    buffer.putInt(11);
+    buffer.putInt(22);
     buffer.putInt(image.length);
     buffer.position(128);
     buffer.put(image);
@@ -97,18 +107,32 @@ public class MqttSimulator {
     client.publish(topic, message);
   }
 
-  public static void main(String[] args) throws MqttException, IOException {
+  public static void main(String[] args) throws MqttException, IOException, InterruptedException {
     MqttSimulator simulator = new MqttSimulator();
     
     AnalyserStatus status = new AnalyserStatus();
-    status.setCpu(0.5f);
-    status.setMem(2048000f);
+    status.setCpu(56f);
+    status.setMem(60f);
     status.setTimestamp(new Date());
     Analyser analyser = new Analyser();
-    analyser.setId(100l);
+    analyser.setId(1L);
     status.setAnalyser(analyser);
     
-    Head head1 = new Head(1000, Code.SYNC_DEVICE, Type.REQUEST, "");
+    List<CameraStatus> devStatus = new ArrayList<>();
+    CameraStatus cStatus = new CameraStatus();
+    cStatus.setId(10);
+    cStatus.setStatus(1);
+    devStatus.add(cStatus);
+    status.setDevStatus(devStatus);
+    
+    
+    Head head = new Head(10000, Code.STATUS_INFO, Type.NOTIFY);
+    
+    Packet<?> packet = new Packet<>(head, status);
+    
+    simulator.publishObject("/s", packet);
+    
+/*    Head head1 = new Head(1000, Code.SYNC_DEVICE, Type.REQUEST, "");
     Packet<?> packet1 = new Packet<>(head1);
     simulator.publishObject("/s", packet1);
     
@@ -116,7 +140,8 @@ public class MqttSimulator {
     Packet<?> packet2 = new Packet<>(head2);
     simulator.publishObject("/s", packet2);
     
-    /*byte[] image = FileUtils.readFileToByteArray(new File("E://14.jpg"));
-    simulator.publishImage("/s/i", image);*/
+    byte[] image = FileUtils.readFileToByteArray(new File("E://44.jpg"));
+    simulator.publishImage("/s/i", image);
+    */
   }
 }

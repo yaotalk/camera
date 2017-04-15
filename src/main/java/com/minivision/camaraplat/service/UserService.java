@@ -1,12 +1,9 @@
 package com.minivision.camaraplat.service;
-
 import com.minivision.camaraplat.domain.User;
+import com.minivision.camaraplat.rest.result.system.UserResult;
 
 import java.util.List;
 
-/**
- * Created by yao on 2017/3/12.
- */
 public interface UserService {
 
     List<User> findAll();
@@ -18,4 +15,8 @@ public interface UserService {
     void delete(Long Id);
 
     User loginIn(String username, String password);
+
+    UserResult validateUser(String name,String password);
+
+    User findOne(long id);
 }

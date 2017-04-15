@@ -210,7 +210,7 @@
 						  }
 						]
 					} );
-					btn1.container().appendTo( $('#btns-right') );
+					//btn1.container().appendTo( $('#btns-right') );
 
 					var defaultCopyAction = myTable.button(1).action();
 					myTable.button(1).action(function (e, dt, button, config) {
@@ -279,7 +279,7 @@
 				                		$.ajax({
 				                			url: '/sysmanage/delRegion',
 				                		    type: 'post',
-				                		    //contentType: 'application/json; charset=UTF-8',
+				                		    dataType:"text",
 				                		    data:{
 				                		    	 id: d[0].id,
 				                		    	_method: 'DELETE'
@@ -300,7 +300,14 @@
 				                		});
 				                	}
 				                }
-				            }
+				            },
+				            {
+                                     text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
+                                     className: "btn btn-white btn-primary btn-bold",
+                                     action: function ( e, dt, node, config ) {
+                                        dt.ajax.url('region').load();
+                                     }
+						         }
 				        ]
 					} );
 
@@ -384,6 +391,7 @@
                                     url: '/sysmanage/addRegion',
                                     data: data,
                                     type: 'POST',
+                                    dataType:"text",
                                     success: function(result) {
                                         if(result == "success"){
                                             $('#add_modal').modal('hide');
@@ -409,6 +417,7 @@
 	               			url: '/sysmanage/updateRegion',
 	               			data: data,
 	               		    type: 'POST',
+	               		    dataType:"text",
 	               		    success: function(result) {
 	               		    	if(result == "success"){
 	               		    		$('#edit_modal').modal('hide');

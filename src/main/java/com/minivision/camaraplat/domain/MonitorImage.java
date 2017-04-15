@@ -4,12 +4,16 @@ public class MonitorImage {
   private long serialNo;
   private long timestamp;
   private int cameraId;
+  private int trackId;
   private byte[] image;
   
-  public MonitorImage(long serialNo, long timestamp, int cameraId, byte[] image) {
+  private String fileName;
+  
+  public MonitorImage(long serialNo, long timestamp, int cameraId, int trackId,  byte[] image) {
     this.serialNo = serialNo;
     this.timestamp = timestamp;
     this.cameraId = cameraId;
+    this.trackId = trackId;
     this.image = image;
   }
   public long getSerialNo() {
@@ -30,17 +34,31 @@ public class MonitorImage {
   public void setCameraId(int cameraId) {
     this.cameraId = cameraId;
   }
+  public int getTrackId() {
+    return trackId;
+  }
+  public void setTrackId(int trackId) {
+    this.trackId = trackId;
+  }
   public byte[] getImage() {
     return image;
   }
   public void setImage(byte[] image) {
     this.image = image;
   }
+  public String getFileName() {
+    return fileName;
+  }
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
   
   @Override
   public String toString() {
     return "MonitorImage [serialNo=" + serialNo + ", timestamp=" + timestamp + ", cameraId="
-        + cameraId + ", image_size=" + image.length + "]";
+        + cameraId + ", trackId=" + trackId + ", image_size=" + image.length + "]";
   }
+  
+  
   
 }

@@ -91,6 +91,8 @@ public class ServerInterceptHandler implements InterceptHandler{
 
   @Override
   public void onPublish(InterceptPublishMessage publishMessage) {
+    
+    
     logger.trace("receive a mqtt message: {}", publishMessage);
     String topicName = publishMessage.getTopicName();
     TopicHandlerMethodContext methodContext = topicHandlers.get(topicName);

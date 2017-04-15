@@ -43,7 +43,7 @@ public class TopicHandlerMethodContext {
       }
       
       Object object = method.invoke(instance, args.toArray());
-      LOGGER.info("invoke message process method , service:{}, name:{}, data:{}", instance.getClass().getName(), method.getClass().getName(), args);
+      LOGGER.trace("invoke message process method , service:{}, name:{}, data:{}", instance.getClass().getName(), method.getClass().getName(), args);
       return object;
     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       LOGGER.error("invoke message process method error ", e);
@@ -85,12 +85,13 @@ public class TopicHandlerMethodContext {
     long timestamp = payload.getLong();
     int cameraId = payload.getInt();
     int size = payload.getInt();
+    int trackId = payload.getInt();
     payload.position(IMAGE_HEADER_LENGTH);
     int remaining = payload.remaining();
-    Assert.isTrue(remaining == size);
+    Assert.isTrue(remaining == size,"bad packet");
     byte[] image = new byte[size];
     payload.get(image);
-    return new MonitorImage(serialNo, timestamp, cameraId, image);
+    return new MonitorImage(serialNo, timestamp, cameraId, trackId, image);
   }
   
 }

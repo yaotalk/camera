@@ -27,6 +27,11 @@ public class FaceSet {
   @Temporal(TemporalType.DATE)
   private Date createTime;
 
+  public FaceSet(){}
+  public FaceSet(String facesetToken) {
+    this.token = facesetToken;
+  }
+
   public Set<Face> getFaces() {
     return faces;
   }

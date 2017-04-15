@@ -23,7 +23,7 @@ public class MessageContext {
   
   private ConcurrentMap<Long, RequestFuture<?>> reqCache = new ConcurrentHashMap<>();
   
-  private long timeout = 30l * 1000 * 1000000;// nano
+  private long timeout = 10l * 1000 * 1000000;// nano
   
   
   public long getNextId() {
@@ -34,7 +34,7 @@ public class MessageContext {
     return id;
   }
   
-  @Scheduled(fixedDelay = 5000)
+  @Scheduled(fixedRate = 5000)
   public void checkExpire() {
     long start = System.nanoTime();
     for (Entry<Long, RequestFuture<?>> entry : reqCache.entrySet()) {

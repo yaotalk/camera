@@ -305,7 +305,7 @@
 						},
 						"aaSorting": [],
 						select: {
-							style: 'multiple'
+							style: 'single'
 						}
 				    } );
 
@@ -388,7 +388,7 @@
 						  }		  
 						]
 					} );
-					btn1.container().appendTo( $('#btns-right') );
+					//btn1.container().appendTo( $('#btns-right') );
 					
 					var defaultCopyAction = myTable.button(1).action();
 					myTable.button(1).action(function (e, dt, button, config) {
@@ -425,7 +425,7 @@
 					var btn2 = new $.fn.dataTable.Buttons( myTable, {
 						buttons: [
 				            {
-				            	text: "<i class='fa fa-plus bigger-110 green'></i> <span class='hidden'>新增布控策略</span>",
+				            	text: "<i class='fa fa-plus bigger-110 green'></i> <span class='hidden'>新增时间方案</span>",
 				                className: "btn btn-white btn-primary btn-bold",
 				                action: function ( e, dt, node, config ) {
 				                	$('#add_modal :input[name="name"]').val('');
@@ -435,7 +435,7 @@
 				                }
 				            },
 				            {
-				                text: "<i class='fa fa-edit bigger-110 green'></i> <span class='hidden'>编辑布控策略</span>",
+				                text: "<i class='fa fa-edit bigger-110 green'></i> <span class='hidden'>编辑时间方案</span>",
 				                className: "btn btn-white btn-primary btn-bold",
 				                action: function ( e, dt, node, config ) {
 				                	var d = dt.rows( { selected: true } ).data();
@@ -465,7 +465,7 @@
 				                }
 				            },
 				            {
-				                text: "<i class='fa fa-trash bigger-110 red'></i> <span class='hidden'>删除布控策略</span>",
+				                text: "<i class='fa fa-trash bigger-110 red'></i> <span class='hidden'>删除时间方案</span>",
 				                className: "btn btn-white btn-primary btn-bold",
 				                action: function ( e, dt, node, config ) {
 				                	var d = dt.rows( { selected: true } ).data();
@@ -482,7 +482,7 @@
 				                		$.ajax({
 				                			url: '/strategy/delScheme',
 				                		    type: 'post',
-				                		    //contentType: 'application/json; charset=UTF-8',
+				                		    dataType:"text",
 				                		    data:{
 				                		    	 id: ids.join(','),
 				                		    	_method: 'DELETE'
@@ -502,7 +502,14 @@
 				                		});
 				                	}
 				                }
-				            }
+				            },
+				             {
+								 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
+								 className: "btn btn-white btn-primary btn-bold",
+								 action: function ( e, dt, node, config ) {
+									dt.ajax.url('scheme').load();
+							 }
+						  },
 				        ]
 					} );
 					
@@ -588,17 +595,21 @@
 
 								 if(svalue >=0 && svalue <= 9){
 									  svalue  = "0"+svalue;
+
 								}
 								 if(evalue >= 0 && evalue <= 9){
-									  evalue  = "0"+evalue;
+									   evalue  = "0"+evalue;
+
 								}
-							svalue = svalue+$('#startTime').timepicker().val().substring($('#startTime').timepicker().val().indexOf(":"));
-							evalue =  evalue+ $('#endTime').timepicker().val().substring($('#endTime').timepicker().val().indexOf(":"));
+							 svalue = svalue+$('#startTime').timepicker().val().substring($('#startTime').timepicker().val().indexOf(":"));
+							 evalue =  evalue+ $('#endTime').timepicker().val().substring($('#endTime').timepicker().val().indexOf(":"));
 							if(svalue >  evalue){
 								 e.preventDefault();
 								 $.alert("开始时间不能大于结束时间");
 								 return;
 							 }
+							 $('#startTime').timepicker().val(svalue);
+							 $('#endTime').timepicker().val(evalue);
 							   var period = [];
 							   var data = $('#add_form').serializeArray();
 							   $(data).each(function(index,data){
@@ -615,6 +626,7 @@
 									url: '/strategy/addScheme',
 									data: data,
 									type: 'POST',
+									dataType:"text",
 									success: function(result) {
 										if(result == "success"){
 											$('#add_modal').modal('hide');
@@ -654,6 +666,8 @@
 								 $.alert("开始时间不能大于结束时间");
 								 return;
 							 }
+							 $('#startTime2').timepicker().val(svalue);
+							$('#endTime2').timepicker().val(evalue);
 							   var period = [];
 							   var data = $('#edit_form').serializeArray();
 							   $(data).each(function(index,data){
@@ -671,6 +685,7 @@
 									url: '/strategy/updateScheme',
 									data: data,
 									type: 'POST',
+									dataType:"text",
 									success: function(result) {
 										if(result == "success"){
 											$('#edit_modal').modal('hide');

@@ -1,5 +1,10 @@
 package com.minivision.camaraplat.service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 import org.apache.http.client.HttpClient;
@@ -13,7 +18,11 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,7 +40,7 @@ public class RestClient {
   @PostConstruct
   public void init() throws Exception {
     this.template = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient()));
-    /*HttpMessageConverter<?> converter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+    HttpMessageConverter<?> converter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
     List<HttpMessageConverter<?>> convertList = new ArrayList<>();
     convertList.add(converter);
     
@@ -39,8 +48,7 @@ public class RestClient {
     List<MediaType> asList = Arrays.asList(new MediaType[] {MediaType.APPLICATION_JSON, new MediaType("application", "*+json"), new MediaType("text", "javascript")});
     jackson2HttpMessageConverter.setSupportedMediaTypes(asList);
     convertList.add(jackson2HttpMessageConverter);
-    
-    template.setMessageConverters(convertList);*/
+    template.setMessageConverters(convertList);
   }
 
 
@@ -59,7 +67,7 @@ public class RestClient {
   public String post(String url, Object request) {
     return template.postForObject(url, request, String.class);
   }
-  
+
   public <T> T post(String url, Object request, Class<T> responseClass) {
     return template.postForObject(url, request, responseClass);
   }

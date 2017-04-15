@@ -26,37 +26,49 @@ public class AnalyserConfigService {
   @Autowired
   private PublishMessageTemplate publishMessageService;
 
-  public void syncDeviceConfig(long analyserId, MsgAnalyserConfig config){
+  public void sendDeviceConfig(long analyserId, MsgAnalyserConfig config){
+    asyncSendDeviceConfig(analyserId, config).getResponse().getBody();
+  }
+  
+  public RequestFuture<Void> asyncSendDeviceConfig(long analyserId, MsgAnalyserConfig config){
     Head head = packetUtils.buildRequestHead(Code.SYNC_DEVICE);
     Packet<MsgAnalyserConfig> packet = new Packet<MsgAnalyserConfig>(head, config);
-    RequestFuture<Void> f = publishMessageService.sendRequest("/d/"+analyserId, packet, Void.class);
-    f.getResponse().getBody();
+    return publishMessageService.sendRequest("/d/"+analyserId, packet, Void.class);
   }
   
   public void addOrUpdateCamera(Camera camera){
+    asyncAddOrUpdateCamera(camera).getResponse().getBody();
+  }
+  
+  public RequestFuture<Void> asyncAddOrUpdateCamera(Camera camera){
     MsgAnalyserConfig config = new MsgAnalyserConfig(camera);
     Head head = packetUtils.buildRequestHead(Code.UPDATE_CAMERA);
     Packet<MsgAnalyserConfig> packet = new Packet<MsgAnalyserConfig>(head, config);
-    RequestFuture<Void> f = publishMessageService.sendRequest("/d/"+camera.getAnalyser().getId(), packet, Void.class);
-    f.getResponse().getBody();
+    return publishMessageService.sendRequest("/d/"+camera.getAnalyser().getId(), packet, Void.class);
   }
   
   public void deleteCamera(Camera camera){
+    asyncDeleteCamera(camera).getResponse().getBody();
+  }
+  
+  public RequestFuture<Void> asyncDeleteCamera(Camera camera){
     Head head = packetUtils.buildRequestHead(Code.DEL_CAMERA);
     List<Long> ids = new ArrayList<>();
     ids.add(camera.getId());
     Map<String, List<Long>> body = new HashMap<>();
     body.put("id", ids);
     Packet<Map<String, List<Long>>> packet = new Packet<>(head, body);
-    RequestFuture<Void> f = publishMessageService.sendRequest("/d/"+camera.getAnalyser().getId(), packet, Void.class, false);
-    f.getResponse().getBody();
+    return publishMessageService.sendRequest("/d/"+camera.getAnalyser().getId(), packet, Void.class, false);
   }
   
   public void sendCameraStrategy(long analyserId, List<Strategy> strategy){
+    asyncSendCameraStrategy(analyserId, strategy).getResponse().getBody();
+  }
+  
+  public RequestFuture<Void> asyncSendCameraStrategy(long analyserId, List<Strategy> strategy){
     Head head = packetUtils.buildRequestHead(Code.STRATEGY_INFO);
     Packet<List<Strategy>> packet = new Packet<>(head, strategy);
-    RequestFuture<Void> f = publishMessageService.sendRequest("/d/"+analyserId, packet, Void.class);
-    f.getResponse().getBody();
+    return publishMessageService.sendRequest("/d/"+analyserId, packet, Void.class);
   }
   
   

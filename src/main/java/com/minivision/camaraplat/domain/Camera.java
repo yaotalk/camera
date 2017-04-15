@@ -22,6 +22,8 @@ public class Camera extends IdEntity {
   @JsonView(MsgAnalyserConfig.class)
   private int port;
   @JsonView(MsgAnalyserConfig.class)
+  private int webPort;
+  @JsonView(MsgAnalyserConfig.class)
   private int rtspPort;
   
   @ManyToOne(fetch = FetchType.EAGER)
@@ -132,7 +134,13 @@ public class Camera extends IdEntity {
   public void setFaceSets(Set<FaceSet> faceSets) {
     this.faceSets = faceSets;
   }
-  
-  
+
+  public int getWebPort() {
+    return webPort;
+  }
+
+  public void setWebPort(int webPort) {
+    this.webPort = webPort;
+  }
 
 }

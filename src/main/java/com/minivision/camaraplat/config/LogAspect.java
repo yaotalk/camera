@@ -1,65 +1,39 @@
 package com.minivision.camaraplat.config;
 
-import com.minivision.camaraplat.domain.SysLog;
-import com.minivision.camaraplat.domain.User;
 import com.minivision.camaraplat.service.SysLogService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.lang.reflect.Method;
-import java.util.Calendar;
-
-/**
- * Created by yao on 2017/3/12.
- * AOP
- * 日志记录
- */
+import java.util.Arrays;
+import javax.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
-//@SessionAttributes("user")
 public class LogAspect {
+  
+  private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
     @Autowired
     private SysLogService sysLogService;
 
-    @Pointcut("execution(* com.minivision.camaraplat.mvc..*.*(..))")
-    public void ControllerAspect(){
-
+    @After("within(@org.springframework.web.bind.annotation.RestController *)")
+    public void doLog(JoinPoint joinPoint) throws Throwable {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        logger.info("URL : " + request.getRequestURL().toString());
+        logger.info("HTTP_METHOD : " + request.getMethod());
+        logger.info("IP : " + request.getRemoteAddr());
+        logger.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+        logger.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));
+        
+        //TODO save in DB
     }
-
-
-    @After(value = "ControllerAspect()")
-    public void LogAfter(JoinPoint joinPoint) throws Exception{
-        User user = (User)RequestDomain.getSession().getAttribute("user");
-        String targetname = joinPoint.getSignature().getName();
-        Class<?> target = joinPoint.getTarget().getClass();
-        String pModename =  joinPoint.getTarget().getClass().getAnnotation(ConAnnotation.class).modelName();
-        Class<?> targetclass = Class.forName(target.getName());
-        Method[] methods = targetclass.getMethods();
-        //Object[] args = joinPoint.getArgs();
-         for(Method method : methods){
-             if(method.getName().equals(targetname) && method.getAnnotation(ConAnnotation.class)!=null){
-                 if(user != null) {
-                     System.out.println("target user is ___________" + user.getUsername());
-                     String modelname = method.getAnnotation(ConAnnotation.class).modelName();
-                     String opration = method.getAnnotation(ConAnnotation.class).opration();
-                     String ip = RequestDomain.getRequest().getRemoteAddr();
-                     SysLog sysLog = new SysLog(user,ip, pModename + "->" + modelname, opration, Calendar.getInstance().getTime());
-                     sysLogService.save(sysLog);
-                     System.out.println("target pmodename is  _____________" + pModename);
-                     System.out.println("target modelname is  ________________" + method.getAnnotation(ConAnnotation.class).modelName());
-                     System.out.println("target opration is ______________________" + method.getAnnotation(ConAnnotation.class).opration());
-                     break;
-                 }
-             }
-         }
-
-    }
-
 
 }

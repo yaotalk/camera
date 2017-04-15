@@ -5,11 +5,14 @@ import com.minivision.camaraplat.domain.Region;
 import com.minivision.camaraplat.repository.RegionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.*;
-import javax.transaction.Transactional;
 
 @Service
 @Transactional
@@ -26,6 +29,11 @@ public class RegionServiceImpl implements RegionService {
     return regionRepository.findAll();
   }
 
+  @Override
+  public Page<Region> findAllWithPage(int page,int size) {
+    Pageable pageable = new PageRequest(page,size);
+    return regionRepository.findAll(pageable);
+  }
   @Override
   public Region create(Region region) {
     Assert.notNull(region, "region must not be null");
@@ -77,7 +85,7 @@ public class RegionServiceImpl implements RegionService {
            return regionRepository.findByParentNodeIn(region);
   }
 
-  public Set<Long> getRegionList(Set set,Region region){
+  public Set<Long> getRegionList(Set<Long> set,Region region){
           Set<Region> regions = regionRepository.findByParentNodeIn(region);
           set.add(region.getId());
           for(Region region2 : regions){

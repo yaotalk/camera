@@ -9,7 +9,8 @@ import com.minivision.camaraplat.mqtt.message.MsgCameraStrategy;
 @Entity
 public class Strategy extends IdEntity {
   private String name;
-  private String strategyType;
+  private boolean blackList;
+  private boolean snapshot;
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "scheme_id")
   @JsonView(MsgCameraStrategy.class)
@@ -17,11 +18,25 @@ public class Strategy extends IdEntity {
   private Scheme scheme;
   private int maxfaceNum;
   private int compareThreshold;
+  @JsonView(MsgCameraStrategy.class)
   private int minFaceSize;
   private int preserveDays;
   @JsonView(MsgCameraStrategy.class)
   private int faceQualityThreshold;
+  
   private int intervals;
+  @JsonView(MsgCameraStrategy.class)
+  private int snapInterval;
+  @JsonView(MsgCameraStrategy.class)
+  private int retryCounts;
+
+  public int getSnapInterval() {
+    return snapInterval;
+  }
+
+  public void setSnapInterval(int snapInterval) {
+    this.snapInterval = snapInterval;
+  }
 
   public String getName() {
     return name;
@@ -31,12 +46,20 @@ public class Strategy extends IdEntity {
     this.name = name;
   }
 
-  public String getStrategyType() {
-    return strategyType;
+  public boolean isBlackList() {
+    return blackList;
   }
 
-  public void setStrategyType(String strategyType) {
-    this.strategyType = strategyType;
+  public void setBlackList(boolean blackList) {
+    this.blackList = blackList;
+  }
+
+  public boolean isSnapshot() {
+    return snapshot;
+  }
+
+  public void setSnapshot(boolean snapshot) {
+    this.snapshot = snapshot;
   }
 
   public Scheme getScheme() {
@@ -95,4 +118,13 @@ public class Strategy extends IdEntity {
     this.intervals = intervals;
   }
 
+  public int getRetryCounts() {
+    return retryCounts;
+  }
+
+  public void setRetryCounts(int retryCounts) {
+    this.retryCounts = retryCounts;
+  }
+
+  
 }

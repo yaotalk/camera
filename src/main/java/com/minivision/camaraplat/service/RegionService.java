@@ -2,6 +2,7 @@ package com.minivision.camaraplat.service;
 
 import com.minivision.camaraplat.domain.Region;
 import com.minivision.camaraplat.service.RegionServiceImpl.TreeNode;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
@@ -23,4 +24,6 @@ public interface RegionService {
     List<Region> findNotChildren(Long regionid);
 
     Set<Region> findChildren(Region region);
+
+    Page<Region> findAllWithPage(int page, int size);
 }

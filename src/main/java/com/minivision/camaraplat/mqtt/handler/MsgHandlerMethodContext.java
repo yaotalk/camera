@@ -39,7 +39,7 @@ public class MsgHandlerMethodContext {
       
       Object o = method.invoke(instance, args.toArray());
       
-      LOGGER.info("invoke message process method , service:{}, name:{}, data:{}", instance.getClass().getName(), method.getClass().getName(), args);
+      LOGGER.trace("invoke message process method , service:{}, name:{}, data:{}", instance.getClass().getName(), method.getClass().getName(), args);
       
       if (o == null) {
           if (method.getReturnType() == void.class || method.getReturnType() == Void.class)

@@ -271,7 +271,10 @@
 				            { data: "analyser.name"},
 				            { data: "analyser.ip"},
 				            { data: "analyserStatus.cpu",
-				            defaultContent:''},
+				           		 render:function(data){
+				            		return '%'+data;
+				            },
+				               defaultContent:''},
 				             {
 				                data: "analyserStatus.mem",
 				            	defaultContent:''
@@ -281,9 +284,9 @@
 				                bSortable: false,
 				                render:function(data){
 				               			if(data == false)
-				               			   return '离线'
+				               			   return '<span class="label label-sm label-success">离线</span>'
 				               			 else
-				               			 	return '在线'
+				               			 	return '<span class="label label-sm label-inverse arrowed-in">在线</span>'
 				                },
 				            	defaultContent:''
 				            }
@@ -347,7 +350,7 @@
 						  }		  
 						]
 					} );
-					btn1.container().appendTo( $('#btns-right') );
+					//btn1.container().appendTo( $('#btns-right') );
 					
 					var defaultCopyAction = myTable.button(1).action();
 					myTable.button(1).action(function (e, dt, button, config) {
@@ -417,7 +420,7 @@
 				                		$.ajax({
 				                			url: '/sysmanage/delAnalyser',
 				                		    type: 'post',
-				                		    //contentType: 'application/json; charset=UTF-8',
+				                		    dataType:"text",
 				                		    data:{
 				                		    	 id: d[0].analyser.id,
 				                		    	_method: 'DELETE'
@@ -438,7 +441,14 @@
 				                		});
 				                	}
 				                }
-				            }
+				            },
+				             {
+							 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
+							 className: "btn btn-white btn-primary btn-bold",
+							 action: function ( e, dt, node, config ) {
+							    dt.ajax.url('analyser').load();
+							 }
+						  }
 				        ]
 					} );
 					
@@ -519,6 +529,7 @@
 									url: '/sysmanage/addAnalyser',
 									data: data,
 									type: 'POST',
+									dataType:"text",
 									success: function(result) {
 										if(result == "success"){
 											$('#add_modal').modal('hide');
@@ -545,6 +556,7 @@
 	               			url: '/sysmanage/updateAnalyser',
 	               			data: data,
 	               		    type: 'POST',
+	               		    dataType:"text",
 	               		    success: function(result) {
 	               		    	if(result == "success"){
 	               		    		$('#edit_modal').modal('hide');

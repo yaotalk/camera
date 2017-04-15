@@ -2,6 +2,7 @@ package com.minivision.camaraplat.mvc;
 
 import com.minivision.camaraplat.config.ConAnnotation;
 import com.minivision.camaraplat.domain.*;
+import com.minivision.camaraplat.mvc.ex.ServiceException;
 import com.minivision.camaraplat.service.*;
 import com.minivision.camaraplat.service.RegionServiceImpl.TreeNode;
 
@@ -109,7 +110,7 @@ public class SysManageController {
    */
   @GetMapping("/camera")
   public ModelAndView cameralist() {
-    Iterable<Camera> cameras = this.cameraService.findAll();
+    Iterable<CameraServiceImpl.CameraShow> cameras = this.cameraService.findAllWithStatus();
     Iterable<FaceSet> faceSets = this.faceSetService.findAll();
     Iterable<Analyser> analyserlist = this.analyserService.findAll();
     Iterator<Analyser> iterator = analyserlist.iterator();
@@ -125,14 +126,23 @@ public class SysManageController {
   @PostMapping("/addCamera")
   @ConAnnotation(modelName = "摄像机模块",opration = "新增摄像机")
   public String createCamera(Camera camera) {
-     this.cameraService.create(camera);
-     return "success";
+    try {
+      this.cameraService.create(camera);
+    } catch (ServiceException e) {
+       e.getMessage();
+       return "failed";
+    }
+    return "success";
   }
 
   @PatchMapping("/updateCamera")
   @ConAnnotation(modelName = "摄像机模块",opration = "修改摄像机")
   public String updateCamera(Camera camera) {
-    this.cameraService.update(camera);
+    try {
+      this.cameraService.update(camera);
+    } catch (ServiceException e) {
+        return "failed";
+    }
     return "success";
   }
 
@@ -263,5 +273,9 @@ public class SysManageController {
     return new ModelAndView(Path + "/sysloglist", "syslog", sysLog);
   }
 
+  @GetMapping("/loginset")
+  public ModelAndView logSets(){
+    return new ModelAndView(Path + "/loginset");
+  }
 
 }

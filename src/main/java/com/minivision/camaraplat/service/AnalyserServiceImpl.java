@@ -4,18 +4,16 @@ import com.minivision.camaraplat.domain.Analyser;
 import com.minivision.camaraplat.domain.AnalyserStatus;
 import com.minivision.camaraplat.repository.AnalyserRepository;
 
-import com.minivision.camaraplat.repository.AnalyserStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.transaction.Transactional;
 
 @Service
 @Transactional
@@ -27,29 +25,23 @@ public class AnalyserServiceImpl implements AnalyserService {
   private AnalyserRepository analyserRepository;
 
   @Autowired
-  private AnalyserStatusRepository analyserStatusRepository;
+  private AnalyserStatusServiceImpl statusService;
 
-  public List<Analyser> findAll(){
+  public List<Analyser> findAll() {
     return analyserRepository.findAll();
   }
+
   @Override
   public List<AnalyserShow> findAllWithStatus() {
     List<AnalyserShow> list = new ArrayList<AnalyserShow>();
-    List<Analyser>  analysers = analyserRepository.findAll();
-    for(Analyser analyser : analysers){
-          boolean isonline  = this.isOnline(analyser.getId());
-          List<AnalyserStatus> statuses = analyserStatusRepository.findByAnalyserOrderByTimestampAsc(analyser);
-          AnalyserStatus analyserStatus =null;
-          if(statuses != null && statuses.size() > 0){
-                  if(statuses.size() > 1) {
-                    analyserStatus = statuses.get(statuses.size() - 1);
-                  }
-                  else  analyserStatus = statuses.get(0);
-          }
-          AnalyserShow analyserShow = new AnalyserShow(analyser,analyserStatus,isonline);
-          list.add(analyserShow);
+    List<Analyser> analysers = analyserRepository.findAll();
+    for (Analyser analyser : analysers) {
+      boolean isonline = this.isOnline(analyser.getId());
+      AnalyserStatus analyserStatus = statusService.lastStatus(analyser.getId());
+      AnalyserShow analyserShow = new AnalyserShow(analyser, analyserStatus, isonline);
+      list.add(analyserShow);
     }
-    return  list;
+    return list;
   }
 
   @Override
@@ -82,8 +74,9 @@ public class AnalyserServiceImpl implements AnalyserService {
     return analyserRepository.findByUsername(username);
   }
 
-  @Override public Analyser findById(long id) {
-    return  analyserRepository.findOne(id);
+  @Override
+  public Analyser findById(long id) {
+    return analyserRepository.findOne(id);
   }
 
   @Override
@@ -127,6 +120,7 @@ public class AnalyserServiceImpl implements AnalyserService {
     }
 
     private boolean isonline;
+
     public Analyser getAnalyser() {
       return analyser;
     }

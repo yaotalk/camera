@@ -24,6 +24,7 @@
 							<th>策略ID</th>
 							<th>策略名称</th>
 							<th>布控类型</th>
+							<th>是否抓怕</th>
 							<th class="hidden-480">时间方案</th>
 							<th class="hidden-480">阈值</th>
 						</tr>
@@ -50,12 +51,18 @@
 					<div class="form-group">
 						<label for="recipient-ip" class="col-sm-2 control-label">布控类型:</label>
 						<div class="col-sm-9">
-							<select name="strategyType" class="chosen-select form-control">
-								<option value="0">黑名单</option>
-								<option value="1">黑名单+白名单</option>
-								<option  value="2">黑名单+抓拍</option>
-								<option  value="3">白名单+抓拍</option>
-								<option  value="4">白名单</option>
+							<select name="blackList" class="chosen-select form-control">
+								<option value=true >黑名单</option>
+								<option  value=false>白名单</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-ip" class="col-sm-2 control-label">是否抓拍:</label>
+						<div class="col-sm-9">
+							<select name="snapshot" class="chosen-select form-control">
+								<option value=true>抓拍</option>
+								<option value=false>不抓拍</option>
 							</select>
 						</div>
 					</div>
@@ -67,7 +74,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="recipient-name" class="col-sm-2 control-label">每帧最多抓拍人脸数:</label>
+						<label for="recipient-name" class="col-sm-2 control-label">每帧最多抓拍人脸数(1-10):</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control" name="maxfaceNum">
 						</div>
@@ -81,7 +88,11 @@
 					<div class="form-group">
 						<label for="recipient-name" class="col-sm-2 control-label">最小人脸像素:</label>
 						<div class="col-sm-9">
-							<input type="text" class="form-control" name="minFaceSize">
+							<select name="minFaceSize" class="chosen-select form-control">
+								<option value=64>64*64</option>
+								<option value=80>80*80</option>
+								<option value=128>128*128</option>
+							</select>
 						</div>
 					</div>
 					<div class="form-group">
@@ -94,6 +105,18 @@
 						<label for="recipient-name" class="col-sm-2 control-label">抓拍人脸质量阈值(0-100):</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control" name="faceQualityThreshold">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">抓拍间隔(秒):</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="snapInterval">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">陌生人重试次数:</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="retryCounts">
 						</div>
 					</div>
 					<div class="form-group">
@@ -132,15 +155,21 @@
 		          <div class="form-group">
 		            <label for="ip" class="col-sm-2 control-label">布控类型:</label>
 		            <div class="col-sm-9">
-						<select name="strategyType" class="chosen-select form-control">
-							<option value="0">黑名单</option>
-							<option value="1">黑名单+白名单</option>
-							<option value="2">黑名单+抓拍</option>
-							<option value="3">白名单+抓拍</option>
-							<option value="4">白名单</option>
+						<select name="blackList" class="chosen-select form-control">
+							<option value=true>黑名单</option>
+							<option value=false>白名单</option>
 						</select>
 		            </div>
 		          </div>
+					<div class="form-group">
+						<label for="ip" class="col-sm-2 control-label">是否抓拍:</label>
+						<div class="col-sm-9">
+							<select name="snapshot" class="chosen-select form-control">
+								<option value=true>抓拍</option>
+								<option value=false>不抓拍</option>
+							</select>
+						</div>
+					</div>
 				<div class="form-group">
 					<label for="ip" class="col-sm-2 control-label">时间方案:</label>
 					<div class="col-sm-9">
@@ -149,7 +178,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="port" class="col-sm-2 control-label">每帧最多抓拍人脸数:</label>
+					<label for="port" class="col-sm-2 control-label">每帧最多抓拍人脸数(1-10):</label>
 					<div class="col-sm-9">
 						<input type="text" class="form-control" name="maxfaceNum" id="maxfaceNum">
 					</div>
@@ -162,9 +191,14 @@
 				</div>
 					<div class="form-group">
 						<label for="password" class="col-sm-2 control-label">最小人脸像素:</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" name="minFaceSize" id="minFaceSize">
-						</div>
+							<!--<input type="text" class="form-control" name="minFaceSize" id="minFaceSize">-->
+							<div class="col-sm-9">
+								<select name="minFaceSize" class="chosen-select form-control">
+									<option value=64>64*64</option>
+									<option value=80>80*80</option>
+									<option value=128>128*128</option>
+								</select>
+							</div>
 					</div>
 					<div class="form-group">
 						<label for="password" class="col-sm-2 control-label">人脸数据保存天数:</label>
@@ -176,6 +210,18 @@
 						<label for="recipient-name" class="col-sm-2 control-label">抓拍人脸质量阈值(0-100):</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control" name="faceQualityThreshold">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">抓拍间隔(秒):</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="snapInterval">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="recipient-name" class="col-sm-2 control-label">陌生人重试次数:</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="retryCounts">
 						</div>
 					</div>
 					<div class="form-group">
@@ -196,6 +242,7 @@
 		
 		<script type="text/javascript">
 			$(function(){
+			$.ajaxSetup({ cache: false });
 			function reset(){
 				var validator = {
                         message: '值有错误',
@@ -218,8 +265,8 @@
                                         message: '最多抓拍人脸数不能为空'
                                     },
                                       regexp: {
-											regexp:  /^[0-9]*$/,
-											message: '请输入数字'
+											regexp:  /^([1-9]|10)$/,
+											message: '请输入1-10以内数字'
                         			}
                                 }
                             },
@@ -238,11 +285,7 @@
                                 validators: {
                                     notEmpty: {
                                         message: '最小人脸像素不能为空'
-                                    },
-                                      regexp: {
-											regexp:  /^[0-9]*$/,
-											message: '请输入数字'
-                        				}
+                                    }
                                 }
                             },
                             preserveDays: {
@@ -264,6 +307,28 @@
                                       regexp: {
 											regexp:  /^(^[1-9][0-9]$)|(^100&)|(^[1-9]$|100|0)$/,
 											message: '请输入0-100的数字'
+                        				}
+                                }
+                            },
+                            snapInterval: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '抓拍间隔不能为空'
+                                    },
+                                      regexp: {
+											regexp:  /^[0-9]*$/,
+											message: '请输入数字'
+                        				}
+                                }
+                            },
+                            strangerRetryFrequency: {
+                                validators: {
+                                    notEmpty: {
+                                        message: '抓拍间隔不能为空'
+                                    },
+                                      regexp: {
+											regexp:  /^[0-9]*$/,
+											message: '请输入数字'
                         				}
                                 }
                             },
@@ -298,22 +363,19 @@
 						    },
 				            { data: "id"},
 				            { data: "name"},
-				            { data: "strategyType",
+				            { data: "blackList",
 				                render:function(data){
-				            	switch(data){
-				            		case null:
-				            		return '';
-				            		case '0':
+				            		 if(data == true)
 				            		return '黑名单';
-				            		case '1':
-				            		return '黑名单+白名单';
-				            		case '2':
-				            		return '黑名单+抓拍';
-				            		case '3':
-				            		return '白名单+抓拍';
-				            		case '4':
+				            		else if(data == false)
 				            		return '白名单';
-				            	}
+				            }},
+				            { data: "snapshot",
+				                render:function(data){
+				            		 if(data == true)
+				            		return '抓拍';
+				            		else if(data == false)
+				            		return '不抓拍';
 				            }},
 				            { data: "scheme_name",
 				              defaultContent: ''},
@@ -378,7 +440,7 @@
 						  }		  
 						]
 					} );
-					btn1.container().appendTo( $('#btns-right') );
+					//btn1.container().appendTo( $('#btns-right') );
 					
 					var defaultCopyAction = myTable.button(1).action();
 					myTable.button(1).action(function (e, dt, button, config) {
@@ -442,8 +504,32 @@
 										$('#edit_modal :input[name="minFaceSize"]').val(d[0].minFaceSize);
 										$('#edit_modal :input[name="preserveDays"]').val(d[0].preserveDays);
 										$('#edit_modal :input[name="faceQualityThreshold"]').val(d[0].faceQualityThreshold);
+										$('#edit_modal :input[name="snapInterval"]').val(d[0].snapInterval);
+										$('#edit_modal :input[name="strangerRetryFrequency"]').val(d[0].strangerRetryFrequency);
 										$('#edit_modal :input[name="intervals"]').val(d[0].intervals);
 										$('#edit_modal select[name="scheme"]').children().remove();
+										$("#edit_modal select[name = 'blackList']").children().each(function(index,data){
+										          if(true== d[0].blackList && $(data).val() == 'true'){
+										             $(data).attr("selected",true);
+										          }
+										          if(false== d[0].blackList && $(data).val() == 'false'){
+										             $(data).prop("selected",true);
+										          }
+										})
+										$("#edit_modal select[name = 'snapshot']").children().each(function(index,data){
+										          if(true== d[0].blackList && $(data).val() == 'true'){
+										             $(data).attr("selected",true);
+										          }
+										          if(false== d[0].snapshot && $(data).val() == 'false'){
+										             $(data).prop("selected",true);
+										          }
+										})
+											$("#edit_modal select[name = 'minFaceSize']").children().each(function(index,data){
+										          if(d[0].minFaceSize == $(data).val()){
+										             $(data).attr("selected",true);
+										          }
+
+										})
 										var optionvalue = "<option value=''>请选择</option>";
 										$(optionvalue).appendTo($('#edit_modal select[name="scheme"]'));
 										 $.getJSON("scheme",function (json) {
@@ -510,7 +596,7 @@
 												 $.ajax({
 															url: '/strategy/deleteStrategy',
 															type: 'post',
-															//contentType: 'application/json; charset=UTF-8',
+															dataType:"text",
 															data:{
 																 id: d[0].id,
 																_method: 'DELETE'
@@ -527,11 +613,18 @@
 														});
 
 											}
-				                	})
+				                	},'text')
 
 				                	}
 				                }
-				            }
+				            },
+				            {
+							 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
+							 className: "btn btn-white btn-primary btn-bold",
+							 action: function ( e, dt, node, config ) {
+							    dt.ajax.url('strcontrol').load();
+							 }
+						  }
 				        ]
 					} );
 					
@@ -614,6 +707,7 @@
 									url: '/strategy/addStrategy',
 									data: data,
 									type: 'POST',
+									dataType:"text",
 									success: function(result) {
 										if(result == "success"){
 											$('#add_modal').modal('hide');
@@ -641,6 +735,7 @@
 	               			url: '/strategy/updateStrategy',
 	               			data: data,
 	               		    type: 'POST',
+	               		    dataType:"text",
 	               		    success: function(result) {
 	               		    	if(result == "success"){
 	               		    		$('#edit_modal').modal('hide');

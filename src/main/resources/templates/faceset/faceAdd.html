@@ -2,24 +2,54 @@
 <div layout:fragment="sidebar" th:replace="layout/sidebar">
 </div>
 <div layout:fragment="content">
+
+	<style type="text/css">
+	@media screen and (min-width: 1367px) {
+			 .filelarge {
+				float:left;
+				width: 30%;
+				margin-top: 30px;
+				margin-left:-5%;
+			 }
+			  .inputlarge{
+				width: 50%;
+				margin-top: 30px;
+				float: right;
+				margin-right:20%
+			 }
+		 }
+		 	@media screen and (max-width: 1367px) {
+			 .filelarge {
+				float:left;
+				width: 40%;
+				margin-top: 30px;
+				margin-left:-20%;
+			 }
+			  .inputlarge{
+				width: 80%;
+				margin-top: 30px;
+				float: right;
+			 }
+		 }
+</style>
 		<!-- #section:elements.form -->
 		<div class="row">
-			<div class="col-sm-8">
+			<div class="col-sm-12">
 				<!--<div class="widget-box">-->
 					 <div class="widget-body">
 						<!--<div class="widget-main">-->
 							<div class="form-group">
-								<div class="col-xs-12">
+								<div class="col-xs-8" style="margin-left:20%">
 									<div >
 									<form id="addform" class="form-horizontal" enctype="multipart/form-data">
-										<div style="float:left;width: 40%;margin-top: 30px;margin-left: 80px;">
+										<div class="filelarge">
 											<div class="form-group">
-												<div class="col-sm-9">
+												<div class="col-sm-12">
 													 <input type="file" name="myfile" id="my-file-input" />
 												</div>
 											</div>
 										</div>
-										<div style="width: 50%;margin-top: 30px;float: right;">
+										<div class="inputlarge">
 											<div class="form-group">
 												<label for="recipient-name" class="col-sm-2 control-label">姓名:</label>
 												<div class="col-sm-9">
@@ -58,9 +88,6 @@
 											</div>
 										</div>
 									</form>
-										<!--<div class="modal-footer"style="margin-left:50%">-->
-											<!--<button type="button" class="btn btn-primary" id="add_submit">提交</button>-->
-										<!--</div>-->
 								</div>
 							<!--</div>-->
 						 </div>
@@ -71,6 +98,7 @@
 		</div>
 		<script type="text/javascript">
 			$(function(){
+					$.ajaxSetup({ cache: false });
 					$.getJSON('getFaceset',function(json){
 						$(json.facesets).each(function(index,data){
 								var optionvalue = "<option value="+data.token+">"+data.name+"</option>";
@@ -138,6 +166,7 @@
 										type: 'post',
 										url: 'addFace',
 										data: data,
+										dataType:"text",
 										success: function(data) {
 										if(data == "success"){
 											$("#addform").resetForm();
@@ -160,7 +189,7 @@
 					no_file: 'Click to choose or drag & drop',
 					droppable: true, //html5 browsers only
 					btn_choose:"上传图片",
-					thumbnail: 'fit', //html5 browsers only
+					thumbnail: 'large', //html5 browsers only
 					maxSize: 5*1024*1024, //~100 KB
 					allowExt:  ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'bmp'],
 					allowMime: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/tif', 'image/tiff', 'image/bmp'] //html5 browsers only
@@ -180,5 +209,5 @@
 			});
 		</script>
 </div>
-</body>
+</div>
 </html>
