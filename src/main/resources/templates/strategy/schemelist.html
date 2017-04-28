@@ -1,316 +1,315 @@
-	<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}" >
-		<div layout:fragment="sidebar" th:replace="layout/sidebar">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="layout/layout">
+<div layout:fragment="sidebar" th:replace="layout/sidebar">
+</div>
+<div layout:fragment="content" th:fragment="content">
+	<!-- <div th:replace="fragments :: navbar"></div> -->
+	<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
+	<div class="page-header">
+		<h1>时间方案</h1>
+	</div>
+	<div class="table-header">
+		时间方案
+	</div>
+	<div id="toolbar">
+		<div class="dt-buttons btn-overlap btn-group">
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span><i class="fa fa-plus bigger-110 green"></i>
+						<span class="hidden">新增时间方案</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span><i class="fa fa-edit bigger-110 green"></i>
+				<span class="hidden">编辑时间方案</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span> <i class="fa fa-trash bigger-110 red"></i>
+				<span class="hidden">删除时间方案</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span> <i class="fa fa-refresh bigger-110 blue"></i>
+				<span class="hidden">重新加载</span></span>
+			</a>
 		</div>
-		<div layout:fragment="content">
-			<!-- <div th:replace="fragments :: navbar"></div> -->
-			<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
-			<div class="page-header">
-				<h1>时间方案</h1>
-			</div>
-			
-			<div class="clearfix">
-				<div class="pull-left tableTools-container" id="btns-left"></div>
-				<div class="pull-right tableTools-container" id="btns-right"></div>
-			</div>
-			<div class="table-header">
-				时间方案
-			</div>
-			<div >
-				<table id="dynamic-table" class="table  table-bordered table-hover">
-					<thead>
-						<tr>
-							<th class="center">
-							</th>
-							<th>方案ID</th>
-							<th>方案名称</th>
-							<th>方案周期</th>
-							<th>开始时间</th>
-							<th>结束时间</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-
-			
-		<div class="modal fade" id="add_modal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel">
-		  <div class="modal-dialog" role="document">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		        <h4 class="modal-title" id="addModalLabel">新建时间方案</h4>
-		      </div>
-		      <div class="modal-body">
-		        <form id="add_form" class="form-horizontal">
-		          <div class="form-group">
-					<label for="recipient-name" class="col-sm-2 control-label">方案名称:</label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" name="name">
-					</div>
+	</div>
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog"
+		 aria-labelledby="editModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="editModalLabel">方案修改</h4>
 				</div>
-
-					<div class="form-group">
-						<label for="recipient-name" class="col-sm-2 control-label">周期:</label>
-						<div class="col-sm-9">
-							<select class="multiselect chosen-select form-control" multiple="multiple" name="multi">
-								<option value="1">周一</option>
-								<option value="2">周二</option>
-								<option value="3">周三</option>
-								<option value="4">周四</option>
-								<option value="5">周五</option>
-								<option value="6">周六</option>
-								<option value="0">周日</option>
-							</select>
-						</div>
-					</div>
-				  <div class="form-group">
-						<label for="recipient-ip" class="col-sm-2 control-label">开始时间:</label>
-						<div class="col-sm-9">
-							<div class='input-group date'>
-								<input type='text' class="form-control" name="startTime"  id="startTime"/>
-								<span class="input-group-addon">
-										<i class="fa fa-clock-o bigger-110"></i>
-								</span>
+				<div class="modal-body">
+					<form id="modal_form" class="form-horizontal">
+						<input type="hidden" name="id" id="editId">
+						<input type="hidden" name="_method" value="patch">
+						<div class="form-group">
+							<label for="name" class="col-sm-2 control-label">方案名称:</label>
+							<div class="col-sm-9">
+								<input class="form-control" name="name" id="name">
 							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="recipient-name" class="col-sm-2 control-label">结束时间:</label>
-						<div class="col-sm-9">
-							<div class='input-group date'>
-								<input type='text' class="form-control" name="endTime"  id="endTime"/>
-								<span class="input-group-addon">
-										<i class="fa fa-clock-o bigger-110"></i>
-								</span>
+						<div class="form-group">
+							<label for="recipient-name" class="col-sm-2 control-label">周期:</label>
+							<div class="col-sm-9">
+								<select class="multiselect chosen-select form-control"
+										multiple="multiple" name="multi">
+									<option value="1">周一</option>
+									<option value="2">周二</option>
+									<option value="3">周三</option>
+									<option value="4">周四</option>
+									<option value="5">周五</option>
+									<option value="6">周六</option>
+									<option value="0">周日</option>
+								</select>
 							</div>
 						</div>
-					</div>
-		        </form>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary" id="add_submit">提交</button>
-		      </div>
-		    </div>
-		  </div>
+						<div class="form-group">
+							<label for="recipient-ip" class="col-sm-2 control-label">开始时间:</label>
+							<div class="col-sm-9">
+								<div class='input-group date'>
+									<input type='text' class="form-control" name="startTime"
+										   id="startTime"/>
+									<span class="input-group-addon">
+										<i class="fa fa-clock-o bigger-110"></i>
+								</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="recipient-name" class="col-sm-2 control-label">结束时间:</label>
+							<div class="col-sm-9">
+								<div class='input-group date'>
+									<input type='text' class="form-control" name="endTime"
+										   id="endTime"/>
+									<span class="input-group-addon">
+										<i class="fa fa-clock-o bigger-110"></i>
+								</span>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="model_submit">提交</button>
+				</div>
+			</div>
 		</div>
-		
-		
-		<div class="modal fade" id="edit_modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
-		  <div class="modal-dialog" role="document">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		        <h4 class="modal-title" id="editModalLabel">方案修改</h4>
-		      </div>
-		      <div class="modal-body">
-		        <form id="edit_form" class="form-horizontal">
-					<input type="hidden" name="id" id="editId">
-		          <input type="hidden" name="_method" value="patch">
-		       	  <div class="form-group">
-		            <label for="name" class="col-sm-2 control-label">方案名称:</label>
-		            <div class="col-sm-9">
-		            	<input class="form-control" name="name" id = "name">
-		            </div>
-		          </div>
-					<div class="form-group">
-						<label for="recipient-name" class="col-sm-2 control-label">周期:</label>
-						<div class="col-sm-9">
-							<select class="multiselect chosen-select form-control" multiple="multiple" name="multi">
-								<option value="1">周一</option>
-								<option value="2">周二</option>
-								<option value="3">周三</option>
-								<option value="4">周四</option>
-								<option value="5">周五</option>
-								<option value="6">周六</option>
-								<option value="0">周日</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="recipient-ip" class="col-sm-2 control-label">开始时间:</label>
-						<div class="col-sm-9">
-							<div class='input-group date'>
-								<input type='text' class="form-control" name="startTime" id="startTime2"/>
-								<span class="input-group-addon">
-										<i class="fa fa-clock-o bigger-110"></i>
-								</span>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="recipient-name" class="col-sm-2 control-label">结束时间:</label>
-						<div class="col-sm-9">
-							<div class='input-group date'>
-								<input type='text' class="form-control" name="endTime" id="endTime2"/>
-								<span class="input-group-addon">
-										<i class="fa fa-clock-o bigger-110"></i>
-								</span>
-							</div>
-						</div>
-					</div>
-		        </form>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary" id="edit_submit">提交</button>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-		
-		<script type="text/javascript">
+	</div>
+	<div>
+		<table id="table"
+			   data-toggle="table"
+			   data-toolbar="#toolbar"
+			   data-maintain-selected="true"
+			   data-url="/scheme"
+			   data-pagination="true"
+			   data-search="true"
+			   data-click-to-select="true"
+			   data-show-columns="true"
+			   data-show-export="true">
+			<thead>
+			<tr>
+				<th data-checkbox="true"></th>
+				<th data-field="id">方案ID</th>
+				<th data-field="name">方案名称</th>
+				<th data-field="period" data-formatter="peroidFomartter">方案周期</th>
+				<th data-field="period" data-formatter="startFormatter">开始时间</th>
+				<th data-field="period" data-formatter="endFormatter">
+					结束时间
+				</th>
+			</tr>
+			</thead>
+		</table>
+	</div>
+	<script type="text/javascript">
 			$(function(){
 
 
-			$('.multiselect').multiselect({
-				nonSelectedText: '选择周期',
-				includeSelectAllOption: true,
-				selectAllText: '全选',
-				allSelectedText: '周一到周日',
-				selectAllValue:'0,1,2,3,4,5,6,7'
-			});
-			$("#add_modal button.multiselect").addClass("btn-primary")
-			$("#edit_modal button.multiselect").addClass("btn-primary")
+             var model_type = 'add';
+				   $('#table').on('click-row.bs.table', function (e, row, $element) {
+						$('.success').removeClass('success');
+							$($element).addClass('success');
+   				   });
+					 $(".fa-plus").parents("a").on('click',function(){
+					     $('#modal :input').val('');
+					     model_type = 'add';
+					    $('.multiselect').multiselect('destroy');
+ 						$('.multiselect').multiselect({
+                            nonSelectedText: '选择周期',
+                            includeSelectAllOption: true,
+                            selectAllText: '全选',
+                            allSelectedText: '周一到周日',
+                            selectAllValue:'0,1,2,3,4,5,6,7'
+             			 });
+						$("#add_modal button.multiselect").addClass("btn-primary")
 
-			function reset(){
-			var validator = {
-                        message: '值有错误',
-                        feedbackIcons: {
-                            valid: 'glyphicon glyphicon-ok',
-                            invalid: 'glyphicon glyphicon-remove',
-                            validating: 'glyphicon glyphicon-refresh'
-                        },
-                        fields: {
-                            name: {
-                                validators: {
-                                    notEmpty: {
-                                        message: '方案名不能为空'
-                                    }
-                                }
-                            },
-                            startTime :  {
-                             		validators: {
-										notEmpty: {
-                                        message: '开始时间不能为空'
-                                    }
-									}
-								},
-							  endTime :  {
-                             		validators: {
-										notEmpty: {
-                                        message: '结束时间不能为空'
-                                    }
-									}
-								}
-                         }
-          		  }
-          		    $('#add_form').bootstrapValidator(validator);
-                     $('#edit_form').bootstrapValidator(validator);
-            }
-            reset();
-            $('#startTime').timepicker({
-					minuteStep: 1,
-					showSeconds: false,
-					showMeridian: false,
-					disableFocus: true,
-				}).next().on(ace.click_event, function(){
-					$(this).prev().focus();
-				});
-				 $('#endTime').timepicker({
-					minuteStep: 1,
-					showSeconds: false,
-					showMeridian: false,
-					defaultTime : 'current'
-				}).next().on(ace.click_event, function(){
-					$(this).prev().focus();
-				});
-             $("#startTime").on('click.timepicker',function(e,data) {
-            });
-             $("#endTime").on('click.timepicker',function(e,data) {
-            });
-            $("#startTime").on('hide.timepicker',function(e) {
-						$('#add_form').data('bootstrapValidator')
-						.updateStatus('startTime', 'NOT_VALIDATED',null)
-						.validateField('startTime');
-            });
+                       $('#startTime').timepicker({
+							minuteStep: 1,
+							showSeconds: false,
+							showMeridian: false,
+							disableFocus: true,
+							}).next().on(ace.click_event, function(){
+							$(this).prev().focus();
+						});
+					  $('#endTime').timepicker({
+							minuteStep: 1,
+							showSeconds: false,
+							showMeridian: false,
+							defaultTime : 'current'
+							}).next().on(ace.click_event, function(){
+								$(this).prev().focus();
+					});
+						 $('#modal').modal('show');
+					 })
 
-              $("#endTime").on('hide.timepicker',function(e) {
-						$('#add_form').data('bootstrapValidator')
-						.updateStatus('endTime', 'NOT_VALIDATED',null)
-						.validateField('endTime');
-            });
-             $('#startTime2').timepicker({
-					minuteStep: 1,
-					showSeconds: false,
-					showMeridian: false,
-					disableFocus: true,
-				}).next().on(ace.click_event, function(){
-					$(this).prev().focus();
-				});
-			 $('#endTime2').timepicker({
-				minuteStep: 1,
-				showSeconds: false,
-				showMeridian: false,
-				defaultTime : 'current'
-			}).next().on(ace.click_event, function(){
-				$(this).prev().focus();
-			});
-             $("#startTime2").on('hide.timepicker',function(e) {
-						$('#edit_form').data('bootstrapValidator')
-						.updateStatus('startTime', 'NOT_VALIDATED',null)
-						.validateField('startTime');
-            });
-              $("#endTime2").on('hide.timepicker',function(e) {
-						$('#edit_form').data('bootstrapValidator')
-						.updateStatus('endTime', 'NOT_VALIDATED',null)
-						.validateField('endTime');
-            });
-			$("#startTime").on("changeTime.timepicker", function (e,a) {
-
-			 });
-				var myTable =
-					$('#dynamic-table').DataTable( {
-						bAutoWidth: false,
-						ajax: {
-					        dataSrc: 'scheme'
-					    },
-						columns: [
-						    { 
-						    	bSortable: false,
-						    	className: 'center',
-						    	defaultContent: '<label class="pos-rel"><input type="checkbox" class="ace"><span class="lbl"></span></label>'
-						    },
-				            { data: "id"},
-				            { data: "name"},
-				            {data: "period" ,
-				            	render:function(data){
-				            	   return getPeroid(data);
-				           	 	}
-				           	},
-				            {data: "period",
-				           		 render:function(data){
-				            	   return data[0].startTime;
-				           	 	}
-				           	 	},
-				            { data: "period",
-				             render:function(data){
-				            	   return data[0].endTime;
-				           	 	}
-				           	 }
-				        ],
-						language : {
-							url: '/datatables/zh_cn.json',
-							buttons: {
-								copyTitle: '复制到剪切板',
-								copySuccess: '复制了 %d行'
-							}
-						},
-						"aaSorting": [],
-						select: {
-							style: 'single'
+					 $(".fa-edit").parents("a").on('click',function(){
+					    var ids = getIdSelections();
+    			 		if(ids.length ==0|| ids.length >1){
+							 $.alert({
+								title: '提示',
+								content: '请选择一行',
+							  });
+							 return;
 						}
-				    } );
+						 $('.multiselect').multiselect('destroy');
+						 $('.multiselect').multiselect({
+                            nonSelectedText: '选择周期',
+                            includeSelectAllOption: true,
+                            selectAllText: '全选',
+                            allSelectedText: '周一到周日',
+                            selectAllValue:'0,1,2,3,4,5,6,7'
+             			 });
+             			   $('#startTime').timepicker({
+							minuteStep: 1,
+							showSeconds: false,
+							showMeridian: false,
+							disableFocus: true,
+							}).next().on(ace.click_event, function(){
+							$(this).prev().focus();
+						});
+					    $('#endTime').timepicker({
+							minuteStep: 1,
+							showSeconds: false,
+							showMeridian: false,
+							defaultTime : 'current'
+							}).next().on(ace.click_event, function(){
+								$(this).prev().focus();
+						});
+						var scheme =  $('#table').bootstrapTable('getSelections');
+						$("#modal .dropdown-menu :input").each(function(index,data){
+							if($(data).prop("checked")){
+								 $(data).trigger("click");
+							}
+							$(scheme[0].period).each(function(index,perdata){
+									if(perdata.weekday == $(data).val()){
+										$(data).trigger("click")
+									}
+							})
+					    })
+						 $('#modal :input[name="id"]').val(scheme[0].id);
+						 $('#modal :input[name="name"]').val(scheme[0].name);
+				         $('#modal :input[name="startTime"]').val(scheme[0].period[0].startTime);
+				         $('#modal :input[name="endTime"]').val(scheme[0].period[0].endTime);
+						$('#modal').modal('show');
+					 })
 
-				    function getPeroid(data){
-				    	var periodx = [];
+ 					$(".fa-trash").parents("a").on('click',function(){
+    			 		var ids = getIdSelections();
+    			 		if(ids.length ==0 || ids.length>1){
+								 $.alert({
+									title: '提示',
+									content: '请选择一行',
+								  });
+						 	return;
+						 }
+				    $.ajax({
+							url: '/scheme',
+							type: 'post',
+							dataType:"text",
+							data:{
+								 id: ids[0],
+							     _method: 'DELETE'
+							},
+							success: function(result) {
+								$('#modal').modal('hide');
+								if(result == "success"){
+									$.alert({
+										title: '提示',
+										content: '删除成功',
+									});
+									 $('#table').bootstrapTable('refresh', {
+										url: '/scheme'
+									});
+								}
+								else $.alert(result);
+							}
+						});
+			      	 })
+			       $('#model_submit').click(function(e){
+			       	   var url,type = 'POST',_method;
+			       	   var svalue = $('#startTime').timepicker().val().substring(0, $('#startTime').timepicker().val().indexOf(":"));
+							var evalue = $('#endTime').timepicker().val().substring(0, $('#endTime').timepicker().val().indexOf(":"));
+
+								 if(svalue >=0 && svalue <= 9){
+									  svalue  = "0"+svalue;
+
+								}
+								 if(evalue >= 0 && evalue <= 9){
+									   evalue  = "0"+evalue;
+
+								}
+							 svalue = svalue+$('#startTime').timepicker().val().substring($('#startTime').timepicker().val().indexOf(":"));
+							 evalue =  evalue+ $('#endTime').timepicker().val().substring($('#endTime').timepicker().val().indexOf(":"));
+							if(svalue >  evalue){
+								 e.preventDefault();
+								 $.alert("开始时间不能大于结束时间");
+								 return;
+							 }
+							 $('#startTime').timepicker().val(svalue);
+							 $('#endTime').timepicker().val(evalue);
+							   var period = [];
+							   var data = $('#modal_form').serializeArray();
+							   $(data).each(function(index,data){
+							   		if(data.name == 'multi'){
+									    period.push(data.value);
+							   		}
+							   })
+					   data.push({name:'periods',value:period.join(",")});
+					   $.ajax({
+	               			url:'/scheme',
+	               			data: data,
+	               		    type: 'POST',
+	               		    dataType:"text",
+	               		    success: function(result) {
+	               		     $('#table').bootstrapTable('refresh', {
+										url: '/scheme'
+						     });
+	               		    	if(result == "success"){
+	               		    		$('#modal').modal('hide');
+	               		    		$.alert({
+	            		    		    title: '提示',
+	            		    		    content: '操作成功',
+	            		    		});
+	               		    	}
+	               		    	else if(result =="failed"){
+	               		    		$.alert({
+	            		    		    title: '提示',
+	            		    		    content: '操作失败',
+	            		    		});
+	               		    	}
+	               		    }
+               		  	});
+				 	  })
+
+				  function getIdSelections() {
+							return $.map($('#table').bootstrapTable('getSelections'), function (row) {
+								return row.id;
+							});
+    			  }
+			})
+			function peroidFomartter(data){
+			var periodx = [];
 				         for(var i in data){
 							periodx.push(data[i].weekday)
 				         }
@@ -340,369 +339,16 @@
 								name += "周日、";
 						}
 						return name.substring(0,name.lastIndexOf("、"));
-				    }
-					
- 					$.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-					
-					var btn1 = new $.fn.dataTable.Buttons( myTable, {
-						buttons: [
-						  {
-							 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
-							 className: "btn btn-white btn-primary btn-bold",
-							 action: function ( e, dt, node, config ) {
-							    dt.ajax.url('/faceset').load();
-							 }
-						  },
-						  {
-							extend: "colvis",
-							text: "<i class='fa fa-search bigger-110 blue'></i> <span class='hidden'>显示/隐藏 列</span>",
-							className: "btn btn-white btn-primary btn-bold",
-							columns: ':not(:first):not(:last)'
-						  },
-						  {
-							extend: "copy",
-							text: "<i class='fa fa-copy bigger-110 pink'></i> <span class='hidden'>复制到前切板</span>",
-							className: "btn btn-white btn-primary btn-bold"
-						  },
-						  {
-							extend: "csv",
-							text: "<i class='fa fa-database bigger-110 orange'></i> <span class='hidden'>导出 到CSV</span>",
-							className: "btn btn-white btn-primary btn-bold"
-						  },
-						  {
-							extend: "excel",
-							text: "<i class='fa fa-file-excel-o bigger-110 green'></i> <span class='hidden'>导出到 Excel</span>",
-							className: "btn btn-white btn-primary btn-bold"
-						  },
-						  {
-							extend: "pdf",
-							text: "<i class='fa fa-file-pdf-o bigger-110 red'></i> <span class='hidden'>导出到PDF</span>",
-							className: "btn btn-white btn-primary btn-bold"
-						  },
-						  {
-							extend: "print",
-							text: "<i class='fa fa-print bigger-110 grey'></i> <span class='hidden'>打印</span>",
-							className: "btn btn-white btn-primary btn-bold",
-							autoPrint: false,
-							message: 'This print was produced using the Print button for DataTables'
-						  }		  
-						]
-					} );
-					//btn1.container().appendTo( $('#btns-right') );
-					
-					var defaultCopyAction = myTable.button(1).action();
-					myTable.button(1).action(function (e, dt, button, config) {
-						defaultCopyAction(e, dt, button, config);
-						$('.dt-button-info').addClass('gritter-item-wrapper gritter-info gritter-center white');
-					});
-					
-					
-					var defaultColvisAction = myTable.button(0).action();
-					myTable.button(0).action(function (e, dt, button, config) {
-						
-						defaultColvisAction(e, dt, button, config);
-						
-						
-						if($('.dt-button-collection > .dropdown-menu').length == 0) {
-							$('.dt-button-collection')
-							.wrapInner('<ul class="dropdown-menu dropdown-light dropdown-caret dropdown-caret" />')
-							.find('a').attr('href', '#').wrap("<li />")
-						}
-						$('.dt-button-collection').appendTo('.tableTools-container .dt-buttons')
-					});
-					function getNowFormatDate() {
-							var date = new Date();
-							var seperator1 = "/";
-							var seperator2 = ":";
-							var strMinutes = date.getMinutes();
-							if (strMinutes >= 0 && strMinutes <= 9) {
-								  strMinutes = "0" + strMinutes;
-							}
-							var currentdate = date.getHours() + seperator2 + strMinutes;
-							return currentdate;
-								}
-					
-					var btn2 = new $.fn.dataTable.Buttons( myTable, {
-						buttons: [
-				            {
-				            	text: "<i class='fa fa-plus bigger-110 green'></i> <span class='hidden'>新增时间方案</span>",
-				                className: "btn btn-white btn-primary btn-bold",
-				                action: function ( e, dt, node, config ) {
-				                	$('#add_modal :input[name="name"]').val('');
-				                	$('#add_modal :input[name="startTime"]').val(getNowFormatDate());
-				                	$('#add_modal :input[name="endTime"]').val(getNowFormatDate());
-				                	$('#add_modal').modal('show');
-				                }
-				            },
-				            {
-				                text: "<i class='fa fa-edit bigger-110 green'></i> <span class='hidden'>编辑时间方案</span>",
-				                className: "btn btn-white btn-primary btn-bold",
-				                action: function ( e, dt, node, config ) {
-				                	var d = dt.rows( { selected: true } ).data();
-				                	if(d.length === 0  || d.length > 1){
-				                    	 $.alert({
-												title: '警告',
-												content: '请选择一行',
-											});
-				                	}else{
+			}
 
-									$("#edit_modal .dropdown-menu :input").each(function(index,data){
-				                	if($(data).prop("checked")){
-                        	 			 $(data).trigger("click");
-                        			}
-                        			$(d[0].period).each(function(index,perdata){
-                        					if(perdata.weekday == $(data).val()){
-                        						$(data).trigger("click")
-                        					}
-                        			})
-									 })
-                                    $('#edit_modal #editId').val(d[0].id);
-                                    $('#edit_modal :input[name="name"]').val(d[0].name);
-				                	$('#edit_modal :input[name="startTime"]').val(d[0].period[0].startTime);
-				                	$('#edit_modal :input[name="endTime"]').val(d[0].period[0].endTime);
-				                		$('#edit_modal').modal('show');
-				                	}
-				                }
-				            },
-				            {
-				                text: "<i class='fa fa-trash bigger-110 red'></i> <span class='hidden'>删除时间方案</span>",
-				                className: "btn btn-white btn-primary btn-bold",
-				                action: function ( e, dt, node, config ) {
-				                	var d = dt.rows( { selected: true } ).data();
-				                	var ids = [];
-				                	for(var i=0;i<d.length;i++){
-				                	  	ids.push(d[i].id);
-				                	}
-				                	if(d.length === 0){
-				                     	   $.alert({
-												title: '警告',
-												content: '请选择一行',
-											});
-				                	}else{
-				                		$.ajax({
-				                			url: '/strategy/delScheme',
-				                		    type: 'post',
-				                		    dataType:"text",
-				                		    data:{
-				                		    	 id: ids.join(','),
-				                		    	_method: 'DELETE'
-				                		    },
-				                		    success: function(result) {
-				                		    	if(result == "success"){
-				                		    		$.alert({
-				                		    		    title: '提示',
-				                		    		    content: '删除成功',
-				                		    		});
-				                   		    		dt.ajax.url('scheme').load();
-				                   		    	}
-				                   		    	else{
-				                   		    		$.alert(result);
-				                   		    	}
-				                		    }
-				                		});
-				                	}
-				                }
-				            },
-				             {
-								 text: "<i class='fa fa-refresh bigger-110 blue'></i> <span class='hidden'>重新加载</span>",
-								 className: "btn btn-white btn-primary btn-bold",
-								 action: function ( e, dt, node, config ) {
-									dt.ajax.url('scheme').load();
-							 }
-						  },
-				        ]
-					} );
-					
-					btn2.container().appendTo( $('#btns-left') );
-					setTimeout(function() {
-						$($('.tableTools-container')).find('a.dt-button').each(function() {
-							var div = $(this).find(' > div').first();
-							if(div.length == 1) div.tooltip({container: 'body', title: div.parent().text()});
-							else $(this).tooltip({container: 'body', title: $(this).text()});
-						});
-					}, 500);
-					
-					
-					myTable.on( 'select', function ( e, dt, type, index ) {
-						if ( type === 'row' ) {
-							$( myTable.row( index ).node() ).find('input:checkbox').prop('checked', true);
-						}
-					} );
-					myTable.on( 'deselect', function ( e, dt, type, index ) {
-						if ( type === 'row' ) {
-							$( myTable.row( index ).node() ).find('input:checkbox').prop('checked', false);
-						}
-					} );
-					
-					
-					
-				   $('th input[type=checkbox], td input[type=checkbox]').prop('checked', false);
-				   
-				   /* $('#dynamic-table > thead > tr > th input[type=checkbox], #dynamic-table_wrapper input[type=checkbox]').eq(0).on('click', function(){
-				      var th_checked = this.checked;//checkbox inside "TH" table header
-				      
-				      $('#dynamic-table').find('tbody > tr').each(function(){
-				         var row = this;
-				         if(th_checked) myTable.row(row).select();
-				         else myTable.row(row).deselect();
-				      });
-				   }); */
-				   
-				   //select/deselect a row when the checkbox is checked/unchecked
-				   $('#dynamic-table').on('click', 'td input[type=checkbox]', function(e){
-					  var row = $(this).closest('tr').get(0);
-				      if(this.checked) myTable.row(row).deselect();
-				      else myTable.row(row).select();
-				      e.stopImmediatePropagation();
-				      e.stopPropagation();
-				      e.preventDefault();
-				   });
+			function startFormatter(data){
+				 return data[0].startTime;
+			}
+			function endFormatter(data){
+			   return data[0].endTime;
+			}
 
-				   $(document).on('click', '#dynamic-table .dropdown-toggle', function(e) {
-				      e.stopImmediatePropagation();
-				      e.stopPropagation();
-				      e.preventDefault();
-				   });
-				   
-				   $('#add_modal').on('shown.bs.modal', function(e){
-					   $('#add_modal :input[name="name"]').focus();
-				   })
-				   
-				   $('#edit_modal').on('shown.bs.modal', function(e){
-					   $('#edit_modal :input[name="name"]').focus();
-				   })
-				      $('#add_modal').on('hidden.bs.modal', function(e){
-				        $("#add_form").data('bootstrapValidator').destroy();
-                        $('#add_form').data('bootstrapValidator', reset());
-                        $("#add_modal .dropdown-menu :input").each(function(index,data){
-                        	if($(data).prop("checked")){
-                        	 	$(data).trigger("click")
-                        	}
-      				    })
+    </script>
 
-				   })
-				     $('#edit_modal').on('shown.bs.modal', function(e){
-					   $('#edit_modal :input[name="name"]').focus();
-				   })
-				   $('#add_submit').click(function(e){
-
-				       $('#add_form').bootstrapValidator('validate');
-				       var bootstrapValidator = $("#add_form").data('bootstrapValidator');
-                       if(bootstrapValidator.isValid())
-                       {
-							var svalue = $('#startTime').timepicker().val().substring(0, $('#startTime').timepicker().val().indexOf(":"));
-							var evalue = $('#endTime').timepicker().val().substring(0, $('#endTime').timepicker().val().indexOf(":"));
-
-								 if(svalue >=0 && svalue <= 9){
-									  svalue  = "0"+svalue;
-
-								}
-								 if(evalue >= 0 && evalue <= 9){
-									   evalue  = "0"+evalue;
-
-								}
-							 svalue = svalue+$('#startTime').timepicker().val().substring($('#startTime').timepicker().val().indexOf(":"));
-							 evalue =  evalue+ $('#endTime').timepicker().val().substring($('#endTime').timepicker().val().indexOf(":"));
-							if(svalue >  evalue){
-								 e.preventDefault();
-								 $.alert("开始时间不能大于结束时间");
-								 return;
-							 }
-							 $('#startTime').timepicker().val(svalue);
-							 $('#endTime').timepicker().val(evalue);
-							   var period = [];
-							   var data = $('#add_form').serializeArray();
-							   $(data).each(function(index,data){
-							   		if(data.name == 'multi'){
-									    period.push(data.value);
-							   		}
-							   })
-							   data.push({name:'periods',value:period.join(",")});
-							   if(period.length == 0 ){
-							   	  $.alert("请输入周期");
-							   	  return;
-							   }
-							   $.ajax({
-									url: '/strategy/addScheme',
-									data: data,
-									type: 'POST',
-									dataType:"text",
-									success: function(result) {
-										if(result == "success"){
-											$('#add_modal').modal('hide');
-											$.alert({
-												title: '提示',
-												content: '创建成功',
-											});
-											myTable.ajax.url('scheme').load();
-										}
-									}
-							  });
-						}
-						else return;
-				   })
-				   
-				   $('#edit_submit').click(function(e){
-				    $('#edit_form').bootstrapValidator('validate');
-					   var bootstrapValidator = $("#edit_form").data('bootstrapValidator');
-                       if(bootstrapValidator.isValid())
-                       {
-                       		var svalue = $('#startTime2').timepicker().val().substring(0, $('#startTime2').timepicker().val().indexOf(":"));
-							var evalue = $('#endTime2').timepicker().val().substring(0, $('#endTime2').timepicker().val().indexOf(":"));
-							if(svalue.indexOf(0) == -1){
-								 if(svalue >= 0 && svalue <= 9){
-									  svalue  = "0"+svalue;
-									}
-							 }
-							 if(evalue.indexOf(0) == -1){
-								 if(evalue >= 0 && evalue <= 9){
-									  evalue  = "0"+evalue;
-									  }
-								}
-							svalue = svalue+$('#startTime2').timepicker().val().substring($('#startTime2').timepicker().val().indexOf(":"));
-							evalue =  evalue+ $('#endTime2').timepicker().val().substring($('#endTime2').timepicker().val().indexOf(":"));
-							if(svalue >  evalue){
-								 e.preventDefault();
-								 $.alert("开始时间不能大于结束时间");
-								 return;
-							 }
-							 $('#startTime2').timepicker().val(svalue);
-							$('#endTime2').timepicker().val(evalue);
-							   var period = [];
-							   var data = $('#edit_form').serializeArray();
-							   $(data).each(function(index,data){
-							   		if(data.name == 'multi'){
-									    period.push(data.value);
-							   		}
-							   })
-							   data.push({name:'periods',value:period.join(",")});
-							   if(period.length == 0 ){
-							   	  $.alert("请输入周期");
-							   	  return;
-							   }
-							   console.log(data);
-							   $.ajax({
-									url: '/strategy/updateScheme',
-									data: data,
-									type: 'POST',
-									dataType:"text",
-									success: function(result) {
-										if(result == "success"){
-											$('#edit_modal').modal('hide');
-											$.alert({
-												title: '提示',
-												content: '修改成功',
-											});
-											myTable.ajax.url('scheme').load();
-										}
-									}
-							  });
-						}
-						else return;
-				   })
-			})
-		
-		</script>
-		
-		</div>
-	</html>	
+</div>
+</html>

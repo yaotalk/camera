@@ -8,4 +8,6 @@ public interface UserRepository extends PagingAndSortingRepository<User,Long> {
     List<User> findAll();
 
     User findByUsernameAndPassword(String username, String password);
+    
+    User findByUsername(String username);
 }

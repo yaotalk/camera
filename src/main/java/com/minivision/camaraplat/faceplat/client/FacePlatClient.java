@@ -1,6 +1,5 @@
 package com.minivision.camaraplat.faceplat.client;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.client.HttpServerErrorException;
 
 import com.minivision.camaraplat.faceplat.ex.FacePlatException;
 import com.minivision.camaraplat.faceplat.result.RestResult;
@@ -67,21 +67,22 @@ public class FacePlatClient {
   }
   
   private <T> RestResult<T> postForResult(String path, LinkedMultiValueMap<String,Object> params, Class<T> resultType) throws FacePlatException{
-    String res = restClient.post(path, params, String.class);
-    
-    JavaType javaType = mapper.getTypeFactory().constructParametricType(RestResult.class, resultType);
-    
-    RestResult<T> readValue;
     try {
-      readValue = mapper.readValue(res, javaType);
+      String res = restClient.post(path, params, String.class);
+      
+      JavaType javaType = mapper.getTypeFactory().constructParametricType(RestResult.class, resultType);
+      
+      RestResult<T> readValue = mapper.readValue(res, javaType);
       if(readValue.getStatus() != 0){
         throw new FacePlatException(readValue.getStatus(), readValue.getErrorMessage());
       }
-    } catch (IOException e) {
+      return readValue;
+      
+    } catch (HttpServerErrorException e){
+      throw new FacePlatException(e.getRawStatusCode(), e.getMessage());
+    } catch (Exception e) {
       throw new FacePlatException(500, e.getMessage());
     }
-    
-    return readValue;
   }
   
   // --------face detect API------------
@@ -169,11 +170,25 @@ public class FacePlatClient {
   public SetCreateResult createFaceset(FaceSet faceSet) throws FacePlatException{
     return createFacesetBase(faceSet).getData();
   }
-  
+
+  public SetModifyResult updateFaceset(FaceSet faceSet) throws FacePlatException{
+    return updateFacesetBase(faceSet).getData();
+  }
+
+  @Deprecated
+  public RestResult<SetModifyResult> updateFacesetBase(FaceSet faceSet) throws FacePlatException{
+    LinkedMultiValueMap<String,Object> params = bulidParams();
+    params.add("facesetToken",faceSet.getToken());
+    params.add("displayName",faceSet.getName());
+    params.add("capacity",faceSet.getCapacity());
+    return postForResult(basePath+"/api/v1/faceset/modify", params, SetModifyResult.class);
+  }
+
   @Deprecated
   public RestResult<SetCreateResult> createFacesetBase(FaceSet faceSet) throws FacePlatException{
     LinkedMultiValueMap<String,Object> params = bulidParams();
     params.add("displayName",faceSet.getName());
+    params.add("capacity",faceSet.getCapacity());
     return postForResult(basePath+"/api/v1/faceset/create", params, SetCreateResult.class);
   }
 

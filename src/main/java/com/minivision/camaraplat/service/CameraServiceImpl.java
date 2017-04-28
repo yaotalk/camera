@@ -49,18 +49,18 @@ public class CameraServiceImpl implements CameraService {
   public Camera update(Camera camera) throws ServiceException{
     Assert.notNull(camera.getId(), "the camera id can not be null");
     
-    Camera oldCamera = cameraRepository.findOne(camera.getId());
-    
-    Assert.notNull(oldCamera, "the camera not exist");
-    if(oldCamera.getAnalyser().getId() != camera.getAnalyser().getId()){
-      if(analyserService.isOnline(oldCamera.getAnalyser().getId())){
-        analyserConfigService.asyncDeleteCamera(oldCamera);
-      }
-    }
-    
-    if(analyserService.isOnline(camera.getAnalyser().getId())){
-      analyserConfigService.asyncAddOrUpdateCamera(camera);
-    }
+//    Camera oldCamera = cameraRepository.findOne(camera.getId());
+//
+//    Assert.notNull(oldCamera, "the camera not exist");
+//    if(oldCamera.getAnalyser().getId() != camera.getAnalyser().getId()){
+//      if(analyserService.isOnline(oldCamera.getAnalyser().getId())){
+//        analyserConfigService.asyncDeleteCamera(oldCamera);
+//      }
+//    }
+//
+//    if(analyserService.isOnline(camera.getAnalyser().getId())){
+//      analyserConfigService.asyncAddOrUpdateCamera(camera);
+//    }
     
     return cameraRepository.save(camera);
   }
@@ -68,18 +68,18 @@ public class CameraServiceImpl implements CameraService {
   @Override
   public Camera create(Camera camera) {
     Camera save = cameraRepository.save(camera);
-    if(analyserService.isOnline(camera.getAnalyser().getId())){
-      analyserConfigService.asyncAddOrUpdateCamera(save);
-    }
+//    if(analyserService.isOnline(camera.getAnalyser().getId())){
+//      analyserConfigService.asyncAddOrUpdateCamera(save);
+//    }
     return save;
   }
 
   @Override
   public void delete(long id) {
     Camera camera = cameraRepository.findOne(id);
-    if(analyserService.isOnline(camera.getAnalyser().getId())){
-      analyserConfigService.asyncDeleteCamera(camera);
-    }
+//    if(analyserService.isOnline(camera.getAnalyser().getId())){
+//      analyserConfigService.asyncDeleteCamera(camera);
+//    }
     cameraRepository.delete(id);
   }
 

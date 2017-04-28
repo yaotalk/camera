@@ -1,9 +1,9 @@
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}" >
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/layout" >
 <title>500 Error Page - Ace Admin</title>
 
 <!-- ajax layout which only needs content area -->
 <div class="row">
-	<div class="col-xs-12" layout:fragment="content">
+	<div class="col-xs-12" layout:fragment="content" th:fragment="content">
 		<!-- PAGE CONTENT BEGINS -->
 
 		<!-- #section:pages/error -->

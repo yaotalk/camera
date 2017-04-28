@@ -27,6 +27,8 @@ public class FaceSet {
   @Temporal(TemporalType.DATE)
   private Date createTime;
 
+  private int capacity;
+
   public FaceSet(){}
   public FaceSet(String facesetToken) {
     this.token = facesetToken;
@@ -81,6 +83,14 @@ public class FaceSet {
 
   public void setCreateTime(Date createTime) {
     this.createTime = createTime;
+  }
+
+  public int getCapacity() {
+    return capacity;
+  }
+
+  public void setCapacity(int capacity) {
+    this.capacity = capacity;
   }
 
   @Override

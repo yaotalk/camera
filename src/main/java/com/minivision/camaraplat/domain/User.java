@@ -1,26 +1,19 @@
 package com.minivision.camaraplat.domain;
 
-import com.minivision.camaraplat.config.EncodeConfig;
+import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
-/**
- * Created by yao on 2017/3/12.
- */
-@Entity
+//import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.userdetails.UserDetails;
+
+@Entity(name="users")
 public class User extends IdEntity {
+  @Column(unique = true)
   private String username;
   private String password;
-  private String roleid;
-  private boolean autologin;
-
-  public boolean isAutologin() {
-    return autologin;
-  }
-
-  public void setAutologin(boolean autologin) {
-    this.autologin = autologin;
-  }
+  private boolean enabled;
 
   public String getUsername() {
     return username;
@@ -35,15 +28,39 @@ public class User extends IdEntity {
   }
 
   public void setPassword(String password) {
-    password = EncodeConfig.EncodeByMd5(password);
     this.password = password;
   }
 
-  public String getRoleid() {
-    return roleid;
+  public boolean isEnabled() {
+    return enabled;
   }
 
-  public void setRoleid(String roleid) {
-    this.roleid = roleid;
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
   }
+
+//  @Override
+//  public Collection<? extends GrantedAuthority> getAuthorities() {
+//    // TODO Auto-generated method stub
+//    return null;
+//  }
+
+//  @Override
+//  public boolean isAccountNonExpired() {
+//    // TODO Auto-generated method stub
+//    return false;
+//  }
+//
+//  @Override
+//  public boolean isAccountNonLocked() {
+//    // TODO Auto-generated method stub
+//    return false;
+//  }
+//
+//  @Override
+//  public boolean isCredentialsNonExpired() {
+//    // TODO Auto-generated method stub
+//    return false;
+//  }
+
 }

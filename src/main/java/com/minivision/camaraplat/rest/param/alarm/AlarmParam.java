@@ -3,6 +3,8 @@ import com.minivision.camaraplat.rest.param.RestParam;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 
+import javax.validation.constraints.Max;
+
 public class AlarmParam extends RestParam {
 
     private static final long serialVersionUID = -5324699653300472053L;
@@ -24,6 +26,27 @@ public class AlarmParam extends RestParam {
     @ApiParam(required = true)
     @ApiModelProperty(value = "报警类型")
     private String logType;
+
+    private int offset =0;
+
+    @Max(100)
+    private int limit =10;
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
 
     public long getStartTime() {
       return startTime;

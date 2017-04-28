@@ -22,7 +22,9 @@ public class ErrorType {
 	
 	public static final int FACE_ALGO_ERROR = 100;
 	
-	public static final int ARGUMENT_ERROR = 201;
+	public static final int ARGUMENT_ERROR = 400;
+	
+	public static final int SERVICE_ERROR = 500;
 	
 
 	private static final Map<Integer, String> DESC = new HashMap<>();

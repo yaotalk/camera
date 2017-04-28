@@ -25,5 +25,4 @@ public interface RegionService {
 
     Set<Region> findChildren(Region region);
 
-    Page<Region> findAllWithPage(int page, int size);
 }

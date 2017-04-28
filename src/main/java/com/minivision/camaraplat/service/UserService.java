@@ -8,15 +8,15 @@ public interface UserService {
 
     List<User> findAll();
 
-    User update(User analyser);
+    User update(User user);
 
-    User create(User analyser);
+    User create(User user);
 
     void delete(Long Id);
-
-    User loginIn(String username, String password);
 
     UserResult validateUser(String name,String password);
 
     User findOne(long id);
+    
+    User findByUsername(String username);
 }

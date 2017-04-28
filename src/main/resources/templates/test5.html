@@ -1,0 +1,35 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}">
+<div layout:fragment="sidebar" th:replace="layout/sidebar">
+</div>
+<div layout:fragment="content">
+    <div id="toolbar">
+        <div class="dt-buttons btn-overlap btn-group">
+            <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+                <span><i class="fa fa-edit bigger-110 green"></i>
+                    <span class="hidden">编辑人脸</span>
+                </span>
+            </a>
+            <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+                <span> <i class="fa fa-trash bigger-110 red"></i>
+                    <span class="hidden">删除人脸库</span>
+                </span>
+            </a>
+            <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+                <span> <i class="fa fa-refresh bigger-110 blue"></i>
+                    <span class="hidden">重新加载</span>
+                </span>
+            </a>
+        </div>
+    </div>
+    <div>
+        <table id="table1"
+               data-url="http://issues.wenzhixin.net.cn/examples/bootstrap_table/data"
+               data-side-pagination="server"
+               data-page-list="[5, 10, 20, 50, 100, 200]"
+               data-pagination="true">
+        </table>
+    </div>
+
+</div>
+</html>

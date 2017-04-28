@@ -4,6 +4,7 @@ import com.minivision.camaraplat.domain.Face;
 import com.minivision.camaraplat.mvc.ex.ServiceException;
 import com.minivision.camaraplat.rest.param.alarm.AlarmFaceParam;
 import com.minivision.camaraplat.rest.param.faceset.FaceSearchParam;
+import com.minivision.camaraplat.rest.param.faceset.FacesetParam;
 import com.minivision.camaraplat.rest.result.alarm.AlarmFacesResult;
 import com.minivision.camaraplat.rest.result.faceset.FaceSearchResult;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,7 @@ public interface FaceService {
     
     Face find(String faceToken);
 
-    Page<Face> findByFacesetId(String facesetToken,int page,int size);
+    Page<Face> findByFacesetId(FacesetParam facesetParam);
 
     List<FaceSearchResult> searchByPlat(FaceSearchParam faceSearchParam) throws ServiceException;
 

@@ -58,8 +58,8 @@ public class CodeMsgHandler {
   }
   
   @CodeHandler(code = Code.SYNC_DEVICE, type = Type.REQUEST)
-  public MsgAnalyserConfig getDeviceInfo(@MqttMessageParam(ParamType.username) String username){
-    Analyser analyser = analyserService.fingByUsername(username);
+  public MsgAnalyserConfig getDeviceInfo(@MqttMessageParam(ParamType.clientId) String clientId){
+    Analyser analyser = analyserService.findById(Long.valueOf(clientId));
     MsgAnalyserConfig config = new MsgAnalyserConfig(analyser, analyser.getCameras());
     return config;
   }

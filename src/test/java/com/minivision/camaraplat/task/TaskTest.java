@@ -27,13 +27,13 @@ public class TaskTest {
   @Test
   public void test() throws InterruptedException{
     
-    BatchRegistTask task = new BatchRegistTask(new File("E://"),"test",faceService);
+    /*BatchRegistTask task = new BatchRegistTask(new File("E:\\ImageOfLibrary"),"39c62e3e-9a52-46b9-b05b-9e4e524c1bff",faceService);
     
-    taskContext.doTask(task);
+    taskContext.submitTask(task);
     
-    System.out.println("kkkkkkk");
+    System.err.println("kkkkkkk");
     
-    Thread.sleep(1000*1000);
+    Thread.sleep(1000*1000);*/
   }
   
   public static void main(String[] args) {
@@ -44,6 +44,10 @@ public class TaskTest {
     File[] cfile = roots[2].listFiles(f -> f.isDirectory());
     
     System.out.println(Arrays.asList(cfile));
+    
+    String[] strings = "123.jpg".split("\\.");
+    
+    System.out.println(Arrays.toString(strings));
   }
   
 }

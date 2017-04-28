@@ -7,24 +7,26 @@
 		<title>Empty Page</title>
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<!-- <meta name="_csrf" th:content="${_csrf.token}"/>
+		<meta name="_csrf_header" th:content="${_csrf.headerName}"/> -->
 
 		<!-- bootstrap & fontawesome -->
-		<link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}" href="/bootstrap/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css" />
+		<link rel="stylesheet" th:href="@{/assets/comps/bootstrap/css/bootstrap.min.css}" href="/assets/comps/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="/assets/comps/font-awesome/css/font-awesome.min.css" />
 
 		<!-- ace styles -->
-		<link rel="stylesheet" href="/ace/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
-		<link rel="stylesheet" href="/ace/css/ace-fonts.min.css" />
+		<link rel="stylesheet" href="/assets/comps/ace/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
+		<link rel="stylesheet" href="/assets/comps/ace/css/ace-fonts.min.css" />
 		<!-- page specific plugin styles -->
-		<link rel="stylesheet" href="/jquery.confirm/jquery-confirm.min.css" />
+		<link rel="stylesheet" href="/assets/comps/jquery.confirm/jquery-confirm.min.css" />
 
 		<!-- basic scripts -->
 
-		<script src="/jquery/jquery.min.js"></script>
-		<script src="/bootstrap/js/bootstrap.min.js"></script>
-		<script src="/ace/js/ace.min.js"></script>
-		<script src="/ace/js/ace-elements.min.js"></script>
-		<script src="/ace/js/ace-extra.min.js"></script>
+		<script src="/assets/comps/jquery/jquery.min.js"></script>
+		<script src="/assets/comps/bootstrap/js/bootstrap.min.js"></script>
+		<script src="/assets/comps/ace/js/ace.min.js"></script>
+		<script src="/assets/comps/ace/js/ace-elements.min.js"></script>
+		<script src="/assets/comps/ace/js/ace-extra.min.js"></script>
 
 	</head>
 </head>
@@ -51,23 +53,23 @@
 										<div class="widget-main">
 											<h4 class="header blue lighter bigger">
 												<i class="ace-icon fa fa-coffee green"></i>
-												Please Enter Your Information
+												请输入登录信息
 											</h4>
 
 											<div class="space-6"></div>
 
-											<form>
+											<form action="/c" method="post">
 												<fieldset>
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input id="username" type="text" class="form-control" placeholder="Username" />
+															<input id="username" name="username" type="text" class="form-control" placeholder="Username" />
 															<i class="ace-icon fa fa-user"></i>
 														</span>
 													</label>
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input id="password" type="password" class="form-control" placeholder="Password" />
+															<input id="password" name="password" type="password" class="form-control" placeholder="Password" />
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
 													</label>
@@ -76,17 +78,24 @@
 
 													<div class="clearfix">
 														<label class="inline">
-															<input type="checkbox" class="ace" />
-															<span class="lbl"> Remember Me</span>
+															<input type="checkbox" class="ace" name="remember-me"/>
+															<span class="lbl"> 记住我</span>
 														</label>
 
-														<button id="userlogin" type="button" class="width-35 pull-right btn btn-sm btn-primary">
+														<button id="userlogin" type="submit" class="width-35 pull-right btn btn-sm btn-primary">
 															<i class="ace-icon fa fa-key"></i>
-															<span class="bigger-110">Login</span>
+															<span class="bigger-110">登录</span>
 														</button>
 													</div>
-
+													
 													<div class="space-4"></div>
+													<div th:if="${param.error}" class="alert alert-danger">
+														<button class="close" data-dismiss="alert">
+														<i class="ace-icon fa fa-times"></i>
+														</button>
+														<span class="small">Login error, please try again</span>
+													</div>
+													
 												</fieldset>
 											</form>
 
@@ -280,11 +289,11 @@
 			 });
 			});
 
-			$("#userlogin").on("click",function () {
+			/* $("#userlogin").on("click",function () {
 					var data ={};
 				      data.username = $("#username").val().trim();
 					  data.password = $("#password").val().trim();
-					$.post('userlogin',data,function (data) {
+					$.post('login',data,function (data) {
 							if(data.status == 'ok'){
                                 location.href='/sysmanage/camera'
 							}
@@ -293,7 +302,7 @@
 							}
                			 },'json')
 
-				})
+				}) */
 
 			//you don't need this, just used for changing background
 			jQuery(function($) {
@@ -319,7 +328,16 @@
 				e.preventDefault();
 			 });
 
+
 			});
+			  document.onkeydown = function(e)
+		{
+		    var tar_event = window.event||e;
+			var k = e.keyCode || e.which;
+			if(k == 13){
+					$("#userlogin").trigger('click')
+				}
+		}
 		</script>
 	</body>
 </html>

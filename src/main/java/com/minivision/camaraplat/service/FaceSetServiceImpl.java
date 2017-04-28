@@ -6,6 +6,7 @@ import com.minivision.camaraplat.faceplat.client.FacePlatClient;
 import com.minivision.camaraplat.faceplat.result.detect.faceset.SetCreateResult;
 import com.minivision.camaraplat.faceplat.result.detect.faceset.SetDeleteResult;
 import com.minivision.camaraplat.faceplat.result.detect.faceset.SetDetailResult;
+import com.minivision.camaraplat.faceplat.result.detect.faceset.SetModifyResult;
 import com.minivision.camaraplat.mvc.ex.ServiceException;
 import com.minivision.camaraplat.repository.CameraRepository;
 import com.minivision.camaraplat.repository.FaceSetRepository;
@@ -68,8 +69,13 @@ public class FaceSetServiceImpl implements FaceSetService {
         Assert.notNull(faceSet, "faceSet must not be null");
         Assert.notNull(faceSet.getToken(), "faceSet must not be null");
         FaceSet oldfaceset = faceSetRepository.findOne(faceSet.getToken());
-        faceSet.setCreateTime(oldfaceset.getCreateTime());
-        return faceSetRepository.save(faceSet);
+        SetModifyResult modifyResult = facePlatClient.updateFaceset(faceSet);
+        if(modifyResult !=null && modifyResult.getFacesetToken() !=null){
+            //faceSet.setToken(modifyResult.getFacesetToken());
+            faceSet.setCreateTime(oldfaceset.getCreateTime());
+            return faceSetRepository.save(faceSet);
+        }
+        return null;
     }
 
     public FaceSet create(FaceSet faceSet) {

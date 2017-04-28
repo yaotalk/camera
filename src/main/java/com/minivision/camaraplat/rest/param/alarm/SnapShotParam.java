@@ -3,7 +3,6 @@ import com.minivision.camaraplat.rest.param.RestParam;
 import io.swagger.annotations.ApiParam;
 
 import javax.validation.constraints.Max;
-import java.util.Date;
 
 public class SnapShotParam extends RestParam {
 

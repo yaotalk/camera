@@ -23,7 +23,6 @@ public class Analyser extends IdEntity{
   @NotEmpty(message = "port is required")
   private String port;
 
-  @Column(unique = true)
   private String username;
   private String password;
 

@@ -4,8 +4,6 @@ import com.minivision.camaraplat.rest.param.RestParam;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-
 public class SnapSearchParam extends RestParam {
   private static final long serialVersionUID = -534755979304192089L;
   private MultipartFile img;

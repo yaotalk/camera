@@ -6,11 +6,15 @@ import com.minivision.camaraplat.mvc.ex.ServiceException;
 import com.minivision.camaraplat.service.*;
 import com.minivision.camaraplat.service.RegionServiceImpl.TreeNode;
 
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
 import java.util.*;
 @RestController
 @RequestMapping("/sysmanage")
@@ -36,6 +40,7 @@ public class SysManageController {
 
   @Autowired
   private  SysLogService sysLogService;
+
   /**
    *
    * 分析仪管理
@@ -50,6 +55,10 @@ public class SysManageController {
   @PostMapping("/addAnalyser")
   @ConAnnotation(modelName = "人脸分析仪模块",opration = "新增分析仪器")
   public String createAnalyser(Analyser analyser) {
+    String username = analyser.getUsername();
+    if(analyserService.fingByUsername(username)!=null){
+      return "failed,username must be unique!";
+    }
     this.analyserService.create(analyser);
     return "success";
   }
@@ -274,8 +283,13 @@ public class SysManageController {
   }
 
   @GetMapping("/loginset")
-  public ModelAndView logSets(){
+  public ModelAndView loginSets(){
     return new ModelAndView(Path + "/loginset");
+  }
+  
+  @GetMapping("/sysinfo")
+  public ModelAndView getSysInfo(HttpServletRequest request){
+    return new ModelAndView(Path + "/sysinfo");
   }
 
 }

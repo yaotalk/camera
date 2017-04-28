@@ -4,7 +4,6 @@ import com.minivision.camaraplat.domain.Camera;
 import com.minivision.camaraplat.domain.Face;
 import com.minivision.camaraplat.domain.FaceSet;
 import com.minivision.camaraplat.domain.record.MonitorRecord;
-import com.minivision.camaraplat.domain.record.SnapshotRecord.FacePos;
 import com.minivision.camaraplat.faceplat.client.FacePlatClient;
 import com.minivision.camaraplat.faceplat.ex.FacePlatException;
 import com.minivision.camaraplat.faceplat.result.FailureDetail;
@@ -21,6 +20,7 @@ import com.minivision.camaraplat.repository.FaceRepository;
 import com.minivision.camaraplat.repository.MonitorRecordRepository;
 import com.minivision.camaraplat.rest.param.alarm.AlarmFaceParam;
 import com.minivision.camaraplat.rest.param.faceset.FaceSearchParam;
+import com.minivision.camaraplat.rest.param.faceset.FacesetParam;
 import com.minivision.camaraplat.rest.result.alarm.AlarmFacesResult;
 import com.minivision.camaraplat.rest.result.faceset.FaceSearchResult;
 import com.minivision.camaraplat.util.ChunkRequest;
@@ -35,9 +35,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
+import javax.persistence.criteria.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -114,10 +112,10 @@ public class FaceServiceImpl implements FaceService {
    * @param facesetToken
    * @param faceToken
    */
-  public void delete(String facesetToken, String faceToken) {
-    RemoveFaceResult removeFaceResult = facePlatClient.removeFace(facesetToken,faceToken);
+  public void delete(String facesetToken, String faceTokens) {
+    RemoveFaceResult removeFaceResult = facePlatClient.removeFace(facesetToken,faceTokens);
     if(removeFaceResult.getFailureDetail() == null) {
-      faceRepository.deleteByIdIn(Arrays.asList(faceToken.split(",")));
+      faceRepository.deleteByIdIn(Arrays.asList(faceTokens.split(",")));
     }
   }
 
@@ -126,9 +124,35 @@ public class FaceServiceImpl implements FaceService {
     return faceRepository.findOne(faceToken);
   }
 
-  @Override public Page<Face> findByFacesetId(String facesetToken, int offset, int limit) {
-    Pageable pageable = new ChunkRequest(offset, limit);
-    return faceRepository.findByFaceSetToken(facesetToken,pageable);
+  @Override public Page<Face> findByFacesetId(FacesetParam facesetParam) {
+    Pageable pageable = new ChunkRequest(facesetParam.getOffset(), facesetParam.getLimit());
+    return faceRepository.findAll((root, criteriaQuery, cb) -> {
+
+      List<Predicate> predicates = new ArrayList<>();
+      Path<FaceSet> path = root.get("faceSet");
+      predicates.add(cb.like(path.get("token").as(String.class),facesetParam.getFacesetToken()));
+      String search = facesetParam.getSearch();
+      if(search!=null && !"".equals(search.trim())){
+        Predicate name = cb.like(root.get("name").as(String.class),"%"+search+"%");
+        Predicate idCard = cb.like(root.get("idCard").as(String.class),"%"+search+"%");
+        Predicate phoneNumber = cb.like(root.get("phoneNumber").as(String.class),"%"+search+"%");
+        Predicate sex =null;
+        Predicate p4;
+        if("男".equals(search)) {
+          sex = cb.like(root.get("sex"), "%" + 0 + "%");
+        }
+        else if("女".equals(search)){
+          sex = cb.like(root.get("sex"), "%" + 1 + "%");
+        }
+        if(sex != null) {
+            p4 = cb.or(name,idCard,phoneNumber,sex);
+        }
+        else p4 =  cb.or(name,idCard,phoneNumber);
+        predicates.add(p4);
+      }
+      Predicate[] p = new Predicate[predicates.size()];
+      return cb.and(predicates.toArray(p));
+    },pageable);
   }
 
   @Override
@@ -173,53 +197,38 @@ public class FaceServiceImpl implements FaceService {
 
   @Override public List<AlarmFacesResult> searchByFlatForAlarm(AlarmFaceParam alarmFaceParam) {
     MonitorRecord monitorRecord = monitorRecordRepository.findOne(alarmFaceParam.getLogid());
-    FacePos facepos = monitorRecord.getSnapshot().getFacePosition();
-    String snapPath = snapfilepath+File.separator+monitorRecord.getSnapshot().getPhotoFileName();
-    BufferedImage image = null;
-    byte[] bytes = null;
+    String snapPath = snapfilepath + File.separator + monitorRecord.getSnapshot().getPhotoFileName();
     try {
-      image =  ImageIO.read(new File(snapPath));
-      int  left =  facepos.getLeft()-facepos.getWidth()/2>0?facepos.getLeft()-facepos.getWidth()/2:0;
-      int  width_dis = facepos.getWidth()+facepos.getWidth()/2;
-      int  width = left+width_dis>image.getWidth()?image.getWidth()-left:width_dis;
-      int  top = facepos.getTop()-facepos.getHeight()/2>0?facepos.getTop()-facepos.getHeight()/2:0;
-      int  height_dis = facepos.getHeight()+facepos.getHeight()/2;
-      int  height = top+height_dis>image.getHeight()?image.getHeight()-top:height_dis;
-      BufferedImage image1 = image.getSubimage(left,top,width,height);
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      //ImageIO.write(image1, "jpg", new File("D://a.jpg"));
-      ImageIO.write(image1, "jpg", out);
-      bytes = out.toByteArray();
-    } catch (Exception e) {
-        e.printStackTrace();
-        return null;
-    }
-    Camera camera = cameraRepository.findOne(monitorRecord.getSnapshot().getCameraId());
-    List<AlarmFacesResult> afrs = new ArrayList<>();
-    List<AlarmFacesResult> alarmFacesResults = new ArrayList<>();
-    for(FaceSet faceSet : camera.getFaceSets()){
-      List<Result> results = null;
-      SearchResult searchResult = facePlatClient.search(faceSet.getToken(),bytes, alarmFaceParam.getLimit());
-      if (searchResult.getResults() != null) {
+      byte[] bytes = FileUtils.readFileToByteArray(new File(snapPath));
+      Camera camera = cameraRepository.findOne(monitorRecord.getSnapshot().getCameraId());
+      List<AlarmFacesResult> afrs = new ArrayList<>();
+      List<AlarmFacesResult> alarmFacesResults = new ArrayList<>();
+      for (FaceSet faceSet : camera.getFaceSets()) {
+        List<Result> results = null;
+        SearchResult searchResult = facePlatClient.search(faceSet.getToken(), bytes, alarmFaceParam.getLimit());
+        if (searchResult.getResults() != null) {
           results = searchResult.getResults();
           for (Result result : results) {
             double confidence = result.getConfidence();
             String faceToken = result.getFaceToken();
             Face face = faceRepository.findOne(faceToken);
             AlarmFacesResult afr = new AlarmFacesResult();
-            if(face != null) {
+            if (face != null) {
               afr.setId(face.getId());
               afr.setName(face.getName());
               afr.setUserImgUrl(face.getImgpath());
               afr.setConfidence(confidence);
               afrs.add(afr);
             }
+          }
         }
       }
+      afrs.stream().sorted(Comparator.comparing(AlarmFacesResult::getConfidence).reversed())
+          .limit(alarmFaceParam.getLimit()).forEach(alarmFacesResults::add);
+      return alarmFacesResults;
+    } catch (IOException e) {
+          e.printStackTrace();
+          return null;
     }
-    afrs.stream().sorted(Comparator.comparing(AlarmFacesResult ::getConfidence).reversed())
-        .limit(alarmFaceParam.getLimit())
-        .forEach(alarmFacesResults::add);
-     return alarmFacesResults;
   }
 }

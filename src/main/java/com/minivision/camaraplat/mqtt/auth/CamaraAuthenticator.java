@@ -18,15 +18,21 @@ public class CamaraAuthenticator implements IAuthenticator {
   
   @Override
   public boolean checkValid(String clientId, String username, byte[] password) {
-    Analyser server = analysisService.fingByUsername(username);
-    if(server != null){
-      boolean correct = server.getPassword().equals(new String(password));
-      if(!correct){
-        logger.debug("unknow camara server auth fail, username: {}, password: {}",username, new String(password));
+    
+    try{
+      Analyser server = analysisService.findById(Long.valueOf(clientId));
+      //Analyser server = analysisService.fingByUsername(username);
+      if(server != null){
+        boolean correct = server.getUsername().equals(username) && server.getPassword().equals(new String(password));
+        if(!correct){
+          logger.debug("camara server auth fail, clientId:{}, username: {}, password: {}",clientId, username, new String(password));
+        }
+        return correct;
       }
-      return correct;
+      logger.debug("unknow camara server, clientId: {}",clientId);
+    }catch(Exception e){
+      logger.error("camara server auth fail, clientId:{}, username: {}, password: {}",clientId, username, new String(password), e);
     }
-    logger.debug("unknow camara server username : {}",username);
     return false;
   }
 

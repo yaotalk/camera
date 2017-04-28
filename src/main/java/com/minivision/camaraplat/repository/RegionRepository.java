@@ -2,7 +2,6 @@ package com.minivision.camaraplat.repository;
 
 import com.minivision.camaraplat.domain.Region;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,5 +14,5 @@ public interface RegionRepository extends PagingAndSortingRepository<Region, Lon
 
     Set<Region> findByParentNodeIn(Region region);
 
-    List<Region> findByIdNotIn(Collection ids);
+    List<Region> findByIdNotIn(Collection<Long> ids);
 }

@@ -1,6 +1,6 @@
 package com.minivision.camaraplat.config;
 
-import com.minivision.camaraplat.config.interceptor.LoginInterceptor;
+import com.minivision.camaraplat.config.interceptor.AjaxInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -25,7 +25,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
   private ThymeleafViewResolver thymeleafViewResolver;
 
   @Autowired
-  private LoginInterceptor loginInterceptor;
+  private AjaxInterceptor ajaxInterceptor;
 
   @Override
   public void configureViewResolvers(ViewResolverRegistry registry) {
@@ -34,12 +34,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
   }
 
     @Override public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("redirect:/user/login");
-        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registry.addViewController("/login").setViewName("login/login");
+        registry.addViewController("/").setViewName("redirect:/faceset/getFaceSet");
         super.addViewControllers(registry);
     }
 
     @Override public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns("/api/v1/**").excludePathPatterns("/swagger*").excludePathPatterns("/v2/**");
-    }
+    /*registry.addInterceptor(loginInterceptor).addPathPatterns("/**")
+        .excludePathPatterns("/api/v1/**").excludePathPatterns("/swagger*")
+        .excludePathPatterns("/v2/**");*/
+    
+   // registry.addInterceptor(ajaxInterceptor);
+  }
 }

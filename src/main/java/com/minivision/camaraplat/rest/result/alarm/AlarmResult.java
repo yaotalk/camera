@@ -13,8 +13,16 @@ public class AlarmResult {
         private FacePostion facePosition;
         private String panoramicUrl;
         private String userImgUrl;
-
+        private long count;
     public AlarmResult() {
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
     }
 
     public FacePostion getFacePosition() {

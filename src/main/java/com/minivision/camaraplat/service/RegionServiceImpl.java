@@ -30,13 +30,10 @@ public class RegionServiceImpl implements RegionService {
   }
 
   @Override
-  public Page<Region> findAllWithPage(int page,int size) {
-    Pageable pageable = new PageRequest(page,size);
-    return regionRepository.findAll(pageable);
-  }
-  @Override
   public Region create(Region region) {
     Assert.notNull(region, "region must not be null");
+    if(region.getParentNode().getId() ==null)
+      region.setParentNode(null);
     return regionRepository.save(region);
   }
 
@@ -48,6 +45,8 @@ public class RegionServiceImpl implements RegionService {
   @Override
   public Region update(Region region) {
     Assert.notNull(region, "region must not be null");
+    if(region.getParentNode().getId() ==null)
+      region.setParentNode(null);
     return regionRepository.save(region);
   }
 

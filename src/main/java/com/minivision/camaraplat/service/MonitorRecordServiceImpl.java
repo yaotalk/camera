@@ -8,17 +8,16 @@ import com.minivision.camaraplat.repository.SnapshotRecordRepository;
 import com.minivision.camaraplat.rest.param.alarm.AlarmParam;
 import com.minivision.camaraplat.rest.result.alarm.AlarmResult;
 import com.minivision.camaraplat.rest.result.alarm.AlarmResult.FacePostion;
+import com.minivision.camaraplat.util.ChunkRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service @Transactional public class MonitorRecordServiceImpl implements MonitorRecordService {
 
@@ -28,9 +27,11 @@ import java.util.stream.Collectors;
 
     @Override public List<AlarmResult> findMonitorRecords(AlarmParam param) {
         List<AlarmResult> alarmResults = new ArrayList<>();
+        Pageable  pageable = new ChunkRequest(param.getOffset(),param.getLimit(),new Sort(
+            Sort.Direction.DESC,"snapshot.timestamp","id"));
         if ("0".equals(param.getLogType())) {
-            List<MonitorRecord> records =
-                monitorRecordRepository.findAll((root, criteriaQuery, cb) -> {
+            Page<MonitorRecord> recordPage = monitorRecordRepository.findAll(
+                (root, criteriaQuery, cb) -> {
                     List<Predicate> list = new ArrayList<>();
                     if (param.getSex() != null) {
                         Path<Face> facePath = root.get("face");
@@ -47,15 +48,8 @@ import java.util.stream.Collectors;
 
                     Predicate[] p = new Predicate[list.size()];
                     return cb.and(list.toArray(p));
-                });
-            Collections.sort(records, (o1, o2) -> {
-                if(o1.getSnapshot().getTimestamp() < o2.getSnapshot().getTimestamp())
-                    return 1;
-                else if(o1.getSnapshot().getTimestamp() > o2.getSnapshot().getTimestamp())
-                    return -1;
-                else return 0;
-            });
-            for (MonitorRecord record : records) {
+                },pageable);
+            for (MonitorRecord record : recordPage.getContent()) {
                 AlarmResult alarmResult = new AlarmResult();
                 if(record.getFace() != null){
                     alarmResult.setUsername(record.getFace().getName());
@@ -77,30 +71,33 @@ import java.util.stream.Collectors;
                     alarmResult.setFacePosition(facePostion);
                     alarmResult.setPanoramicUrl(snappath);
                 }
-                alarmResults.add(alarmResult);
                 alarmResult.setLogType("0");
+                alarmResult.setCount(recordPage.getTotalElements());
+                alarmResults.add(alarmResult);
             }
             return alarmResults;
         } else if ("1".equals(param.getLogType())) {
+                pageable = new ChunkRequest(param.getOffset(),param.getLimit(),new Sort(
+                Sort.Direction.DESC,"timestamp","id"));
             Page<SnapshotRecord> snapshotRecordPage = snapshotRecordRepository
                 .findByCameraIdAndTimestampBetween(param.getCameraId(), param.getStartTime(),
-                    param.getEndTime(), null);
+                    param.getEndTime(), pageable);
             List<SnapshotRecord> records = snapshotRecordPage.getContent();
-            records = records.stream().sorted(
-                Comparator.comparingLong(SnapshotRecord::getTimestamp).reversed()).collect(
-                Collectors.toList());
             for (SnapshotRecord snapshotRecord : records) {
                 String imgpath = snapshotRecord.getPhotoFileName();
                 SnapshotRecord.FacePos facePos = snapshotRecord.getFacePosition();
                 AlarmResult alarmResult = new AlarmResult();
                 FacePostion facePostion =  new AlarmResult.FacePostion(facePos.getTop(),facePos.getLeft(),facePos.getWidth(),facePos.getHeight());
+                alarmResult.setId(snapshotRecord.getId());
+                alarmResult.setCameraId(snapshotRecord.getCameraId());
                 alarmResult.setEmergengyTime(snapshotRecord.getTimestamp());
                 alarmResult.setSex("0");
                 alarmResult.setPanoramicUrl(imgpath);
                 alarmResult.setConfidence(snapshotRecord.getConfidence());
                 alarmResult.setFacePosition(facePostion);
-                alarmResults.add(alarmResult);
                 alarmResult.setLogType("1");
+                alarmResult.setCount(snapshotRecordPage.getTotalElements());
+                alarmResults.add(alarmResult);
             }
         }
         return alarmResults;

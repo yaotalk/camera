@@ -2,7 +2,6 @@ package com.minivision.camaraplat.rest.param.alarm;
 
 import com.minivision.camaraplat.rest.param.RestParam;
 import io.swagger.annotations.ApiModelProperty;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Max;
 

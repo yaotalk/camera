@@ -1,7 +1,7 @@
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}" >
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/layout" >
 <div layout:fragment="sidebar" th:replace="layout/sidebar">
 </div>
-<div layout:fragment="content">
+<div layout:fragment="content" th:fragment="content">
 
 	<style type="text/css">
 	@media screen and (min-width: 1367px) {
@@ -80,7 +80,10 @@
 											<div class="form-group">
 												<label for="recipient-name" class="col-sm-2 control-label">人脸库:</label>
 												<div class="col-sm-9">
-													  <select class="chosen-select form-control" name="facesetToken"></select>
+													<select class="chosen-select form-control" th:remove="none" name="facesetToken">
+														<option th:each="faceSet:${faceSets}"
+																th:value="${faceSet.token}" th:text="${faceSet.name}">/option>
+													</select>
 												</div>
 											</div>
 											<div class="form-group" style="float: right;padding-right: 12%;">
@@ -97,15 +100,8 @@
 
 		</div>
 		<script type="text/javascript">
-			$(function(){
-					$.ajaxSetup({ cache: false });
-					$.getJSON('getFaceset',function(json){
-						$(json.facesets).each(function(index,data){
-								var optionvalue = "<option value="+data.token+">"+data.name+"</option>";
-								 $(optionvalue).appendTo($('#addform select[name="facesetToken"]'));
-
-						})
-					})
+		 $(function(){
+		    $.ajaxSetup({ cache: false });
 			function reset(){
 			       var validator = {
                         message: '值有错误',
@@ -164,7 +160,7 @@
                        {
 			     	         $("#addform").ajaxSubmit({
 										type: 'post',
-										url: 'addFace',
+										url: '/face',
 										data: data,
 										dataType:"text",
 										success: function(data) {

@@ -96,27 +96,21 @@ public class CameraImageHandler {
     //黑名单命中
     if(strategy.isBlackList()){
       int intervals = strategy.getIntervals();
-      saveMonitorImage(image);
-      snapshotRespository.save(snapshotRecord);
+      saveSnapShot(image, snapshotRecord);
       Long lastSave = lastSaveTime.get(faceToken);
       if(lastSave == null){
         lastSave = 0l;
       }
       if(System.currentTimeMillis() - lastSave > intervals * 1000){
-        MonitorRecord record = new MonitorRecord(snapshotRecord);
         Face face = faceService.find(faceToken);
-        record.setFace(face);
-        monitorRepository.save(record);
-        lastSaveTime.put(faceToken, System.currentTimeMillis());
-        template.convertAndSend("/c/alarm", record);
+        saveAlarm(snapshotRecord, face);
         logger.info("get a record, face:{}", face);
       }else{
         Face face = faceService.find(faceToken);
         logger.info("discard a record, face:{}, lastSaveTime:{}",  face, new Date(lastSave));
       }
     }else if(strategy.isSnapshot()){
-      saveMonitorImage(image);
-      snapshotRespository.save(snapshotRecord);
+      saveSnapShot(image, snapshotRecord);
     }
     
   }
@@ -125,15 +119,27 @@ public class CameraImageHandler {
     logger.info("detected a stranger, confidence:{}", snapshotRecord.getConfidence());
     //白名单未命中底库
     if(!strategy.isBlackList()){
-      saveMonitorImage(image);
-      snapshotRespository.save(snapshotRecord);
-      MonitorRecord record = new MonitorRecord(snapshotRecord);
-      monitorRepository.save(record);
-      template.convertAndSend("/c/alarm", record);
+      saveSnapShot(image, snapshotRecord);
+      saveAlarm(snapshotRecord, null);
     }else if(strategy.isSnapshot()){
-      saveMonitorImage(image);
-      snapshotRespository.save(snapshotRecord);
+      saveSnapShot(image, snapshotRecord);
     }
+  }
+  
+  private void saveSnapShot(MonitorImage image, SnapshotRecord snapshotRecord){
+    saveMonitorImage(image);
+    snapshotRecord.setPhotoFileName(image.getFileName());
+    snapshotRespository.save(snapshotRecord);
+    template.convertAndSend("/c/snapshot", snapshotRecord);
+  }
+  
+  private void saveAlarm(SnapshotRecord snapshotRecord, Face face){
+    MonitorRecord record = new MonitorRecord(snapshotRecord);
+    if(face!=null){
+      record.setFace(face);
+    }
+    monitorRepository.save(record);
+    template.convertAndSend("/c/alarm", record);
   }
   
   public void onRecComplete(int cameraId, int trackId){
@@ -231,7 +237,6 @@ public class CameraImageHandler {
       result.setExpireTime(System.currentTimeMillis() + strategy.getSnapInterval() * 3);
       result.setStrategy(strategy);
     }
-    
   }
   
   @Scheduled(fixedRate = 3000)

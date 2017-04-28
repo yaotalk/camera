@@ -1,5 +1,7 @@
 package com.minivision.camaraplat.faceplat.ex;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class FacePlatException extends RuntimeException {
 
 	private static final long serialVersionUID = 230466881538432171L;
@@ -42,7 +44,8 @@ public class FacePlatException extends RuntimeException {
 
 	@Override
 	public String getMessage() {
-		return String.format("[%s:%s], %s", errCode, ErrorType.getDesc(errCode), message);
+	  String msg = StringUtils.isNotEmpty(message)?message: ErrorType.getDesc(errCode);
+	  return String.format("[%s], %s", errCode, msg);
 	}
 
 }

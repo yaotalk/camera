@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 
 public interface AnalyserRepository extends PagingAndSortingRepository<Analyser,Long>{
   String findPasswordByUsername(String username);

@@ -1,7 +1,7 @@
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}" >
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/layout" >
 <div layout:fragment="sidebar" th:replace="layout/sidebar">
 </div>
-<div layout:fragment="content">
+<div layout:fragment="content" th:fragment="content">
 		<!-- #section:elements.form -->
 	<div class="row">
 		<div class="col-sm-8" style="margin-left:50px">

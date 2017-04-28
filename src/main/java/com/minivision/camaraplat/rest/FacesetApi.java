@@ -45,8 +45,7 @@ public class FacesetApi {
   @ApiOperation(value = "人脸库人脸查询", notes = "人脸库人脸查询")
   public RestResult<List<Face>> getFacesets(@ModelAttribute FacesetParam facesetParam) {
 
-    Page<Face> faces = faceService.findByFacesetId(facesetParam.getFacesetToken(),
-        facesetParam.getOffset(), facesetParam.getLimit());
+    Page<Face> faces = faceService.findByFacesetId(facesetParam);
     return new RestResult<>(faces.getContent());
   }
 

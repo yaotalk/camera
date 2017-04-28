@@ -1,34 +1,64 @@
 package com.minivision.camaraplat.mqtt.task;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.minivision.camaraplat.domain.FaceSet;
+import com.minivision.camaraplat.service.FaceService;
+
+//只允许单任务
 @Component
 public class BatchTaskContext {
   
-  private Map<String, BatchTask> taskMap = new HashMap<>();
+  //private Map<String, BatchTask> taskMap = new HashMap<>();
   
-  public void doTask(BatchTask task){
-    if(taskMap.get(task.getTaskId()) != null){
-      throw new IllegalArgumentException("task conflict!");
+  private BatchTask currentTask;
+  
+  @Autowired
+  private FaceService faceService;
+  
+  @Autowired
+  private SimpMessagingTemplate messageTemplate;
+  
+  @Async
+  public void submitTask(BatchTask task){
+    synchronized(this){
+      if(currentTask!=null && currentTask.getStatus() != BatchTask.DONE){
+        throw new IllegalArgumentException("task conflict!");
+      }
+      currentTask = task;
     }
-    taskMap.put(task.getTaskId(), task);
     task.run();
-    //taskMap.remove(task.getTaskId());
   }
   
-  public int getCurrentTaskCount(){
-    return taskMap.size();
+  public BatchTask getCurrentTask(){
+    return currentTask;
   }
   
-  public BatchTask getTask(String taskId){
-    return taskMap.get(taskId);
+  
+  public BatchRegistTask createBatchRegistTask(FaceSet faceSet, String username, File path){
+    BatchRegistTask task = new BatchRegistTask(faceSet.getToken(), username ,path, faceSet, this);
+    return task;
+  }
+
+  public FaceService getFaceService() {
+    return faceService;
+  }
+
+  public void setFaceService(FaceService faceService) {
+    this.faceService = faceService;
   }
   
-  public BatchTask removeTask(String taskId){
-    return taskMap.remove(taskId);
+  public void sendLog(String taskId, String log){
+    messageTemplate.convertAndSend("/w/tasklog/"+taskId, log);
+  }
+  
+  public void sendStatus(String taskId, BatchTask task){
+    messageTemplate.convertAndSend("/w/task/"+taskId, task);
   }
   
 }

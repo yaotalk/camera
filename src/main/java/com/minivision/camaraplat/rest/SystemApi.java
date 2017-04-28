@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.ManyToOne;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,7 +31,7 @@ public class SystemApi {
 
   @Autowired
   private UserService userService;
-
+  
   private static final Logger LOGGER = LoggerFactory.getLogger(SystemApi.class);
 
   @RequestMapping(value = "regions")
@@ -63,5 +61,26 @@ public class SystemApi {
     LOGGER.trace("userlogin  at api");
     return new RestResult<>(userResult);
   }
+
+  @RequestMapping(value = "resetpwd")
+  @ApiOperation(value = "重置密码",notes = "重置密码")
+  public RestResult<UserResult> reset(@RequestParam("username") @ApiParam(required = true) String username,
+                                      @RequestParam("password") @ApiParam(required = true) String password,
+                                      @RequestParam("newpassword") @ApiParam(required = true) String newpassword){
+
+    LOGGER.trace("resetpwd  at api");
+    UserResult userResult = userService.validateUser(username,password);
+    if(userResult.getStatusCode() != 200){
+      return new RestResult<>(userResult);
+    }
+    else {
+      User user = userService.findByUsername(username);
+      user.setPassword(newpassword);
+      userService.update(user);
+    }
+    LOGGER.trace("resetpwd  at api");
+    return new RestResult<>(userResult);
+  }
+
 
 }
