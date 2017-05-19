@@ -1,7 +1,7 @@
 	<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{${param.pjax}?'layout/empty':'layout/layout'}" >
 		<div layout:fragment="sidebar" th:replace="layout/sidebar">
 		</div>
-		<div layout:fragment="content">
+		<div layout:fragment="content" th:fragment="content">
 			<!-- <div th:replace="fragments :: navbar"></div> -->
 			<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
 			<div class="page-header">
@@ -27,7 +27,7 @@
 						<li>
 							<i class="ace-icon fa fa-caret-right blue"></i>
 							授权人脸库最大容量：
-							<b class="red">10000</b>
+							<b class="red">100000</b>
 						</li>
 
 						<li>
@@ -35,9 +35,9 @@
 							授权布控摄像机数：
 							<b class="red">100</b>
 						</li>
-						<li>
-							<i class="ace-icon fa fa-caret-right blue"></i>客户端：</span></a>
-						</li>
+						<!--<li>-->
+							<!--<i class="ace-icon fa fa-caret-right blue"></i>客户端：</span></a>-->
+						<!--</li>-->
 					</ul>
 				</div>
 			</div>

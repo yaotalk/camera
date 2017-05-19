@@ -1,0 +1,268 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/layout" >
+<div layout:fragment="sidebar" th:replace="layout/sidebar">
+</div>
+<div layout:fragment="content" th:fragment="content">
+	<div class="page-header">
+		<h1>门禁设备</h1>
+	</div>
+	<div class="table-header">
+		门禁设备
+	</div>
+	<div id="toolbar">
+		<div class="dt-buttons btn-overlap btn-group">
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span><i class="fa fa-plus bigger-110 green"></i>
+						<span class="hidden">新增门禁</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span><i class="fa fa-edit bigger-110 green"></i>
+				<span class="hidden">编辑门禁</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span> <i class="fa fa-trash bigger-110 red"></i>
+				<span class="hidden">删除门禁</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span> <i class="fa fa-refresh bigger-110 blue"></i>
+				<span class="hidden">重新加载</span></span>
+			</a>
+		</div>
+	</div>
+	<div>
+		<table id="table"
+			   data-toolbar="#toolbar"
+			   data-maintain-selected="true"
+			   data-url="/entrance"
+			   data-pagination="true"
+			   data-search="true"
+			   data-click-to-select="true"
+			   data-show-columns="true"
+			   data-show-export="true">
+			<thead>
+			<tr>
+				<th data-checkbox="true"></th>
+				<th data-field="deviceType" data-formatter="devFormatter">设备类型</th>
+				<th data-field="gates">门数</th>
+				<th data-field="ip">IP</th>
+				<th data-field="devicePort">端口</th>
+				<th data-field="controlType" data-formatter="controlTypeFormatter">
+					控制器类型
+				</th>
+			</tr>
+			</thead>
+		</table>
+	</div>
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="editModalLabel">门禁操作</h4>
+				</div>
+				<div class="modal-body">
+					<form id="modal_form" class="form-horizontal">
+						<input type="hidden" name="id" id="editId">
+						<input type="hidden" name="_method" value="patch">
+						<div class="form-group" >
+							<label for="serialNumber" class="col-sm-2 control-label" >设备编号:</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" name="serialNumber" id="serialNumber" required="required">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="name" class="col-sm-2 control-label">设备类型:</label>
+							<div class="col-sm-9">
+								<select name="deviceType" class="chosen-select form-control" required="required">
+									<option value=0>中翔恒威</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="gates" class="col-sm-2 control-label">门个数:</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" name="gates" id="gates" required="required" pattern="^[1-4]$" placeholder="请输入1-4的数值">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="ip" class="col-sm-2 control-label">ip:</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" name="ip" id="ip" required="required"  pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" placeholder="请输入ip格式">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="devicePort" class="col-sm-2 control-label">设备端口:</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" name="devicePort" id="devicePort" required="required"  pattern="^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$" placeholder="请输入1-65535的数值">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="password" class="col-sm-2 control-label">控制器地址:</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" name="controlAddress" id="controlAddress" required="required" placeholder="请输入1-254数值" pattern="^([1-9])|(^[1-9][0-9]$)|(^[1-2][0-9][0-4]$)">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="password" class="col-sm-2 control-label">控制器类型:</label>
+							<div class="col-sm-9">
+								<select name="controlType" class="chosen-select form-control" required="required">
+									<option value=1>单门控制器</option>
+									<option value=2>双门控制器</option>
+									<option value=3>四门控制器</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="controlPassword" class="col-sm-2 control-label">控制器密码:</label>
+							<div class="col-sm-9">
+								<input type="password" class="form-control" name="controlPassword" id="controlPassword" required="required">
+							</div>
+						</div>
+						<div class="modal-footer" style="background-color:white">
+							<button type="submit" class="btn btn-primary" id="model_submit">提交</button>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+			$(function(){
+				   $('#table').bootstrapTable();
+				   $('#table').on('click-row.bs.table', function (e, row, $element) {
+						$('.success').removeClass('success');
+							$($element).addClass('success');
+   				   });
+					 $(".fa-plus").parents("a").on('click',function(){
+					     $('#modal :input').val('');
+						 $('#modal').modal('show');
+					 })
+					 $(".fa-edit").parents("a").on('click',function(){
+					    var ids = getIdSelections();
+    			 		if(ids.length ==0|| ids.length >1){
+							 $.alert({
+								title: '提示',
+								content: '请选择一行',
+							  });
+							 return;
+						}
+						var entrence =  $('#table').bootstrapTable('getSelections');
+						$('#modal :input[name="_method"]').val('patch');
+						$('#modal select[name="deviceType"]').children().each(function (index,data) {
+								if( $(data).val() == entrence[0].deviceType){
+									$('#modal select[name="analyser.id"]').val($(data).val());
+								}
+						 })
+						 $('#modal select[name="deviceType"]').children().each(function (index,data) {
+								if( $(data).val() == entrence[0].deviceType){
+									$('#modal select[name="deviceType"]').val($(data).val());
+								}
+						 })
+						  $('#modal select[name="controlType"]').children().each(function (index,data) {
+								if( $(data).val() == entrence[0].controlType){
+									$('#modal select[name="controlType"]').val($(data).val());
+								}
+						 })
+						$('#modal :input[name="id"]').val(entrence[0].id);
+						$('#modal :input[name="gates"]').val(entrence[0].gates);
+						$('#modal :input[name="serialNumber"]').val(entrence[0].serialNumber);
+						$('#modal :input[name="gates"]').val(entrence[0].gates);
+						$('#modal :input[name="ip"]').val(entrence[0].ip);
+						$('#modal :input[name="devicePort"]').val(entrence[0].devicePort);
+						$('#modal :input[name="controlAddress"]').val(entrence[0].controlAddress);
+						$('#modal :input[name="controlPassword"]').val(entrence[0].controlPassword);
+						$('#modal').modal('show');
+					 })
+
+ 					$(".fa-trash").parents("a").on('click',function(){
+    			 		var ids = getIdSelections();
+    			 		if(ids.length ==0 || ids.length>1){
+								 $.alert({
+									title: '提示',
+									content: '请选择一行',
+								  });
+						 	return;
+					 }
+				    $.ajax({
+							url: '/entrance',
+							type: 'post',
+							dataType:"text",
+							data:{
+								 id: ids[0],
+							     _method: 'DELETE'
+							},
+							success: function(result) {
+								$('#modal').modal('hide');
+								if(result == "success"){
+									$.alert({
+										title: '提示',
+										content: '删除成功',
+									});
+									 $('#table').bootstrapTable('refresh', {
+										url: '/entrance'
+									});
+								}
+								else $.alert(result);
+							}
+						});
+			      	 })
+			       $(".fa-refresh").parents("a").on('click',function(){
+							 $('#table').bootstrapTable('refresh');
+				    })
+			      $("#modal_form").on("submit", function(ev) {
+					   var data = $('#modal_form').serializeArray();
+					   var doors = $('#modal :input[name="gates"]').val();
+					   for(var i = 1; i <= doors; i++){
+						   data.push({name:"doors",value:i});
+					   }
+					   $.ajax({
+	               			url:'/entrance',
+	               			data: data,
+	               		    type: 'POST',
+	               		    dataType:"text",
+	               		    success: function(result) {
+	               		     $('#table').bootstrapTable('refresh');
+	               		    	if(result == "success"){
+	               		    		$('#modal').modal('hide');
+	               		    		$.alert({
+	            		    		    title: '提示',
+	            		    		    content: '操作成功',
+	            		    		});
+	               		    	}
+	               		    	else {
+	               		    		$.alert({
+	            		    		    title: '警告',
+	            		    		    content: result,
+	            		    		});
+	               		    	}
+	               		    }
+               		  	});
+				 	    ev.preventDefault();
+                  });
+
+				  function getIdSelections() {
+							return $.map($('#table').bootstrapTable('getSelections'), function (row) {
+								return row.id;
+							});
+				  }
+   				   })//  ready end
+				 function devFormatter(data){
+					if(data == 0){
+						return '中翔恒威'
+					}
+				 }
+				 function controlTypeFormatter(data){
+				 	 if(data == 1){
+						return '单门控制器'
+					}
+					 if(data == 2){
+						return '双门控制器'
+					}
+					if(data == 3){
+						return '四门控制器'
+					}
+				 }
+		</script>
+
+				</div>
+</html>

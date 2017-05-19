@@ -38,12 +38,13 @@
 		        <h4 class="modal-title" id="addModalLabel">人脸库操作</h4>
 		      </div>
 		      <div class="modal-body">
-		        <form id="form" class="form-horizontal">
+		        <form id="modal_form" class="form-horizontal">
 					<input type="hidden" class="form-control" name="token">
+					<input type="hidden" name="_method" value="patch">
 		          <div class="form-group">
 		            <label for="recipient-name" class="col-sm-2 control-label">名字:</label>
 		            <div class="col-sm-9">
-		            	<input type="text" class="form-control" name="name">
+		            	<input type="text" class="form-control" name="name" required="required">
 		            </div>
 		          </div>
 					<div class="form-group">
@@ -52,17 +53,16 @@
 							<input type="text" class="form-control" value=1000 name="capacity" required="required">
 						</div>
 					</div>
+					<div class="modal-footer" style="background-color:white">
+						<button type="submit" class="btn btn-primary" id="model_submit">提交</button>
+					</div>
 		        </form>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary" id="model_submit">提交</button>
 		      </div>
 		    </div>
 		  </div>
 		</div>
 			<div>
 				<table id="table"
-					   data-toggle="table"
 					   data-toolbar="#toolbar"
 					   data-maintain-selected="true"
 					   data-url="/faceset"
@@ -83,45 +83,32 @@
 				</table>
 			</div>
 		<script type="text/javascript">
-		jQuery.prototype.serializeObject=function(){
-				var a,o,h,i,e;
-				a=this.serializeArray();
-				o={};
-				h=o.hasOwnProperty;
-				for(i=0;i<a.length;i++){
-					e=a[i];
-					if(!h.call(o,e.name)){
-						o[e.name]=e.value;
-					}
-				}
-				return o;
-			};
-			$(function(){
-				   var model_type = 'add';
+		$(function(){
+				$('#table').bootstrapTable();
+			
 				   $('#table').on('click-row.bs.table', function (e, row, $element) {
 						$('.success').removeClass('success');
 							$($element).addClass('success');
    				   });
 					 $(".fa-plus").parents("a").on('click',function(){
-					     $('#modal :input[name="name"]').val('');
+					     $('#modal :input').val('');
 					     $('#modal :input[name="capacity"]').val(1000);
-					     model_type = 'add';
 						 $('#modal').modal('show');
 					 })
 					 $(".fa-edit").parents("a").on('click',function(){
-					    var ids = getIdSelections();
-    			 		if(ids.length ==0|| ids.length >1){
-							 $.alert({
-								title: '提示',
-								content: '请选择一行',
-							  });
-							 return;
-						}
+							var ids = getIdSelections();
+							if(ids.length ==0|| ids.length >1){
+								 $.alert({
+									title: '提示',
+									content: '请选择一行',
+								  });
+								 return;
+					 }
 						var faset =  $('#table').bootstrapTable('getSelections');
+						 $('#modal :input[name="_method"]').val('patch');
 						$('#modal :input[name="token"]').val(faset[0].token);
 					    $('#modal :input[name="name"]').val(faset[0].name);
 					    $('#modal :input[name="capacity"]').val(faset[0].capacity);
-						model_type = 'edit';
 						$('#modal').modal('show');
 					 })
 
@@ -134,50 +121,45 @@
 								  });
 						 	return;
 						 }
-				    $.ajax({
-							url: '/faceset',
-							type: 'post',
-							dataType:"text",
-							data:{
-								 token: ids[0],
-							     _method: 'DELETE'
-							},
-							success: function(result) {
-								$('#modal').modal('hide');
-								if(result == "success"){
-									$.alert({
-										title: '提示',
-										content: '删除成功',
-									});
-									 $('#table').bootstrapTable('refresh', {
+				    	$.ajax({
+								url: '/faceset',
+								type: 'post',
+								dataType:"text",
+								data:{
+									 token: ids[0],
+									 _method: 'DELETE'
+								},
+								success: function(result) {
+									$('#modal').modal('hide');
+									if(result == "success"){
+										$.alert({
+											title: '提示',
+											content: '删除成功',
+										});
+										$('#table').bootstrapTable('refresh', {
+											url: '/faceset'
+										});
+									}
+									else $.alert(result);
+								}
+							});
+			      	 })
+					 $(".fa-refresh").parents("a").on('click',function(){
+							 $('#table').bootstrapTable('refresh', {
 										url: '/faceset'
 									});
-								}
-								else $.alert(result);
-							}
-						});
-			      	 })
-			       $('#model_submit').click(function(e){
-			       	   var url,type = 'POST',_method;
-			       	   if(model_type =='add')
-			       	   {
-			       	   		_method = 'POST'
-			       	   }
-			       	   else{
-							_method = 'patch'
-			       	   }
-					   var data = JSON.stringify($('#form').serializeObject())
-					   <!--data.push({name:'_method',value:_method});-->
+					 })
+			    $("#modal_form").on("submit", function(ev) {
+					   var data = $('#modal_form').serializeArray();
 					   $.ajax({
 	               			url:'/faceset',
-	               			contentType:'application/json',
 	               			data: data,
-	               		    type: _method,
+	               		    type:'POST',
 	               		    dataType:"text",
 	               		    success: function(result) {
-	               		     $('#table').bootstrapTable('refresh', {
-										url: '/faceset'
-						     });
+								 $('#table').bootstrapTable('refresh', {
+											url: '/faceset'
+								 });
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
@@ -193,7 +175,8 @@
 	               		    	}
 	               		    }
                		  	});
-				 	  })
+               		  	 ev.preventDefault();
+			    })
 
 
 				  function getIdSelections() {

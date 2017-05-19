@@ -12,8 +12,9 @@
           href="/assets/comps/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/assets/comps/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="/assets/comps/bootstrap/css/bootstrap-timepicker.css"/>
+    <link rel="stylesheet" href="/assets/comps/bootstrap/css/bootstrap-timepicker.css"/>
     <link rel="stylesheet" href="/assets/comps/bootstrap/css/bootstrapValidator.css"/>
-    <link rel="stylesheet" href="/assets/comps/bootstrap/css/bootstrap-multiselect.css"/>
+    <link rel="stylesheet" href="/assets/comps/bootstrap/css/bootstrap-datetimepicker.min.css"/>
     <link rel="stylesheet" href="/assets/comps/bootstrap/css/ladda-themeless.min.css"/>
 
     <!-- ace styles -->
@@ -24,6 +25,7 @@
     <link rel="stylesheet" href="/assets/comps/jquery.confirm/jquery-confirm.min.css"/>
     <link rel="stylesheet" href="/assets/comps/bootstrap-table/bootstrap-table.min.css"/>
 
+	<link rel="stylesheet" href="/assets/css/browse.css"/>
     <!-- basic scripts -->
 
     <script src="/assets/comps/jquery/jquery.min.js"></script>
@@ -70,6 +72,8 @@
 <!--<script type="text/javascript" src="/assets/comps/datatables/buttons/buttons.html5.min.js"></script>-->
 <!--<script type="text/javascript" src="/assets/comps/datatables/buttons/buttons.flash.min.js"></script>-->
 <!--<script type="text/javascript" src="/assets/comps/datatables/select/dataTables.select.min.js"></script>-->
+<script src="/assets/comps/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script src="/assets/comps/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
 <script type="text/javascript" src="/assets/comps/jquery.confirm/jquery-confirm.min.js"></script>
 <script type="text/javascript" src="/assets/comps/fuelux/tree.min.js"></script>
 <script type="text/javascript" src="/assets/comps/bootstrap/js/bootstrap-timepicker.js"></script>
@@ -86,8 +90,8 @@
 <script type="text/javascript"
         src="/assets/comps/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
 <script type="text/javascript">
-			/* $.pjax({
-				selector: '#sidebar a.pjax',
+			$.pjax({
+				selector: 'a.pjax',
 				container: '#content',
 				show: 'fade',
 				cache: false,
@@ -95,8 +99,9 @@
 				titleSuffix: '',
 				filter: function(){},
 				callback: function(e){
+					console.log(e);
 				}
-			}) */
+			})
 
 </script>
 </body>

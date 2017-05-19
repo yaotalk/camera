@@ -5,5 +5,5 @@
   _|   /  ___7        \\/ | |  | | | | | | |\ V /| \__ \ | (_) | | | |  ) ) ) )
 >(')\ | ___7           '  |_|  |_|_|_| |_|_| \_/ |_|___/_|\___/|_| |_| / / / /
   \\/     \_______    ================================================/_/_/_/
-  '        _======>   camaraplat ${application.formatted-version}      
+  '        _======>   cameraplat ${application.formatted-version}      
   `'----\\`           ${AnsiColor.GREEN}Powered by minivision.com${AnsiColor.DEFAULT}                       

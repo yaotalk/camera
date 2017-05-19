@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.minivision.camaraplat.App;
-import com.minivision.camaraplat.mqtt.task.BatchRegistTask;
-import com.minivision.camaraplat.mqtt.task.BatchTaskContext;
-import com.minivision.camaraplat.service.FaceService;
+import com.minivision.cameraplat.App;
+import com.minivision.cameraplat.mqtt.task.BatchRegistTask;
+import com.minivision.cameraplat.mqtt.task.BatchTaskContext;
+import com.minivision.cameraplat.service.FaceService;
 
 @SpringBootTest(classes = App.class)
 @RunWith(SpringRunner.class)

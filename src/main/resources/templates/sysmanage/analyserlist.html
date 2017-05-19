@@ -30,7 +30,6 @@
 	</div>
 	<div>
 		<table id="table"
-			   data-toggle="table"
 			   data-toolbar="#toolbar"
 			   data-maintain-selected="true"
 			   data-url="/analyser"
@@ -68,53 +67,53 @@
 						<div class="form-group">
 							<label for="name" class="col-sm-2 control-label">名称:</label>
 							<div class="col-sm-9">
-								<input class="form-control" name="name" id = "name">
+								<input class="form-control" name="name" id = "name" required="required">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="ip" class="col-sm-2 control-label">ip:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="ip" id="ip">
+								<input type="text" class="form-control" name="ip" id="ip" required="required" placeholder="请输入ip格式" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="port" class="col-sm-2 control-label">端口:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="port" id="port">
+								<input type="text" class="form-control" name="port" id="port" required="required" pattern="^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$" placeholder="请输入端口">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="username" class="col-sm-2 control-label">用户名:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="username" id="username">
+								<input type="text" class="form-control" name="username" id="username" required="required">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="password" class="col-sm-2 control-label">密码:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="password" id="password">
+								<input type="text" class="form-control" name="password" id="password" required="required">
 							</div>
 						</div>
-
+						<div class="modal-footer" style="background-color:white">
+							<button type="submit" class="btn btn-primary" id="model_submit">提交</button>
+						</div>
 					</form>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" id="model_submit">提交</button>
-				</div>
+
 			</div>
 		</div>
 	</div>
 	<script type="text/javascript">
 			$(function(){
-				   var model_type = 'add';
+				$('#table').bootstrapTable();
+
 				   $('#table').on('click-row.bs.table', function (e, row, $element) {
 						$('.success').removeClass('success');
 							$($element).addClass('success');
    				   });
 					 $(".fa-plus").parents("a").on('click',function(){
-					      $('#modal :input').val('');
-					     $('#modal :input[name="capacity"]').val(1000);
-					     model_type = 'add';
+					     $('#modal :input').val('');
+					      $('#modal :input[name="_method"]').val('');
 						 $('#modal').modal('show');
 					 })
 					 $(".fa-edit").parents("a").on('click',function(){
@@ -127,6 +126,7 @@
 							 return;
 						}
 						var analyser =  $('#table').bootstrapTable('getSelections');
+						 $('#modal :input[name="_method"]').val('patch');
 						$('#modal :input[name="id"]').val(analyser[0].analyser.id);
 						$('#modal :input[name="name"]').val(analyser[0].analyser.name);
 						$('#modal :input[name="ip"]').val(analyser[0].analyser.ip);
@@ -144,7 +144,7 @@
 									content: '请选择一行',
 								  });
 						 	return;
-						 }
+					 }
 				    $.ajax({
 							url: '/analyser',
 							type: 'post',
@@ -160,16 +160,16 @@
 										title: '提示',
 										content: '删除成功',
 									});
-									 $('#table').bootstrapTable('refresh', {
-										url: '/analyser'
-									});
+									 $('#table').bootstrapTable('refresh');
 								}
 								else $.alert(result);
 							}
 						});
 			      	 })
-			       $('#model_submit').click(function(e){
-			       	   var url,_method;
+			       $(".fa-refresh").parents("a").on('click',function(){
+							 $('#table').bootstrapTable('refresh');
+				    })
+			      $("#modal_form").on("submit", function(ev) {
 					   var data = $('#modal_form').serializeArray();
 					   $.ajax({
 	               			url:'/analyser',
@@ -177,9 +177,7 @@
 	               		    type: 'POST',
 	               		    dataType:"text",
 	               		    success: function(result) {
-	               		     $('#table').bootstrapTable('refresh', {
-										url: '/analyser'
-						     });
+	               		     $('#table').bootstrapTable('refresh');
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
@@ -195,7 +193,8 @@
 	               		    	}
 	               		    }
                		  	});
-				 	  })
+				 	    ev.preventDefault();
+                  });
 
 
 				  function getIdSelections() {

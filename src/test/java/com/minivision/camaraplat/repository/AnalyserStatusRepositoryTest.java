@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.minivision.camaraplat.domain.Analyser;
-import com.minivision.camaraplat.domain.AnalyserStatus;
+import com.minivision.cameraplat.domain.Analyser;
+import com.minivision.cameraplat.domain.AnalyserStatus;
+import com.minivision.cameraplat.repository.AnalyserStatusRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

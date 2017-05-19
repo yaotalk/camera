@@ -43,27 +43,26 @@
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">区域名称:</label>
                             <div class="col-sm-9">
-                                <input class="form-control" name="name" id="name">
+                                <input class="form-control" name="name" id="name" required="required">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="ip" class="col-sm-2 control-label">父域名称:</label>
+                            <label for="parent" class="col-sm-2 control-label">父域名称:</label>
                             <div class="col-sm-9">
-                                <select name="parentNode.id"  class="chosen-select form-control">
+                                <select name="parentNode.id"  class="chosen-select form-control" id="parent">
                                 </select>
                             </div>
                         </div>
+                        <div class="modal-footer" style="background-color:white">
+                            <button type="submit" class="btn btn-primary" id="model_submit">提交</button>
+                        </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="model_submit">提交</button>
                 </div>
             </div>
         </div>
     </div>
     <div>
         <table id="table"
-               data-toggle="table"
                data-toolbar="#toolbar"
                data-maintain-selected="true"
                data-url="/region"
@@ -85,13 +84,15 @@
 
     <script type="text/javascript">
 			$(function(){
+				$('#table').bootstrapTable();
+
 				   $('#table').on('click-row.bs.table', function (e, row, $element) {
 						$('.success').removeClass('success');
 							$($element).addClass('success');
    				   });
 					 $(".fa-plus").parents("a").on('click',function(){
 					     $('#modal :input').val('');
-					     model_type = 'add';
+					      $('#modal :input[name="_method"]').val('');
 					      $('#modal select[name="parentNode.id"]').children().remove();
                            var last = "<option value=''>请选择</option>";
                            $(last).appendTo($('#modal select[name="parentNode.id"]'));
@@ -105,7 +106,6 @@
 						 $('#modal').modal('show');
 					 })
 					 $(".fa-edit").parents("a").on('click',function(){
-					    model_type ='edit';
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
 							 $.alert({
@@ -115,11 +115,12 @@
 							 return;
 						}
                         var region =  $('#table').bootstrapTable('getSelections');
+                        $('#modal :input[name="_method"]').val('patch');
                         $('#modal :input[name="id"]').val(region[0].id);
                         $('#modal :input[name="name"]').val(region[0].name);
                         $('#modal select[name="parentNode.id"]').children().remove();
-                         var last = "<option value=''>请选择</option>";
-                         $(last).appendTo($('#modal select[name="parentNode.id"]'));
+                        var last = "<option value=''>请选择</option>";
+                        $(last).appendTo($('#modal select[name="parentNode.id"]'));
                         $.getJSON("/region?regionid="+region[0].id,function(data,status){
                            for(var index in  data){
                                 var optionvalue = data[index].id;
@@ -154,42 +155,41 @@
 										title: '提示',
 										content: '删除成功',
 									});
-									 $('#table').bootstrapTable('refresh', {
-										url: '/region'
-									});
+									 $('#table').bootstrapTable('refresh');
 								}
 								else $.alert(result);
 							}
 						});
 			      	 })
-			       $('#model_submit').click(function(e){
-			       	   var url,type = 'POST',_method,data,contentType
-                       data =  $('#modal_form').serializeArray();
-					   $.ajax({
-	               			url:'/region',
-	               			data: data,
-	               		    type: 'POST',
-	               		    dataType:"text",
-	               		    success: function(result) {
-	               		     $('#table').bootstrapTable('refresh', {
-										url: '/region'
-						     });
-	               		    	if(result == "success"){
-	               		    		$('#modal').modal('hide');
-	               		    		$.alert({
-	            		    		    title: '提示',
-	            		    		    content: '操作成功',
-	            		    		});
-	               		    	}
-	               		    	else if(result =="failed"){
-	               		    		$.alert({
-	            		    		    title: '提示',
-	            		    		    content: '操作失败',
-	            		    		});
-	               		    	}
-	               		    }
-               		  	});
-				 	  })
+			        $(".fa-refresh").parents("a").on('click',function(){
+							 $('#table').bootstrapTable('refresh');
+				    })
+			     $("#modal_form").on("submit", function(ev) {
+                         var data =  $('#modal_form').serializeArray();
+                           $.ajax({
+                                url:'/region',
+                                data: data,
+                                type: 'POST',
+                                dataType:"text",
+                                success: function(result) {
+                                 $('#table').bootstrapTable('refresh');
+                                    if(result == "success"){
+                                        $('#modal').modal('hide');
+                                        $.alert({
+                                            title: '提示',
+                                            content: '操作成功',
+                                        });
+                                    }
+                                    else if(result =="failed"){
+                                        $.alert({
+                                            title: '提示',
+                                            content: '操作失败',
+                                        });
+                                    }
+                                }
+                            });
+                     ev.preventDefault();
+                  });
 
 
 				  function getIdSelections() {

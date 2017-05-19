@@ -54,7 +54,7 @@
 
             <ul class="submenu">
                 <li class="">
-                    <a href="/faceset/page" class="pjax">
+                    <a href="/faceset" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         人脸库注册
                     </a>
@@ -63,7 +63,7 @@
                 </li>
 
                 <li class="">
-                    <a href="/faceset/facepage" class="pjax">
+                    <a href="/faceset/face" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         人脸库查询
                     </a>
@@ -85,7 +85,7 @@
 
             <ul class="submenu">
                 <li class="">
-                    <a href="/face/page" class="pjax">
+                    <a href="/face" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         单人注册
                     </a>
@@ -117,7 +117,7 @@
 
             <ul class="submenu">
                 <li class="">
-                    <a href="/sysmanage/sysinfo" class="pjax">
+                    <a href="/sysinfo" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         系统信息
                     </a>
@@ -125,7 +125,7 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
-                    <a href="/region/page" class="pjax">
+                    <a href="/region" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         区域管理
                     </a>
@@ -134,7 +134,7 @@
                 </li>
 
                 <li class="">
-                    <a href="/analyser/page">
+                    <a href="/analyser" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         人脸分析仪管理
                     </a>
@@ -142,7 +142,15 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
-                    <a href="/camera/page" class="pjax">
+                    <a href="/entrance" class="pjax">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        门禁设备管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="/camera" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         摄像机管理
                     </a>
@@ -158,7 +166,15 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
-                    <a href="/sysmanage/user" class="pjax">
+                    <a href="/entrance/binddoors" class="pjax">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        门禁关联
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="/user" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         用户管理
                     </a>
@@ -166,7 +182,15 @@
                     <b class="arrow"></b>
                 </li>
                 <li class="">
-                    <a href="/sysmanage/syslog" class="pjax">
+                    <a href="/clientuser" class="pjax">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        客户端用户管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
+                    <a href="/syslog" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         操作日志
                     </a>
@@ -198,7 +222,7 @@
 
             <ul class="submenu">
                 <li class="">
-                    <a href="/strategy/page" class="pjax">
+                    <a href="/strategy" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         布控策略管理
                     </a>
@@ -207,7 +231,7 @@
                 </li>
 
                 <li class="">
-                    <a href="/scheme/page" class="pjax">
+                    <a href="/scheme" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
                         时间方案
                     </a>
@@ -224,47 +248,36 @@
            data-icon2="ace-icon fa fa-angle-double-right"></i>
     </div>
     <script>
-   $(function(){
-          $("ul.nav.nav-list").each(function(index,data){
-            $(data).css("display","none");
-            if($(data).attr("id") == $.cookie("selectedId")){
-                  $(data).css("display",'inline');
-            }
-         })
-         
-         
-         var url = window.location.pathname;
-          console.log(url);
-		  $("ul.nav.nav-list").find("a").each(function() {
-		    if (url.startWith($(this).attr('href'))) {
-		      $(this).parent('li').parents('ul.submenu').parent('li').addClass('open');
-		      $(this).parent('li').parent('ul.nav-hide').removeClass('nav-hide').addClass('nav-show').show();
-		      $(this).parent('li').addClass("active");
-		      return false;
-		    }
-		  });
-		
-		  $("ul.nav.nav-list li a:not([href^='#'])").click(function() {
-		    $('#main-nav li.active').removeClass('active');
-		    $(this).parent('li').addClass('active');
-		  });
-		  
-         /*
-       if($.cookie("selectedId") == "" || typeof($.cookie("selectedId")) == 'undefined'){
-	        $("ul.nav.nav-list").first().css("display",'inline');
+    
+    function refresh_nav(url){
+      var url = url || window.location.pathname;
+      $("#sidebar ul.nav").hide();
+	  $("#sidebar ul.nav.nav-list").find("a").each(function() {
+	    if (url.startWith($(this).attr('href'))) {
+	      $(this).parent('li').parents('ul.nav').show();
+	      
+	      $('#sidebar ul.submenu').parent('li').removeClass('open');
+	      $('#sidebar ul.nav-show').removeClass('nav-show').addClass('nav-hide').hide();
+	      
+	      $(this).parent('li').parents('ul.submenu').parent('li').addClass('open');
+	      $(this).parent('li').parent('ul.nav-hide').removeClass('nav-hide').addClass('nav-show').show();
+	      
+	      $('#sidebar ul.nav li.active').removeClass('active');
+	      
+	      $(this).parent('li').addClass("active");
+	      return false;
 	    }
-	    $(".submenu li").each(function(index,data){
-	        $(data).removeClass("active");
-	        if($(data).find("a").attr("href") ==  $.cookie("selectedurl") ){
-	            $(data).parents("li").find("a").trigger("click");
-	            $(data).addClass("active");
-	        }
-	    })
-
-	    $(".submenu li").on('click',function(){
-	        $.cookie("selectedurl",$(this).find("a").attr("href"));　
-	    }) */
-
+	  });
+	
+    }
+    
+   $(function(){
+	   refresh_nav();
+	   
+	  $("ul.nav.nav-list li a:not([href^='#'])").click(function() {
+	    $('ul.nav.nav-list li.active').removeClass('active');
+	    $(this).parent('li').addClass('active');
+	  });
    })
 
     </script>

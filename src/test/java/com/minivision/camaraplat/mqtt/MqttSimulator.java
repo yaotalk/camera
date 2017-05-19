@@ -17,13 +17,13 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.minivision.camaraplat.domain.Analyser;
-import com.minivision.camaraplat.domain.AnalyserStatus;
-import com.minivision.camaraplat.domain.AnalyserStatus.CameraStatus;
-import com.minivision.camaraplat.mqtt.message.Packet;
-import com.minivision.camaraplat.mqtt.message.Packet.Head;
-import com.minivision.camaraplat.mqtt.message.Packet.Head.Code;
-import com.minivision.camaraplat.mqtt.message.Packet.Head.Type;
+import com.minivision.cameraplat.domain.Analyser;
+import com.minivision.cameraplat.domain.AnalyserStatus;
+import com.minivision.cameraplat.domain.AnalyserStatus.CameraStatus;
+import com.minivision.cameraplat.mqtt.message.Packet;
+import com.minivision.cameraplat.mqtt.message.Packet.Head;
+import com.minivision.cameraplat.mqtt.message.Packet.Head.Code;
+import com.minivision.cameraplat.mqtt.message.Packet.Head.Type;
 
 public class MqttSimulator {
   public static final String HOST = "tcp://localhost:1883";
@@ -115,12 +115,12 @@ public class MqttSimulator {
     status.setMem(60f);
     status.setTimestamp(new Date());
     Analyser analyser = new Analyser();
-    analyser.setId(1L);
+    analyser.setId(8l);
     status.setAnalyser(analyser);
     
     List<CameraStatus> devStatus = new ArrayList<>();
     CameraStatus cStatus = new CameraStatus();
-    cStatus.setId(10);
+    cStatus.setId(2);
     cStatus.setStatus(1);
     devStatus.add(cStatus);
     status.setDevStatus(devStatus);

@@ -38,7 +38,7 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="editModalLabel">方案修改</h4>
+					<h4 class="modal-title" id="editModalLabel">方案操作</h4>
 				</div>
 				<div class="modal-body">
 					<form id="modal_form" class="form-horizontal">
@@ -47,14 +47,14 @@
 						<div class="form-group">
 							<label for="name" class="col-sm-2 control-label">方案名称:</label>
 							<div class="col-sm-9">
-								<input class="form-control" name="name" id="name">
+								<input class="form-control" name="name" id="name" required="required">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="recipient-name" class="col-sm-2 control-label">周期:</label>
 							<div class="col-sm-9">
 								<select class="multiselect chosen-select form-control"
-										multiple="multiple" name="multi">
+										multiple="multiple" name="multi" required="required">
 									<option value="1">周一</option>
 									<option value="2">周二</option>
 									<option value="3">周三</option>
@@ -70,7 +70,7 @@
 							<div class="col-sm-9">
 								<div class='input-group date'>
 									<input type='text' class="form-control" name="startTime"
-										   id="startTime"/>
+										   id="startTime" required="required"/>
 									<span class="input-group-addon">
 										<i class="fa fa-clock-o bigger-110"></i>
 								</span>
@@ -82,24 +82,23 @@
 							<div class="col-sm-9">
 								<div class='input-group date'>
 									<input type='text' class="form-control" name="endTime"
-										   id="endTime"/>
+										   id="endTime" required="required"/>
 									<span class="input-group-addon">
 										<i class="fa fa-clock-o bigger-110"></i>
 								</span>
 								</div>
 							</div>
 						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary" id="model_submit">提交</button>
+						</div>
 					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" id="model_submit">提交</button>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div>
 		<table id="table"
-			   data-toggle="table"
 			   data-toolbar="#toolbar"
 			   data-maintain-selected="true"
 			   data-url="/scheme"
@@ -124,45 +123,43 @@
 	</div>
 	<script type="text/javascript">
 			$(function(){
-
-
-             var model_type = 'add';
+				$('#table').bootstrapTable();
+             	var model_type = 'add';
 				   $('#table').on('click-row.bs.table', function (e, row, $element) {
 						$('.success').removeClass('success');
 							$($element).addClass('success');
    				   });
 					 $(".fa-plus").parents("a").on('click',function(){
-					     $('#modal :input').val('');
-					     model_type = 'add';
-					    $('.multiselect').multiselect('destroy');
- 						$('.multiselect').multiselect({
-                            nonSelectedText: '选择周期',
-                            includeSelectAllOption: true,
-                            selectAllText: '全选',
-                            allSelectedText: '周一到周日',
-                            selectAllValue:'0,1,2,3,4,5,6,7'
-             			 });
-						$("#add_modal button.multiselect").addClass("btn-primary")
+							 $('#modal :input').val('');
+							 model_type = 'add';
+							 $('.multiselect').multiselect('destroy');
+							 $('.multiselect').multiselect({
+								nonSelectedText: '选择周期',
+								includeSelectAllOption: true,
+								selectAllText: '全选',
+								allSelectedText: '周一到周日',
+								selectAllValue:'0,1,2,3,4,5,6,7'
+             		 		});
+					 $("#add_modal button.multiselect").addClass("btn-primary")
 
-                       $('#startTime').timepicker({
+                     $('#startTime').timepicker({
 							minuteStep: 1,
 							showSeconds: false,
 							showMeridian: false,
 							disableFocus: true,
 							}).next().on(ace.click_event, function(){
 							$(this).prev().focus();
-						});
-					  $('#endTime').timepicker({
+					 });
+					 $('#endTime').timepicker({
 							minuteStep: 1,
 							showSeconds: false,
 							showMeridian: false,
 							defaultTime : 'current'
 							}).next().on(ace.click_event, function(){
 								$(this).prev().focus();
-					});
+							 });
 						 $('#modal').modal('show');
 					 })
-
 					 $(".fa-edit").parents("a").on('click',function(){
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
@@ -172,41 +169,41 @@
 							  });
 							 return;
 						}
-						 $('.multiselect').multiselect('destroy');
-						 $('.multiselect').multiselect({
-                            nonSelectedText: '选择周期',
-                            includeSelectAllOption: true,
-                            selectAllText: '全选',
-                            allSelectedText: '周一到周日',
-                            selectAllValue:'0,1,2,3,4,5,6,7'
-             			 });
-             			   $('#startTime').timepicker({
+					 $('.multiselect').multiselect('destroy');
+					 $('.multiselect').multiselect({
+							nonSelectedText: '选择周期',
+							includeSelectAllOption: true,
+							selectAllText: '全选',
+							allSelectedText: '周一到周日',
+							selectAllValue:'0,1,2,3,4,5,6,7'
+					 });
+					   $('#startTime').timepicker({
 							minuteStep: 1,
 							showSeconds: false,
 							showMeridian: false,
 							disableFocus: true,
 							}).next().on(ace.click_event, function(){
 							$(this).prev().focus();
-						});
-					    $('#endTime').timepicker({
+					});
+					$('#endTime').timepicker({
 							minuteStep: 1,
 							showSeconds: false,
 							showMeridian: false,
 							defaultTime : 'current'
 							}).next().on(ace.click_event, function(){
 								$(this).prev().focus();
-						});
-						var scheme =  $('#table').bootstrapTable('getSelections');
-						$("#modal .dropdown-menu :input").each(function(index,data){
-							if($(data).prop("checked")){
-								 $(data).trigger("click");
-							}
-							$(scheme[0].period).each(function(index,perdata){
-									if(perdata.weekday == $(data).val()){
-										$(data).trigger("click")
-									}
-							})
-					    })
+					});
+					var scheme =  $('#table').bootstrapTable('getSelections');
+					$("#modal .dropdown-menu :input").each(function(index,data){
+						if($(data).prop("checked")){
+							 $(data).trigger("click");
+						}
+						$(scheme[0].period).each(function(index,perdata){
+								if(perdata.weekday == $(data).val()){
+									$(data).trigger("click")
+								}
+						})
+					})
 						 $('#modal :input[name="id"]').val(scheme[0].id);
 						 $('#modal :input[name="name"]').val(scheme[0].name);
 				         $('#modal :input[name="startTime"]').val(scheme[0].period[0].startTime);
@@ -238,16 +235,13 @@
 										title: '提示',
 										content: '删除成功',
 									});
-									 $('#table').bootstrapTable('refresh', {
-										url: '/scheme'
-									});
+									 $('#table').bootstrapTable('refresh');
 								}
 								else $.alert(result);
 							}
 						});
 			      	 })
-			       $('#model_submit').click(function(e){
-			       	   var url,type = 'POST',_method;
+			      $("#modal_form").on("submit", function(ev) {
 			       	   var svalue = $('#startTime').timepicker().val().substring(0, $('#startTime').timepicker().val().indexOf(":"));
 							var evalue = $('#endTime').timepicker().val().substring(0, $('#endTime').timepicker().val().indexOf(":"));
 
@@ -262,8 +256,8 @@
 							 svalue = svalue+$('#startTime').timepicker().val().substring($('#startTime').timepicker().val().indexOf(":"));
 							 evalue =  evalue+ $('#endTime').timepicker().val().substring($('#endTime').timepicker().val().indexOf(":"));
 							if(svalue >  evalue){
-								 e.preventDefault();
 								 $.alert("开始时间不能大于结束时间");
+								 ev.preventDefault();
 								 return;
 							 }
 							 $('#startTime').timepicker().val(svalue);
@@ -300,8 +294,11 @@
 	               		    	}
 	               		    }
                		  	});
-				 	  })
-
+               		  	 ev.preventDefault();
+				})
+				$(".fa-refresh").parents("a").on('click',function(){
+						 $('#table').bootstrapTable('refresh');
+				})
 				  function getIdSelections() {
 							return $.map($('#table').bootstrapTable('getSelections'), function (row) {
 								return row.id;

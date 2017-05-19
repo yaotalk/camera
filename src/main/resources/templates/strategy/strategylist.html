@@ -30,7 +30,6 @@
 	</div>
 	<div>
 		<table id="table"
-			   data-toggle="table"
 			   data-toolbar="#toolbar"
 			   data-maintain-selected="true"
 			   data-url="/strategy"
@@ -56,7 +55,7 @@
 	</div>
 	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
 		<div class="modal-dialog" role="document">
-			<div class="modal-content">
+			<div class="modal-content" style="width:140%;margin-left:-35%">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title" id="editModalLabel">布控策略操作</h4>
@@ -66,15 +65,13 @@
 						<input type="hidden" name="id" id="editId">
 						<input type="hidden" name="_method" value="patch">
 						<div class="form-group">
-							<label for="name" class="col-sm-2 control-label">策略名称:</label>
-							<div class="col-sm-9">
-								<input class="form-control" name="name" id = "name">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="ip" class="col-sm-2 control-label">布控类型:</label>
-							<div class="col-sm-9">
-								<select name="blackList" class="chosen-select form-control">
+								<label for="name" class="col-sm-2 control-label">策略名称:</label>
+								<div class="col-sm-4">
+									<input class="form-control" name="name" id = "name" required="required">
+								</div>
+							<label for="ip" class="col-sm-2 control-label" style="text-align:left;width:100px">布控类型:</label>
+							<div class="col-sm-4" style="padding-left:0px" >
+								<select name="blackList" class="chosen-select form-control" required="required">
 									<option value=true>黑名单</option>
 									<option value=false>白名单</option>
 								</select>
@@ -82,86 +79,74 @@
 						</div>
 						<div class="form-group">
 							<label for="ip" class="col-sm-2 control-label">是否抓拍:</label>
-							<div class="col-sm-9">
-								<select name="snapshot" class="chosen-select form-control">
+							<div class="col-sm-4">
+								<select name="snapshot" class="chosen-select form-control" required="required">
 									<option value=true>抓拍</option>
 									<option value=false>不抓拍</option>
 								</select>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="ip" class="col-sm-2 control-label">时间方案:</label>
-							<div class="col-sm-9">
-								<select name="scheme" th:remove="none" class="chosen-select form-control">
-										<option th:value=null th:text="请选择"></option>
-										<option th:each="scheme:${schemes}"
-												th:value="${scheme.id}" th:text="${scheme.name}">/option>
+							<label for="ip" class="col-sm-2 control-label" style="text-align:left;width:100px">时间方案:</label>
+							<div class="col-sm-4" style="padding-left:0px">
+								<select name="scheme" th:remove="none" class="chosen-select form-control" required="required">
+									<option th:value=null th:text="请选择"></option>
+									<option th:each="scheme:${schemes}"
+											th:value="${scheme.id}" th:text="${scheme.name}">/option>
 								</select>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="port" class="col-sm-2 control-label">每帧最多抓拍人脸数(1-10):</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" name="maxfaceNum" id="maxfaceNum">
+							<div class="col-sm-4">
+								<input type="text" class="form-control" name="maxfaceNum" id="maxfaceNum" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="username" class="col-sm-2 control-label">比对阀值:</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" name="compareThreshold" id="compareThreshold">
+							<label for="username" class="col-sm-2 control-label" style="text-align:left;width:100px">比对阀值:</label>
+							<div class="col-sm-4" style="padding-left:0px">
+								<input type="text" class="form-control" name="compareThreshold" id="compareThreshold" required="required" pattern="^\d+\.{0,1}\d*$" placeholder="请输入数字">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="password" class="col-sm-2 control-label">最小人脸像素:</label>
-							<div class="col-sm-9">
-								<select name="minFaceSize" class="chosen-select form-control">
-									<option value=64>64*64</option>
-									<option value=80>80*80</option>
-									<option value=128>128*128</option>
-								</select>
+							<div class="col-sm-4">
+								<input type="text" class="form-control" name="minFaceSize" id="minFaceSize"  required="required" pattern="^[0-9]*$" placeholder="请输入大于64的数字">
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="password" class="col-sm-2 control-label">人脸数据保存天数:</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" name="preserveDays" id="preserveDays">
+							<label for="password" class="col-sm-2 control-label" style="text-align:left;width:100px">人脸数据保存天数:</label>
+							<div class="col-sm-4" style="padding-left:0px">
+								<input type="text" class="form-control" name="preserveDays" id="preserveDays" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="recipient-name" class="col-sm-2 control-label">抓拍人脸质量阈值(0-100):</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" name="faceQualityThreshold">
+							<div class="col-sm-4">
+								<input type="text" class="form-control" name="faceQualityThreshold" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="recipient-name" class="col-sm-2 control-label">抓拍间隔(秒):</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" name="snapInterval">
+							<label for="recipient-name" class="col-sm-2 control-label"  style="text-align:left;width:100px">抓拍间隔(毫秒):</label>
+							<div class="col-sm-4" style="padding-left:0px">
+								<input type="text" class="form-control" name="snapInterval" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="recipient-name" class="col-sm-2 control-label">陌生人重试次数:</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" name="retryCounts">
+							<div class="col-sm-4">
+								<input type="text" class="form-control" name="retryCounts" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
+							</div>
+							<label for="recipient-name" class="col-sm-2 control-label"  style="text-align:left;width:100px">识别入库间隔:</label>
+							<div class="col-sm-4" style="padding-left:0px">
+								<input type="text" class="form-control" name="intervals" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="recipient-name" class="col-sm-2 control-label">识别入库间隔:</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" name="intervals">
-							</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary" id="modal_submit">提交</button>
 						</div>
-
 					</form>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" id="modal_submit">提交</button>
-				</div>
+
 			</div>
 		</div>
 	</div>
 	<script type="text/javascript">
 			$(function(){
+				$('#table').bootstrapTable();
+				
 				   var model_type = 'add';
 				   $('#table').on('click-row.bs.table', function (e, row, $element) {
 						$('.success').removeClass('success');
@@ -182,6 +167,7 @@
 							 return;
 						}
 						var strategy =  $('#table').bootstrapTable('getSelections');
+						 $('#modal :input[name="_method"]').val('patch');
 						$('#modal :input[name="id"]').val(strategy[0].id);
 						$('#modal :input[name="name"]').val(strategy[0].name);
 						$('#modal :input[name="maxfaceNum"]').val(strategy[0].maxfaceNum);
@@ -209,12 +195,6 @@
 									 $(data).prop("selected",true);
 								  }
 						})
-					   $("#modal select[name = 'minFaceSize']").children().each(function(index,data){
-								  if(strategy[0].minFaceSize == $(data).val()){
-									 $(data).attr("selected",true);
-								  }
-
-						})
 						var optionvalue = "<option value=''>请选择</option>";
 						$(optionvalue).appendTo($('#edit_modal select[name="scheme"]'));
 						 $.getJSON("/scheme",function (json) {
@@ -238,8 +218,8 @@
 									content: '请选择一行',
 								  });
 						 	return;
-						 }
-				       $.get('isused?id='+ids[0],function(data){
+					 }
+				       $.get('/strategy/isused?id='+ids[0],function(data){
 											if(data != 'success')
 										  {
 													 $.confirm({
@@ -250,8 +230,9 @@
 																		 $.ajax({
 																			url: '/strategy',
 																			type: 'post',
+																			dataType:'text',
 																			data:{
-																				 id: ids[0].id,
+																				 id: ids[0],
 																				_method: 'DELETE'
 																			},
 																			success: function(result) {
@@ -260,7 +241,7 @@
 																						title: '提示',
 																						content: '删除成功',
 																					});
-																					  $('#table').bootstrapTable('refresh', {url: '/strategy' });
+																					  $('#table').bootstrapTable('refresh');
 																				}
 																			}
 																		});
@@ -287,7 +268,7 @@
 																		title: '提示',
 																		content: '删除成功',
 																	});
-																  $('#table').bootstrapTable('refresh', {url: '/strategy' });
+																  $('#table').bootstrapTable('refresh');
 																}
 															}
 														});
@@ -295,8 +276,20 @@
 				                	},'text')
 
 			      	  })
-			       $('#modal_submit').click(function(e){
+			        $(".fa-refresh").parents("a").on('click',function(){
+							 $('#table').bootstrapTable('refresh');
+				    })
+			        $("#modal_form").on("submit", function(ev) {
 			       	   var url,type = 'POST',_method;
+			       	  if($('#modal :input[name="minFaceSize"]').val() < 64){
+			       	   $.alert({
+								title: '提示',
+								content: '最小人脸像素最小值为64，请重新输入',
+
+	            		 });
+	            		 ev.preventDefault();
+	            		 return;
+	            	  }
 					   var data = $('#modal_form').serializeArray();
 					   $.ajax({
 	               			url:'/strategy',
@@ -304,9 +297,7 @@
 	               		    type: 'POST',
 	               		    dataType:"text",
 	               		    success: function(result) {
-	               		     $('#table').bootstrapTable('refresh', {
-										url: '/strategy'
-						     });
+	               		     $('#table').bootstrapTable('refresh');
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
@@ -322,7 +313,8 @@
 	               		    	}
 	               		    }
                		  	});
-				 	  })
+               		  	 ev.preventDefault();
+				})
 
 
 				  function getIdSelections() {

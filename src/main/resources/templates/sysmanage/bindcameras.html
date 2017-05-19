@@ -93,8 +93,8 @@ jQuery(function($){
 					var data = {};
 					data.analyserid = analyserid;
 					data.items = items.join(",");
-					$.getJSON('updataAnaCamera',data,function(index){
-									if(index.msg == "ok"){
+					$.get('updataAnaCamera',data,function(result){
+									if(result == "success"){
 												$.alert("保存成功","提示");
 												$($("#tree1").tree("selectedItems")).each(function(index,data){
 														data.analyseid = analyserid;
@@ -104,7 +104,7 @@ jQuery(function($){
 												})
 
 									}
-							 })
+							 },'text')
 				 $(".btn.btn-primary").removeAttr("disabled");
 			})
 			$.getJSON('/analyser',function(data){

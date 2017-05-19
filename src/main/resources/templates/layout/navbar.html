@@ -1,7 +1,7 @@
 <!DOCTYPE div >
 <!-- <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"> -->
 
-<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" id="navbar" class="navbar navbar-default h-navbar ace-save-state" th:fragment="navbar">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" id="navbar" class="navbar navbar-default h-navbar ace-save-state" th:fragment="navbar">
 	<div class="navbar-container ace-save-state" id="navbar-container">
 		<div class="navbar-header pull-left">
 			<!-- #section:basics/navbar.layout.brand -->
@@ -31,9 +31,9 @@
 		      </ul>
 		    </li> -->
 		
-		    <li id="face"><a href="/faceset/page">人脸库管理</a></li>
-		    <li id="sys"><a href="/camera/page">系统管理</a></li>
-		    <li id="str"><a href="/strategy/strcontrol">布控管理</a></li>
+		    <li data-nav="face"><a href="/faceset" class="pjax">人脸库管理</a></li>
+		    <li data-nav="sys"><a href="/camera" class="pjax">系统管理</a></li>
+		    <li data-nav="str"><a href="/strategy" class="pjax">布控管理</a></li>
 		
 		  </ul>
 		
@@ -163,10 +163,10 @@
 				<!-- #section:basics/navbar.user_menu -->
 				<li class="light-blue dropdown-modal">
 					<a data-toggle="dropdown" href="#" class="dropdown-toggle">
-						<img class="nav-user-photo" src="/assets/avatars/ava.png" alt="Photo" />
+						<img class="nav-user-photo" src="/assets/avatars/ava.png" alt="photo" />
 						<span class="user-info">
 							<small>欢迎,</small>
-							<span>haha</span>
+							<span sec:authentication="principal.username">username</span>
 						</span>
 
 						<i class="ace-icon fa fa-caret-down"></i>
@@ -183,7 +183,7 @@
 						<li class="divider"></li>
 
 						<li>
-							<a href="javascript:void(0);">
+							<a href="/logout">
 								<i class="ace-icon fa fa-power-off"></i>
 								登出
 							</a>
@@ -196,24 +196,9 @@
 		</div>
 
 <script>
-
-     $("ul.nav.nav-list").each(function(index,data){
-            $(data).css("display","none");
-         })
-	$(".navbar-menu li").on('click',function(){
-		  $.cookie("selectedId",$(this).attr("id"),{ path: "/"});　
+	$('li[data-nav] a').click(function(){
+		refresh_nav($(this).attr('href'));
 	})
-
-	$(".fa-power-off").parent().click(function(){
-			$.get('/user/logout',function(data){
-			        if(data == 'success'){
-			        	$.cookie('username',null,{ path: '/' });
-			        	$.cookie('password',null,{ path: '/' });
-			        	location.href = '/user/login';
-			        }
-			},'text')
-	})
-
 
 </script>
 		<!-- /section:basics/navbar.dropdown -->
