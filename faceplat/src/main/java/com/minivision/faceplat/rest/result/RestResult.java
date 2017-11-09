@@ -2,6 +2,9 @@ package com.minivision.faceplat.rest.result;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -15,6 +18,7 @@ public class RestResult<T> {
 	private String requestId;
 	private int timeUsed;
 	private String errorMessage;
+	private int status;
 	@JsonUnwrapped
 	private T data;
 
@@ -31,6 +35,12 @@ public class RestResult<T> {
 		this.errorMessage = t.getMessage();
 		this.requestId = UUID.randomUUID().toString();
 	}
+	
+	public RestResult(ResultError error){
+	  this.status = error.getErrorCode();
+      this.errorMessage = error.getErrorMessage();
+      this.requestId = UUID.randomUUID().toString();
+    }
 
 	public String getRequestId() {
 		return requestId;
@@ -63,11 +73,19 @@ public class RestResult<T> {
 	public void setData(T data) {
 		this.data = data;
 	}
+	
+	public int getStatus() {
+      return status;
+    }
+  
+    public void setStatus(int status) {
+      this.status = status;
+    }
 
-	@Override
+  @Override
 	public String toString() {
 		return "RestResult [requestId=" + requestId + ", timeUsed=" + timeUsed + ", errorMessage=" + errorMessage
-				+ ", data=" + data + "]";
+				+ ", data=" + ToStringBuilder.reflectionToString(data, ToStringStyle.SHORT_PREFIX_STYLE) + "]";
 	}
 
 	@Override

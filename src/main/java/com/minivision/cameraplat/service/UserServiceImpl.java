@@ -2,7 +2,6 @@ package com.minivision.cameraplat.service;
 
 import com.minivision.cameraplat.domain.User;
 import com.minivision.cameraplat.repository.UserRepository;
-import com.minivision.cameraplat.rest.result.system.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-      user.setPassword(passwordEncoder.encode(user.getPassword()));
+      if(user.getPassword().equals("******")) {
+          User oldUser = userRepository.findOne(user.getId());
+          user.setPassword(oldUser.getPassword());
+      }
+      else   user.setPassword(passwordEncoder.encode(user.getPassword()));
       return userRepository.save(user);
     }
 
@@ -37,9 +40,18 @@ public class UserServiceImpl implements UserService {
       return userRepository.save(user);
     }
 
+    @Override public void disable(User user) {
+        user = userRepository.findOne(user.getId());
+        if(user.isEnabled()) {
+            user.setEnabled(false);
+        }
+        else user.setEnabled(true);
+        userRepository.save(user);
+    }
+
     @Override
     public void delete(User user) {
-        userRepository.delete(user);
+         userRepository.delete(user);
     }
 
     @Override public User findOne(long id) {

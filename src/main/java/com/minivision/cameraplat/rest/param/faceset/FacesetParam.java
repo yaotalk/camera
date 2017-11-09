@@ -8,9 +8,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.minivision.cameraplat.rest.param.RestParam;
 
-/**
- * Created by Administrator on 2017/3/28 0028.
- */
 public class FacesetParam extends RestParam {
 
     @ApiParam(required = true)
@@ -19,7 +16,7 @@ public class FacesetParam extends RestParam {
     
     private int offset = 0;
     
-    @Max(100)
+//    @Max(100)
     private int limit = 10;
 
     public String getFacesetToken() {
@@ -45,5 +42,9 @@ public class FacesetParam extends RestParam {
     public void setLimit(int limit) {
       this.limit = limit;
     }
-    
+
+    @Override public String toString() {
+        return "FacesetParam{" + "facesetToken='" + facesetToken + '\'' + ", offset=" + offset
+            + ", limit=" + limit + '}';
+    }
 }

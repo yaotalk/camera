@@ -2,9 +2,8 @@ package com.minivision.cameraplat.mqtt.task;
 
 import java.io.File;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -12,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.minivision.cameraplat.domain.Face;
 import com.minivision.cameraplat.domain.FaceSet;
 
@@ -27,7 +27,8 @@ public class BatchRegistTask extends BatchTask{
   private File filePath;
   private FaceSet faceSet;
   
-  private Queue<Record> errorRecords = new LinkedList<>();
+  @JsonIgnore
+  private List<Record> errorRecords = new CopyOnWriteArrayList<>();
   
   public BatchRegistTask(File dir, FaceSet faceSet, BatchTaskContext taskContext) {
     this(null, null, dir, faceSet, taskContext);
@@ -42,41 +43,26 @@ public class BatchRegistTask extends BatchTask{
   
   @Override
   protected void doTask() {
-    List<File> photos = (List<File>) FileUtils.listFiles(filePath, IMAGE_EXTENSION, false);
-    if(photos.size() ==0){
+    try {
+      List<File> photos = (List<File>) FileUtils.listFiles(filePath, IMAGE_EXTENSION, false);
+      if(photos.size() ==0){
       progress();
-      taskContext.sendLog(getTaskId(), "开始导入"+"...");
       return;
     }
     setTotal(photos.size());
     CountDownLatch latch = new CountDownLatch(photos.size());
-    for(File file : photos){
-      
-      this.taskContext.getWorker().submit(new ImportTask(file, latch));
-      /*taskContext.sendLog(getTaskId(), "开始导入"+file.getName()+"...");
-      String name = file.getName().split("\\.")[0];
-      Face face = new Face();
-      face.setName(name);
-      String fileType = file.getName().substring(file.getName().lastIndexOf("."));
-      try {
-        byte[] bs = FileUtils.readFileToByteArray(file);
-        taskContext.getFaceService().save(face, faceSet.getToken(), bs, fileType);
-        this.success.incrementAndGet();
-        taskContext.sendLog(getTaskId(), "导入"+name+"成功");
-      } catch (Exception e ) {
-        Record record = new Record(name, file.getPath(), false);
-        record.setContent(e.getMessage());
-        if(errorRecords.size() == 50){
-          errorRecords.poll();
-        }
-        errorRecords.offer(record);
-        this.error.incrementAndGet();
-        taskContext.sendLog(getTaskId(), "导入"+file.getName()+"失败。"+e.getMessage());
-        logger.warn("导入失败, task:{}, file:{}", getTaskId(), file.getName(), e);
+    for(File file : photos) {
+      if (!isContinued()) {
+        break;
       }
-      progress();*/
+      this.taskContext.getWorker().submit(new ImportTask(file, latch));
+     }
     }
-    
+   catch (RuntimeException e){
+     logger.error(e.getMessage());
+     progress();
+  }
+
   }
   
   
@@ -92,30 +78,30 @@ public class BatchRegistTask extends BatchTask{
 
     @Override
     public void run() {
-      taskContext.sendLog(getTaskId(), "开始导入"+file.getName()+"...");
+      taskContext.sendLog(getTaskId(), "start to import "+file.getName()+"...");
       String fileName = file.getName().split("\\.")[0];
       String[] infos = fileName.split("_");
       Face face = new Face();
-      face.setName(infos[0]);
+      face.setName(infos[0].trim());
       if(infos.length>1){
-        face.setEmployeeId(infos[1]);
+        face.setEmployeeId(infos[1].trim());
       }
       String fileType = file.getName().substring(file.getName().lastIndexOf("."));
       try {
         byte[] bs = FileUtils.readFileToByteArray(file);
         taskContext.getFaceService().save(face, faceSet.getToken(), bs, fileType);
         BatchRegistTask.this.success.incrementAndGet();
-        taskContext.sendLog(getTaskId(), "导入"+fileName+"成功");
+        taskContext.sendLog(getTaskId(), "import "+fileName+" success");
       } catch (Exception e ) {
         Record record = new Record(fileName, file.getPath(), false);
         record.setContent(e.getMessage());
-        if(errorRecords.size() == 50){
-          errorRecords.poll();
-        }
-        errorRecords.offer(record);
+        /*if(errorRecords.size() == 100){
+          errorRecords.remove(0);
+        }*/
+        errorRecords.add(record);
         BatchRegistTask.this.error.incrementAndGet();
-        taskContext.sendLog(getTaskId(), "导入"+file.getName()+"失败。"+e.getMessage());
-        logger.warn("导入失败, task:{}, file:{}", getTaskId(), file.getName(), e);
+        taskContext.sendLog(getTaskId(), "import "+file.getName()+"failed ."+e.getMessage());
+        logger.warn("import failed , task:{}, file:{}", getTaskId(), file.getName(), e);
       }finally{
         progress();
         latch.countDown();
@@ -150,11 +136,11 @@ public class BatchRegistTask extends BatchTask{
     this.faceSet = faceSet;
   }
   
-  public Queue<Record> getErrorRecords() {
+  public List<Record> getErrorRecords() {
     return errorRecords;
   }
 
-  public void setErrorRecords(Queue<Record> errorRecords) {
+  public void setErrorRecords(List<Record> errorRecords) {
     this.errorRecords = errorRecords;
   }
 

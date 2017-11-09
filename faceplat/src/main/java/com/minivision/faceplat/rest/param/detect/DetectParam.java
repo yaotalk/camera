@@ -14,6 +14,8 @@ public class DetectParam extends RestParam {
 	
 	@NotNull(message = "imageFile must not be empty")
 	private MultipartFile imageFile;
+	
+	private boolean faceAttributes;
 
 	public String getImageUrl() {
 		return imageUrl;
@@ -30,11 +32,19 @@ public class DetectParam extends RestParam {
 	public void setImageFile(MultipartFile imageFile) {
 		this.imageFile = imageFile;
 	}
+	
+	public boolean isFaceAttributes() {
+      return faceAttributes;
+    }
+  
+    public void setFaceAttributes(boolean faceAttributes) {
+      this.faceAttributes = faceAttributes;
+    }
 
-	@Override
-	public String toString() {
-		return "DetectParam [imageUrl=" + imageUrl + ", imageFile=" + imageFile + ", apiKey=" + apiKey + ", apiSecret="
-				+ apiSecret + "]";
-	}
+    @Override
+    public String toString() {
+      return "DetectParam [imageUrl=" + imageUrl + ", imageFile=" + imageFile + ", faceAttributes="
+          + faceAttributes + "]";
+    }
 
 }

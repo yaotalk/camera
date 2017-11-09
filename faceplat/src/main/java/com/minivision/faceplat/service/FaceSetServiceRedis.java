@@ -1,7 +1,5 @@
 package com.minivision.faceplat.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -11,13 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.minivision.faceplat.entity.Face;
 import com.minivision.faceplat.entity.FaceSet;
-import com.minivision.faceplat.repository.FaceRepository;
 import com.minivision.faceplat.repository.FaceSetRepository;
 import com.minivision.faceplat.rest.result.FailureDetail;
 import com.minivision.faceplat.rest.result.faceset.AddFaceResult;
@@ -25,10 +24,12 @@ import com.minivision.faceplat.rest.result.faceset.RemoveFaceResult;
 import com.minivision.faceplat.rest.result.faceset.SetCreateResult;
 import com.minivision.faceplat.rest.result.faceset.SetDeleteResult;
 import com.minivision.faceplat.rest.result.faceset.SetDetailResult;
+import com.minivision.faceplat.rest.result.faceset.SetListResult;
 import com.minivision.faceplat.rest.result.faceset.SetMergeResult;
 import com.minivision.faceplat.rest.result.faceset.SetModifyResult;
 import com.minivision.faceplat.service.ex.ErrorType;
 import com.minivision.faceplat.service.ex.FacePlatException;
+import com.minivision.faceplat.util.ChunkRequest;
 
 @Transactional
 @Service
@@ -39,8 +40,8 @@ public class FaceSetServiceRedis implements FaceSetService {
 	@Autowired
 	private FaceSetRepository setRepository;
 
-	@Autowired
-	private FaceRepository faceRepository;
+	//@Autowired
+	//private FaceRepository faceRepository;
 
 	@Autowired
 	private StringRedisTemplate stringRedisTemplate;
@@ -58,22 +59,28 @@ public class FaceSetServiceRedis implements FaceSetService {
 	 * 创建人脸库
 	 */
 	public SetCreateResult create(String owner, String outerId, String displayName) {
-		LOGGER.info("create faceset at service");
-		FaceSet set = new FaceSet();
-		set.setOwner(owner);
-		set.setOuterId(outerId);
-		set.setDisplayName(displayName);
-		setRepository.save(set);
+		return create(owner, outerId, displayName, 1000);
+	}
+	
+	public SetCreateResult create(String owner, String outerId, String displayName, int capacity){
+	  LOGGER.info("create faceset at service");
+      FaceSet set = new FaceSet();
+      set.setOwner(owner);
+      set.setOuterId(outerId);
+      set.setDisplayName(displayName);
+      set.setCapacity(capacity);
+      setRepository.save(set);
 
-		SetCreateResult result = new SetCreateResult();
-		result.setFacesetToken(set.getFacesetToken());
-		result.setOuterId(outerId);
-		return result;
+      SetCreateResult result = new SetCreateResult();
+      result.setFacesetToken(set.getFacesetToken());
+      result.setOuterId(outerId);
+      return result;
 	}
 
 	/**
 	 * 添加人脸
 	 */
+	@CacheEvict(cacheNames="features", key="#setToken")
 	public AddFaceResult addFace(String setToken, String... faceTokens) throws FacePlatException {
 		LOGGER.info("add faces at service");
 		FaceSet set = commonService.findOneFaceset(setToken);
@@ -118,19 +125,22 @@ public class FaceSetServiceRedis implements FaceSetService {
 	private void addFace(String setToken, String faceToken) throws FacePlatException {
 
 		Face one = commonService.findOneFaceFromRedis(faceToken);
-		if (saveImage && one == null) {
-
+		if (one == null) {
 			one = commonService.findOneFaceFromCache(faceToken);
-
-			File file = commonService.getFaceImg(faceToken);
-			try {
-				FileUtils.writeByteArrayToFile(file, one.getImg());
-			} catch (IOException e) {
-				throw new FacePlatException(ErrorType.SERVER_ERROR);
+			if(one == null){
+			  throw new FacePlatException(ErrorType.FACE_NOT_EXIST);
 			}
-
+			/*if(saveImage && one.getImg() != null){
+			    File file = commonService.getFaceImg(faceToken);
+	            try {
+	                FileUtils.writeByteArrayToFile(file, one.getImg());
+	            } catch (IOException e) {
+	                throw new FacePlatException(ErrorType.SERVER_ERROR);
+	            }
+			}*/
 			// save in redis when the face added to faceset
-			faceRepository.save(one);
+			//faceRepository.save(one);
+			commonService.save(one);
 		}
 
 		String key = commonService.getFaceSetKey(setToken);
@@ -138,13 +148,15 @@ public class FaceSetServiceRedis implements FaceSetService {
 			throw new FacePlatException(ErrorType.FACE_ADD_REPEATED);
 		}
 		stringRedisTemplate.opsForZSet().add(key, faceToken, 0);
-		stringRedisTemplate.opsForHash().increment("faces:" + one.getToken(), "referenceCnt", 1);
+		commonService.addReferenceCnt(one.getToken());
+		//stringRedisTemplate.opsForHash().increment("faces:" + one.getToken(), "referenceCnt", 1);
 	}
 
 	/**
 	 * 删除人脸库
 	 */
 	@Override
+	@CacheEvict(cacheNames="features", key="#setToken")
 	public SetDeleteResult delete(String setToken, boolean force) throws FacePlatException {
 		LOGGER.info("delete faceset service");
 		FaceSet faceset = commonService.findOneFaceset(setToken);
@@ -185,6 +197,7 @@ public class FaceSetServiceRedis implements FaceSetService {
 	 * 删除人脸
 	 */
 	@Override
+	@CacheEvict(cacheNames="features", key="#setToken")
 	public RemoveFaceResult removeFace(String setToken, String... faceTokens) throws FacePlatException {
 		LOGGER.info("remove face service");
 		FaceSet set = commonService.findOneFaceset(setToken);
@@ -217,19 +230,16 @@ public class FaceSetServiceRedis implements FaceSetService {
 
 		String key = commonService.getFaceSetKey(setToken);
 		Long removed = stringRedisTemplate.opsForZSet().remove(key, faceToken);
-		if (removed == null) {
+		if (removed == null || removed == 0) {
 			throw new FacePlatException(ErrorType.FACE_NOT_EXIST);
 		}
-
-		if (one != null) {
-			if (one.getReferenceCnt() > 1) {
-				stringRedisTemplate.opsForHash().increment("faces:" + one.getToken(), "referenceCnt", -1);
-			} else {
-				faceRepository.delete(one);
-				if (removeImage) {
-					FileUtils.deleteQuietly(commonService.getFaceImg(faceToken));
-				}
-			}
+		
+		int referenceCnt = commonService.decreaseReferenceCnt(faceToken);
+		if (referenceCnt <= 0 && one != null) {
+		  commonService.delete(one);
+          if (removeImage) {
+              FileUtils.deleteQuietly(commonService.getFaceImg(faceToken));
+          }
 		}
 	}
 
@@ -238,11 +248,14 @@ public class FaceSetServiceRedis implements FaceSetService {
 	 * 
 	 * @throws FacePlatException
 	 */
-	public SetModifyResult modify(String setToken, String displayName) throws FacePlatException {
+	public SetModifyResult modify(String setToken, String displayName, int capacity) throws FacePlatException {
 		LOGGER.info("mofidy faceset service");
 
 		FaceSet faceSet = commonService.findOneFaceset(setToken);
 		faceSet.setDisplayName(displayName);
+		if(capacity > 0){
+		  faceSet.setCapacity(capacity);
+		}
 		setRepository.save(faceSet);
 
 		SetModifyResult result = new SetModifyResult();
@@ -262,16 +275,20 @@ public class FaceSetServiceRedis implements FaceSetService {
 		if (faceset == null) {
 			throw new FacePlatException(ErrorType.FACESET_NOT_EXIST);
 		}
-		Set<String> faceTokens = stringRedisTemplate.opsForZSet().range(commonService.getFaceSetKey(setToken), offset,
-				offset + count - 1);
+		
 
 		SetDetailResult result = new SetDetailResult();
 		result.setFacesetToken(faceset.getFacesetToken());
 		result.setOuterId(faceset.getOuterId());
 		result.setDisplayName(faceset.getDisplayName());
 		result.setFaceCount(stringRedisTemplate.opsForZSet().size(commonService.getFaceSetKey(setToken)).intValue());
-		result.setFaceTokens(new ArrayList<String>(faceTokens));
 		result.setCapacity(faceset.getCapacity());
+		
+		if(count>0){
+          Set<String> faceTokens = stringRedisTemplate.opsForZSet().range(commonService.getFaceSetKey(setToken), offset,
+              offset + count - 1);
+          result.setFaceTokens(new ArrayList<String>(faceTokens));
+        }
 
 		return result;
 	}
@@ -280,6 +297,7 @@ public class FaceSetServiceRedis implements FaceSetService {
 	 * 合并人脸库
 	 */
 	@Override
+	@CacheEvict(cacheNames="features", key="#setToken1")
 	public SetMergeResult mergeFace(String setToken1, String setToken2) throws FacePlatException {
 		FaceSet faceset1 = commonService.findOneFaceset(setToken1);
 		if (faceset1 == null) {
@@ -324,5 +342,16 @@ public class FaceSetServiceRedis implements FaceSetService {
 
 		return result;
 	}
+
+  @Override
+  public SetListResult getFaceSetList(int offset, int count) throws FacePlatException {
+    ChunkRequest chunk = new ChunkRequest(offset, count);
+    Page<FaceSet> page = setRepository.findAll(chunk);
+    SetListResult result = new SetListResult();
+    result.setTotal(page.getTotalElements());
+    result.setFaceSets(page.getContent());
+    return result;
+  }
+
 
 }

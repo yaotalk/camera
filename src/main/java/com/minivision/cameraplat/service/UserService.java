@@ -1,7 +1,6 @@
 package com.minivision.cameraplat.service;
 
 import com.minivision.cameraplat.domain.User;
-import com.minivision.cameraplat.rest.result.system.UserResult;
 
 import java.util.List;
 
@@ -12,6 +11,8 @@ public interface UserService {
     User update(User user);
 
     User create(User user);
+
+    void disable(User user);
 
     void delete(User user);
 

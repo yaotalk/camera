@@ -77,4 +77,10 @@ public class CodeMsgHandler {
     imageHandler.onRecComplete(cameraId, trackId);
   }
   
+  @CodeHandler(code = Code.MULTI_FACE, type = Type.NOTIFY)
+  public void multiFace(@MqttMessageBody Map<String, Integer> map){
+    int cameraId = map.get("cameraId");
+    imageHandler.onMultiFace(cameraId);
+  }
+  
 }

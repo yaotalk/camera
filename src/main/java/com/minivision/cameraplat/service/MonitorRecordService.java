@@ -1,10 +1,11 @@
 package com.minivision.cameraplat.service;
 
-import java.util.List;
-
+import com.minivision.cameraplat.domain.record.MonitorRecord;
 import com.minivision.cameraplat.rest.param.alarm.AlarmParam;
-import com.minivision.cameraplat.rest.result.alarm.AlarmResult;
+import com.minivision.cameraplat.rest.result.PageResult;
 
 public interface MonitorRecordService {
-    List<AlarmResult> findMonitorRecords(AlarmParam param);
+  PageResult<MonitorRecord> findMonitorRecords(AlarmParam param);
+
+    int deleteBySnapshotCameraIdAndSnapshotTimestampLessThan(Long id, long time);
 }

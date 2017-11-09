@@ -40,8 +40,8 @@ public class FaceSetController {
   }
 
   @PostMapping
-  @OpAnnotation(modelName = "人脸库操作",opration = "新增人脸库")
-  public String create(FaceSet set) {
+  @OpAnnotation(modelName = "FaceDB",opration = "add Face DB")
+  public String create(FaceSet set) throws ServiceException {
     set.setCreateTime(new Date());
     set = this.faceSetService.create(set);
     if (set != null) {
@@ -51,7 +51,7 @@ public class FaceSetController {
   }
 
   @DeleteMapping
-  @OpAnnotation(modelName = "人脸库操作",opration = "删除人脸库")
+  @OpAnnotation(modelName = "FaceDB",opration = "delete Face DB")
   public String delete(String token) {
     try {
       this.faceSetService.delete(token);
@@ -62,7 +62,7 @@ public class FaceSetController {
   }
 
   @PatchMapping
-  @OpAnnotation(modelName = "人脸库操作",opration = "编辑人脸库")
+  @OpAnnotation(modelName = "FaceDB",opration = "edit Face DB")
   public String update(FaceSet set) {
     this.faceSetService.update(set);
     return "success";

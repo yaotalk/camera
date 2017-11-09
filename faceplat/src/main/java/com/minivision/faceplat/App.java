@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
 @EnableCaching
+//@EnableDiscoveryClient
 public class App {
 	public static void main(String[] args) throws IOException {
 		SpringApplication.run(App.class, args);

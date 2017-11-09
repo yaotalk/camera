@@ -30,7 +30,7 @@ public class EntranceController {
     }
 
     @PostMapping
-    @OpAnnotation(modelName = "门禁",opration = "新增门禁设备")
+    @OpAnnotation(modelName = "Access",opration = "add Access")
     public String addEntrance(EntranceGuard entranceGuard){
          if(entranceService.findBySerialNumber(entranceGuard.getSerialNumber()) !=null){
             return "failed,serialNumber cannot be duplicate";
@@ -40,7 +40,7 @@ public class EntranceController {
     }
 
     @PatchMapping
-    @OpAnnotation(modelName = "门禁",opration = "更新门禁设备")
+    @OpAnnotation(modelName = "Access",opration = "edit Access")
     public String updateEntrance(EntranceGuard entranceGuard,@RequestParam("gates") int gates){
         EntranceGuard  oldEntranceGuard = entranceService.findBySerialNumber(entranceGuard.getSerialNumber());
         if(oldEntranceGuard !=null && !oldEntranceGuard.getId().equals(entranceGuard.getId())){
@@ -53,7 +53,7 @@ public class EntranceController {
     }
 
     @DeleteMapping
-    @OpAnnotation(modelName = "门禁",opration = "删除门禁设备")
+    @OpAnnotation(modelName = "Access",opration = "delete Access")
     public String delete(EntranceGuard entranceGuard){
         entranceService.delete(entranceGuard);
         return "success";

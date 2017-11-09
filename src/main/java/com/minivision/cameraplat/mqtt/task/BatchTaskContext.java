@@ -37,7 +37,8 @@ public class BatchTaskContext {
   @PostConstruct
   private void init(){
     BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(20);
-    this.worker = new ThreadPoolExecutor(3, 3, 1, TimeUnit.MINUTES, workQueue, new ThreadPoolExecutor.CallerRunsPolicy());
+    int processors = Runtime.getRuntime().availableProcessors();
+    this.worker = new ThreadPoolExecutor(processors+1, processors * 2, 1, TimeUnit.MINUTES, workQueue, new ThreadPoolExecutor.CallerRunsPolicy());
   }
       
   @Async
@@ -76,6 +77,7 @@ public class BatchTaskContext {
   public void sendStatus(String taskId, BatchTask task){
     messageTemplate.convertAndSend("/w/task/"+taskId, task);
   }
+
 
   public ExecutorService getWorker() {
     return worker;

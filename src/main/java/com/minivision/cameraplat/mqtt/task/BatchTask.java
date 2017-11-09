@@ -11,7 +11,7 @@ public abstract class BatchTask {
   private int status;
   private String creator;
   protected BatchTaskContext taskContext;
-  
+  private volatile boolean continued = true;
   public static final int PREPARED = 0;
   public static final int RUNNING = 1;
   public static final int DONE = 2;
@@ -23,7 +23,15 @@ public abstract class BatchTask {
     this.creator = creator;
     this.taskContext = taskContext;
   }
-  
+
+  public boolean isContinued() {
+    return continued;
+  }
+
+  public void setContinued(boolean continued) {
+    this.continued = continued;
+  }
+
   public String getTaskId() {
     return taskId;
   }
@@ -61,7 +69,8 @@ public abstract class BatchTask {
   }
   
   public void progress(){
-    if(this.total ==0){
+
+    if(this.total ==0 || !this.isContinued()){
       this.status = DONE;
       taskContext.sendStatus(taskId, this);
       return;

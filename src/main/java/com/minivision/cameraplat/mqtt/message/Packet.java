@@ -129,6 +129,8 @@ public class Packet<T> {
       
       public static final int REC_INFO = 7;
       public static final int REC_COMPLETE = 8;
+      
+      public static final int MULTI_FACE = 9;
     }
     
     public static class Type{

@@ -1,14 +1,13 @@
 package com.minivision.cameraplat.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
 public class ClientUser extends IdEntity {
 
+    @Column(unique = true,nullable = false)
     private String username;
-    @JsonIgnore
     private String password;
 
     public String getUsername() {
@@ -25,5 +24,10 @@ public class ClientUser extends IdEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override public String toString() {
+        return "clientUser{" + "userId='" + id  + ", username='" + username + '\'' + ", password='" + password + '\''
+            + '}';
     }
 }

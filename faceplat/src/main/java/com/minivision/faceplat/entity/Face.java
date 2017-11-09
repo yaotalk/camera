@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
@@ -18,12 +17,12 @@ public class Face implements Serializable {
   @Indexed
   private String outerId;
 
-  private double[] future;
+  private float[] feature;
   private int referenceCnt;
   
   //do not save in redis?
-  @Transient
-  private byte[] img;
+  //@Transient
+  //private byte[] img;
 
   public String getToken() {
     return token;
@@ -41,20 +40,20 @@ public class Face implements Serializable {
     this.outerId = outerId;
   }
 
-  public byte[] getImg() {
+/*  public byte[] getImg() {
     return img;
   }
 
   public void setImg(byte[] img) {
     this.img = img;
+  }*/
+
+  public float[] getFeature() {
+    return feature;
   }
 
-  public double[] getFuture() {
-    return future;
-  }
-
-  public void setFuture(double[] future) {
-    this.future = future;
+  public void setFeature(float[] feature) {
+    this.feature = feature;
   }
 
   public int getReferenceCnt() {
@@ -67,7 +66,7 @@ public class Face implements Serializable {
 
   @Override
   public String toString() {
-    return "Face [token=" + token + ", outerId=" + outerId + ", future=" + Arrays.toString(future)
+    return "Face [token=" + token + ", outerId=" + outerId + ", future=" + Arrays.toString(feature)
         + ", referenceCnt=" + referenceCnt + "]";
   }
 

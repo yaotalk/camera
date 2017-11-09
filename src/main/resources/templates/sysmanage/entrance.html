@@ -3,28 +3,28 @@
 </div>
 <div layout:fragment="content" th:fragment="content">
 	<div class="page-header">
-		<h1>门禁设备</h1>
+		<h1>Access Control</h1>
 	</div>
 	<div class="table-header">
-		门禁设备
+		Access Control
 	</div>
 	<div id="toolbar">
 		<div class="dt-buttons btn-overlap btn-group">
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-plus bigger-110 green"></i>
-						<span class="hidden">新增门禁</span></span>
+						<span class="hidden">add</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-edit bigger-110 green"></i>
-				<span class="hidden">编辑门禁</span></span>
+				<span class="hidden">edit</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-trash bigger-110 red"></i>
-				<span class="hidden">删除门禁</span></span>
+				<span class="hidden">delete</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-refresh bigger-110 blue"></i>
-				<span class="hidden">重新加载</span></span>
+				<span class="hidden">refresh</span></span>
 			</a>
 		</div>
 	</div>
@@ -36,17 +36,16 @@
 			   data-pagination="true"
 			   data-search="true"
 			   data-click-to-select="true"
-			   data-show-columns="true"
-			   data-show-export="true">
+			   data-show-columns="true">
 			<thead>
 			<tr>
 				<th data-checkbox="true"></th>
-				<th data-field="deviceType" data-formatter="devFormatter">设备类型</th>
-				<th data-field="gates">门数</th>
+				<th data-field="deviceType" data-formatter="devFormatter">Equipment Type</th>
+				<th data-field="gates">Door Amount</th>
 				<th data-field="ip">IP</th>
-				<th data-field="devicePort">端口</th>
+				<th data-field="devicePort">Equipment Port</th>
 				<th data-field="controlType" data-formatter="controlTypeFormatter">
-					控制器类型
+					Controller Type
 				</th>
 			</tr>
 			</thead>
@@ -57,68 +56,69 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="editModalLabel">门禁操作</h4>
+					<h4 class="modal-title" id="editModalLabel">Access Control</h4>
 				</div>
 				<div class="modal-body">
 					<form id="modal_form" class="form-horizontal">
 						<input type="hidden" name="id" id="editId">
 						<input type="hidden" name="_method" value="patch">
 						<div class="form-group" >
-							<label for="serialNumber" class="col-sm-2 control-label" >设备编号:</label>
+							<label for="serialNumber" class="col-sm-2 control-label" >Equipment No:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="serialNumber" id="serialNumber" required="required">
+								<input type="text" class="form-control" name="serialNumber" id="serialNumber" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="name" class="col-sm-2 control-label">设备类型:</label>
+							<label for="name" class="col-sm-2 control-label">Equipment Type:</label>
 							<div class="col-sm-9">
-								<select name="deviceType" class="chosen-select form-control" required="required">
-									<option value=0>中翔恒威</option>
+								<select name="deviceType" class="chosen-select form-control" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+									<option value=0>zhongxianghengwei</option>
+									<option value=1>shengzhi</option>
 								</select>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="gates" class="col-sm-2 control-label">门个数:</label>
+							<label for="gates" class="col-sm-2 control-label">Door Amount:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="gates" id="gates" required="required" pattern="^[1-4]$" placeholder="请输入1-4的数值">
+								<input type="text" class="form-control" name="gates" id="gates" required="required" pattern="^[1-4]$" placeholder="1-4" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="ip" class="col-sm-2 control-label">ip:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="ip" id="ip" required="required"  pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" placeholder="请输入ip格式">
+								<input type="text" class="form-control" name="ip" id="ip" required="required"  pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" placeholder="ip" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="devicePort" class="col-sm-2 control-label">设备端口:</label>
+							<label for="devicePort" class="col-sm-2 control-label">Equipment Port:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="devicePort" id="devicePort" required="required"  pattern="^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$" placeholder="请输入1-65535的数值">
+								<input type="text" class="form-control" name="devicePort" id="devicePort" required="required"  pattern="^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$" placeholder="1-65535" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="password" class="col-sm-2 control-label">控制器地址:</label>
+							<label for="password" class="col-sm-2 control-label">Controller Address:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="controlAddress" id="controlAddress" required="required" placeholder="请输入1-254数值" pattern="^([1-9])|(^[1-9][0-9]$)|(^[1-2][0-9][0-4]$)">
+								<input type="text" class="form-control" name="controlAddress" id="controlAddress" required="required" placeholder="1-254" pattern="^([1-9])|(^[1-9][0-9]$)|(^[1-2][0-9][0-4]$)" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="password" class="col-sm-2 control-label">控制器类型:</label>
+							<label for="password" class="col-sm-2 control-label">Controller Type:</label>
 							<div class="col-sm-9">
-								<select name="controlType" class="chosen-select form-control" required="required">
-									<option value=1>单门控制器</option>
-									<option value=2>双门控制器</option>
-									<option value=3>四门控制器</option>
+								<select name="controlType" class="chosen-select form-control" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+									<option value=1>Single Door Controller</option>
+									<option value=2>Double Door Controller</option>
+									<option value=3>Quadruple Door Controller</option>
 								</select>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="controlPassword" class="col-sm-2 control-label">控制器密码:</label>
+							<label for="controlPassword" class="col-sm-2 control-label">Controller Password:</label>
 							<div class="col-sm-9">
-								<input type="password" class="form-control" name="controlPassword" id="controlPassword" required="required">
+								<input type="password" class="form-control" name="controlPassword" id="controlPassword" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
 							</div>
 						</div>
 						<div class="modal-footer" style="background-color:white">
-							<button type="submit" class="btn btn-primary" id="model_submit">提交</button>
+							<button type="submit" class="btn btn-primary" id="model_submit">submit</button>
 						</div>
 					</form>
 				</div>
@@ -128,7 +128,11 @@
 	</div>
 	<script type="text/javascript">
 			$(function(){
-				   $('#table').bootstrapTable();
+				   $('#table').bootstrapTable({
+				      onDblClickRow:function(row){
+					 	  modelShow("dbclick",row);
+				 	  }
+				   });
 				   $('#table').on('click-row.bs.table', function (e, row, $element) {
 						$('.success').removeClass('success');
 							$($element).addClass('success');
@@ -141,45 +145,53 @@
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
 							 $.alert({
-								title: '提示',
-								content: '请选择一行',
+								title: 'prompt',
+								content: 'choose one please'
 							  });
 							 return;
 						}
-						var entrence =  $('#table').bootstrapTable('getSelections');
-						$('#modal :input[name="_method"]').val('patch');
+						modelShow("button");
+					 })
+					  function modelShow(mode,row){
+						 if(mode == "button"){
+								var entrence =  $('#table').bootstrapTable('getSelections')[0];
+							}
+						 else if(mode == 'dbclick')
+						   {
+							   var entrence =  row;
+						   }
+						   $('#modal :input[name="_method"]').val('patch');
 						$('#modal select[name="deviceType"]').children().each(function (index,data) {
-								if( $(data).val() == entrence[0].deviceType){
+								if( $(data).val() == entrence.deviceType){
 									$('#modal select[name="analyser.id"]').val($(data).val());
 								}
 						 })
 						 $('#modal select[name="deviceType"]').children().each(function (index,data) {
-								if( $(data).val() == entrence[0].deviceType){
+								if( $(data).val() == entrence.deviceType){
 									$('#modal select[name="deviceType"]').val($(data).val());
 								}
 						 })
 						  $('#modal select[name="controlType"]').children().each(function (index,data) {
-								if( $(data).val() == entrence[0].controlType){
+								if( $(data).val() == entrence.controlType){
 									$('#modal select[name="controlType"]').val($(data).val());
 								}
 						 })
-						$('#modal :input[name="id"]').val(entrence[0].id);
-						$('#modal :input[name="gates"]').val(entrence[0].gates);
-						$('#modal :input[name="serialNumber"]').val(entrence[0].serialNumber);
-						$('#modal :input[name="gates"]').val(entrence[0].gates);
-						$('#modal :input[name="ip"]').val(entrence[0].ip);
-						$('#modal :input[name="devicePort"]').val(entrence[0].devicePort);
-						$('#modal :input[name="controlAddress"]').val(entrence[0].controlAddress);
-						$('#modal :input[name="controlPassword"]').val(entrence[0].controlPassword);
+						$('#modal :input[name="id"]').val(entrence.id);
+						$('#modal :input[name="gates"]').val(entrence.gates);
+						$('#modal :input[name="serialNumber"]').val(entrence.serialNumber);
+						$('#modal :input[name="gates"]').val(entrence.gates);
+						$('#modal :input[name="ip"]').val(entrence.ip);
+						$('#modal :input[name="devicePort"]').val(entrence.devicePort);
+						$('#modal :input[name="controlAddress"]').val(entrence.controlAddress);
+						$('#modal :input[name="controlPassword"]').val(entrence.controlPassword);
 						$('#modal').modal('show');
-					 })
-
+					  }
  					$(".fa-trash").parents("a").on('click',function(){
     			 		var ids = getIdSelections();
     			 		if(ids.length ==0 || ids.length>1){
 								 $.alert({
-									title: '提示',
-									content: '请选择一行',
+									title: 'prompt',
+									content: 'choose one please'
 								  });
 						 	return;
 					 }
@@ -195,8 +207,8 @@
 								$('#modal').modal('hide');
 								if(result == "success"){
 									$.alert({
-										title: '提示',
-										content: '删除成功',
+										title: 'prompt',
+										content: 'success'
 									});
 									 $('#table').bootstrapTable('refresh', {
 										url: '/entrance'
@@ -225,14 +237,14 @@
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
-	            		    		    title: '提示',
-	            		    		    content: '操作成功',
+	            		    		    title: 'prompt',
+	            		    		    content: 'success'
 	            		    		});
 	               		    	}
 	               		    	else {
 	               		    		$.alert({
-	            		    		    title: '警告',
-	            		    		    content: result,
+	            		    		    title: 'warn',
+	            		    		    content: result
 	            		    		});
 	               		    	}
 	               		    }
@@ -248,18 +260,21 @@
    				   })//  ready end
 				 function devFormatter(data){
 					if(data == 0){
-						return '中翔恒威'
+						return 'zhongxianghengwei'
 					}
+                     if(data == 1){
+                         return 'shengzhi'
+                     }
 				 }
 				 function controlTypeFormatter(data){
 				 	 if(data == 1){
-						return '单门控制器'
+						return 'Single Door Controller'
 					}
 					 if(data == 2){
-						return '双门控制器'
+						return 'Double Door Controller'
 					}
 					if(data == 3){
-						return '四门控制器'
+						return 'Quadruple Door Controller'
 					}
 				 }
 		</script>

@@ -3,7 +3,6 @@ package com.minivision.cameraplat.config;
 import com.minivision.cameraplat.domain.SysLog;
 import com.minivision.cameraplat.domain.User;
 import com.minivision.cameraplat.repository.UserRepository;
-import com.minivision.cameraplat.service.UserService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,12 +21,13 @@ import com.minivision.cameraplat.service.SysLogService;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
 public class LogAspect {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
     @Autowired
@@ -54,60 +54,61 @@ public class LogAspect {
     @AfterReturning(value = "within(@org.springframework.web.bind.annotation.RestController *)",returning = "obj")
     public void dbLog(JoinPoint joinPoint,Object obj) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
-        logger.info("URL : " + request.getRequestURL().toString());
-        logger.info("HTTP_METHOD : " + request.getMethod());
-        logger.info("IP : " + request.getRemoteAddr());
-        logger.info(
-            "CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        logger.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));
-        String username;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-        User user =null;
-        if (username != null){
-              user = userRepository.findByUsername(username);
-         }
+        if(attributes!=null) {
+            HttpServletRequest request = attributes.getRequest();
+            logger.info("URL : " + request.getRequestURL().toString());
+            logger.info("HTTP_METHOD : " + request.getMethod());
+            logger.info("IP : " + request.getRemoteAddr());
+            logger.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+            User user = null;
         try {
+            logger.info("ARGS : " + Arrays.toString(Optional.ofNullable(joinPoint.getArgs()).orElse(null)));
+            String username;
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof UserDetails) {
+                username = ((UserDetails) principal).getUsername();
+            } else {
+                username = principal.toString();
+            }
+            if (username != null) {
+                user = userRepository.findByUsername(username);
+            }
             if (obj != null && "success".equals(obj)) {
-                String target_name = joinPoint.getSignature().getName();
-                Class<?> target = joinPoint.getTarget().getClass();
-                Class<?> target_class = Class.forName(target.getName());
-                Method[] methods = target_class.getDeclaredMethods();
-                //Object[] args = joinPoint.getArgs();
-                for (Method method : methods) {
-                    if (method.getName().equals(target_name)
-                        && method.getAnnotation(OpAnnotation.class) != null) {
-                        logger.error("annotation is " + method.getAnnotation(PostMapping.class));
-                        String model_name = method.getAnnotation(OpAnnotation.class).modelName();
-                        String operation = method.getAnnotation(OpAnnotation.class).opration();
-                        String details;
-                        if("updateAnaCamera".equals(method.getName())){
-                            details = "{分析仪ID: "+joinPoint.getArgs()[0]+",摄像机ID: "+joinPoint.getArgs()[1]+" }";
+                    String target_name = joinPoint.getSignature().getName();
+                    Class<?> target = joinPoint.getTarget().getClass();
+                    Class<?> target_class = Class.forName(target.getName());
+                    Method[] methods = target_class.getDeclaredMethods();
+                    //Object[] args = joinPoint.getArgs();
+                    for (Method method : methods) {
+                        if (method.getName().equals(target_name)
+                            && method.getAnnotation(OpAnnotation.class) != null) {
+                            logger.error("annotation is " + method.getAnnotation(PostMapping.class));
+                            String model_name = method.getAnnotation(OpAnnotation.class).modelName();
+                            String operation = method.getAnnotation(OpAnnotation.class).opration();
+                            String details;
+                            if ("updateAnaCamera".equals(method.getName())) {
+                                details =
+                                    "{analyserID: " + joinPoint.getArgs()[0] + ",cameraID: " + joinPoint.getArgs()[1]
+                                        + " }";
+                            } else if ("bindwithEntrance".equals(method.getName())) {
+                                details = "{cameraID: " + joinPoint.getArgs()[0] + ",doorID: " + joinPoint
+                                    .getArgs()[1] + " }";
+                            } else
+                                details = (joinPoint.getArgs()[0]).toString();
+                            SysLog sysLog =
+                                new SysLog(user, request.getRemoteAddr(), model_name, operation,
+                                    Calendar.getInstance().getTime(), details);
+                            sysLogService.save(sysLog);
+                            break;
                         }
-                        else if("bindwithEntrance".equals(method.getName())){
-                            details = "{摄像机ID: "+joinPoint.getArgs()[0]+",门ID: "+joinPoint.getArgs()[1]+" }";
-                        }
-                       else details =(joinPoint.getArgs()[0]).toString();
-                        SysLog sysLog =
-                            new SysLog(user, request.getRemoteAddr(), model_name, operation,
-                                Calendar.getInstance().getTime(),details);
-                        sysLogService.save(sysLog);
-                        break;
                     }
                 }
+            } catch (Exception e) {
+                SysLog sysLog = new SysLog(user, request.getRemoteAddr(), "opreate error", "opreate error",
+                    Calendar.getInstance().getTime(), "log error" + e.getMessage());
+                sysLogService.save(sysLog);
+                logger.error(e.getMessage());
             }
-        }catch (Exception e){
-            SysLog sysLog =
-                new SysLog(user, request.getRemoteAddr(), "", "",
-                    Calendar.getInstance().getTime(), "日志异常"+e.getMessage());
-            sysLogService.save(sysLog);
-          logger.error(e.getMessage());
         }
-
     }
 }

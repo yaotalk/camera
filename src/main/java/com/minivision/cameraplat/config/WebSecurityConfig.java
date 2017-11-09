@@ -10,15 +10,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import java.io.IOException;
 
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -33,18 +29,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   private AuthenticationSuccessHandler authenticationSuccessHandler;
 
+  @Autowired
+  private LogoutSuccessHandler logoutSuccessHandler;
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
       http.csrf().disable()
           .rememberMe().key("camera")
               .and().authorizeRequests()
               .antMatchers("/assets/**",
-                  "/login", "/test/**","/api/v1/**","/webjars/**","/swagger-ui.html","/swagger-resources","/v2/api-docs","/c/**","/client","/snapshot/**","/people/**").permitAll()
+                  "/login", "/test/**","/api/v1/**","/webjars/**","/swagger-ui.html","/swagger-resources","/v2/api-docs","/c/**","/client","/snapshot/**","/people/**","/client.exe","/pingan.apk").permitAll()
               .antMatchers("/user").fullyAuthenticated()
               .and().authorizeRequests()
               .anyRequest().hasRole("USER")
-              .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll().successHandler(authenticationSuccessHandler)//.defaultSuccessUrl("/faceset")
-              .and().logout().permitAll();
+              .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll().successHandler(authenticationSuccessHandler)
+    //.defaultSuccessUrl("/faceset")
+              .and().logout().permitAll()
+              .and().logout().logoutSuccessHandler(logoutSuccessHandler);
   }
 
   @Override
@@ -94,16 +95,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return new StandardPasswordEncoder("test");
   }
 
-  @Bean
-  public AuthenticationSuccessHandler authenticationSuccessHandler(){
-    return new AuthenticationSuccessHandler() {
-
-      @Override public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
-          HttpServletResponse httpServletResponse, Authentication authentication)
-          throws IOException, ServletException {
-                    System.out.println("ttttttttttttttttttttttttttttt");
-            httpServletResponse.sendRedirect("/faceset");
-      }
-    };
-  }
 }

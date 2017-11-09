@@ -9,6 +9,8 @@ public class SetCreateParam extends RestParam {
 	private String displayName;
 	private String outerId;
 	private String owner;
+	
+	private int capacity = 1000;
 
 	public String getDisplayName() {
 		return displayName;
@@ -34,4 +36,12 @@ public class SetCreateParam extends RestParam {
 		this.owner = owner;
 	}
 
+    public int getCapacity() {
+      return capacity;
+    }
+  
+    public void setCapacity(int capacity) {
+      this.capacity = capacity;
+    }
+	
 }

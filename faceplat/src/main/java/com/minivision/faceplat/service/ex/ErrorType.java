@@ -18,6 +18,8 @@ public class ErrorType {
 	
 	public static final int FACESET_OUT_CAPACITY = 6;
 	
+	public static final int NO_FACE_DETECTED = 7;
+	
 	public static final int FACE_ALGO_ERROR = 100;
 	
 	public static final int ARGUMENT_ERROR = 201;

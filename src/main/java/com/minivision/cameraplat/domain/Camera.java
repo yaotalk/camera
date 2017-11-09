@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.minivision.cameraplat.mqtt.message.MsgAnalyserConfig;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,6 +44,10 @@ public class Camera extends IdEntity {
   @JoinColumn(name = "region_id")
   private Region region;
 
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "faceset_id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
+  private FaceSet faceSet;
+
 //  @JsonIgnore
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "cam_fs", joinColumns = {@JoinColumn(name = "camera_id")},
@@ -60,6 +63,14 @@ public class Camera extends IdEntity {
   private String padId;
 
   private String doorNumber;
+
+  public FaceSet getFaceSet() {
+    return faceSet;
+  }
+
+  public void setFaceSet(FaceSet faceSet) {
+    this.faceSet = faceSet;
+  }
 
   public String getRtspUrl() {
     return rtspUrl;
@@ -200,11 +211,11 @@ public class Camera extends IdEntity {
 
   @Override public String toString() {
 
-    return "摄像机{id="  + id + '\'' + ",设备类型=" + type + ", ip='" + ip + '\'' + ", 用户名='" + username + '\''
-        + ", 密码='" + password + '\'' + ", 设备名称='" + deviceName + '\'' + ", 端口=" + port
-        + ", web端口=" + webPort + ", rtsp端口=" + rtspPort + ", 布控策略=" + (strategy==null?null:strategy.getId())
-        + ", 分析仪=" + (analyser==null?null:analyser.getId()) + ", 区域=" + (region==null?null:region.getId())+ ", 人脸库=" + (faceSets==null?null:
+    return "Camera{id="  + id + '\'' + ",DeviceType=" + type + ", ip='" + ip + '\'' + ", username='" + username + '\''
+        + ", password='" + password + '\'' + ", deviceName='" + deviceName + '\'' + ", port=" + port
+        + ", webPort=" + webPort + ", rtspPort=" + rtspPort + ", strategy=" + (strategy==null?null:strategy.getId())
+        + ", analyser=" + (analyser==null?null:analyser.getId()) + ", region=" + (region==null?null:region.getId())+ ", faceSets=" + (faceSets==null?null:
         faceSets.stream().map(FaceSet::getToken).collect(Collectors.toList())) +
-        ", 是否进出（0进1出）=" + isOut + ", padId='" + padId + '\'' +'\'' + '}';
+        ", in or out（0 in, 1 out）=" + isOut + ", padId='" + padId + '\'' +'\'' + '}';
   }
 }

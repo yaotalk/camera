@@ -1,6 +1,5 @@
 package com.minivision.cameraplat.service;
 
-import com.minivision.cameraplat.domain.Camera;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

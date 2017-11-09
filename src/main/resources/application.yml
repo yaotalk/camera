@@ -2,6 +2,8 @@ server:
   port: 8080
   address: 0.0.0.0
 spring:
+  http.multipart.max-file-size: 10240Mb
+  http.multipart.maxRequestSize: 10240Mb
   thymeleaf.cache: false
   resources.static-locations: 
     - classpath:/META-INF/resources/
@@ -9,12 +11,14 @@ spring:
     - classpath:/static/
     - classpath:/public/
     - file:${system.store}
+    - file:${system.client}
   jpa:
     hibernate.ddl-auto: update
 #    hibernate.dialect: org.hibernate.dialect.MySQLDialect
   datasource:
     #url: jdbc:h2:file:~/.h2/camaraplat;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;
-    #url: jdbc:mysql://192.168.123.12:3306/camera?autoReconnect=true&useSSL=false
+    #url: jdbc:mysql://192.168.123.12:3306/dev?autoReconnect=true&useSSL=false
+    #url: jdbc:mysql://172.16.6.20:3306/camera?characterEncoding=UTF-8&autoReconnect=true&useSSL=false
     url: jdbc:mysql://localhost:3306/camera?characterEncoding=UTF-8&autoReconnect=true&useSSL=false
     username: root
     password: root
@@ -29,8 +33,17 @@ system:
   store: E://camera/picture_store/
   store.snapshot: ${system.store}snapshot
   store.people: ${system.store}people
+  client: C:\Minivision\MiniFacePlat\Web\client\
+  batch: F://test
+  fileSchedule: 00 00 03 * * ?
+  recordSchedule: 00 00 03 * * ?
+  faceSetPriority: true
 faceservice:
+  maxConcurrent: 32
+  imageExecutorThreads: 10
+  maxImageOverStock: 256
   bathPath: http://localhost:8081
+  #bathPath: http://172.16.6.20:8081
   oauth: 
     apiKey: faceplat_user
     apiSecret: faceplat
@@ -41,3 +54,7 @@ security:
     client:
       client-id: client
       client-secret: secret
+backup:
+  mysqlPath: D:\mysql\mysql\mysql\bin\mysqldump
+  redisPath: D:\Redis-x64-3.0.500
+  rarPath: C:\Program Files (x86)\WinRAR\\winrar.exe

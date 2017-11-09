@@ -2,8 +2,6 @@ package com.minivision.faceplat.rest.result.detect;
 
 import java.util.List;
 
-import com.minivision.faceplat.rest.result.DetectedFace;
-
 public class SearchResult {
 	private String imageId;
 	private String faceToken;
@@ -62,5 +60,9 @@ public class SearchResult {
 			this.confidence = confidence;
 		}
 
+        @Override
+        public String toString() {
+          return "Result [faceToken=" + faceToken + ", confidence=" + confidence + "]";
+        }
 	}
 }

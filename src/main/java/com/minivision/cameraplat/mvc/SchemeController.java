@@ -38,7 +38,7 @@ public class SchemeController {
   }
 
   @PostMapping
-  @OpAnnotation(modelName = "时间方案",opration = "新增时间方案")
+  @OpAnnotation(modelName = "TimePlan",opration = "add TimePlan")
   public String addScheme(Scheme scheme, @RequestParam("periods") String periods,
       @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime) {
     String[] weekdays = periods.split(",");
@@ -54,7 +54,7 @@ public class SchemeController {
   }
 
   @PatchMapping
-  @OpAnnotation(modelName = "时间方案",opration = "修改时间方案")
+  @OpAnnotation(modelName = "TimePlan",opration = "edit TimePlan")
   public String updateScheme(Scheme scheme, @RequestParam("periods") String periods,
       @RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime) {
     Scheme oldScheam = schemeService.findOne(scheme.getId());
@@ -81,11 +81,11 @@ public class SchemeController {
   }
 
   @DeleteMapping
-  @OpAnnotation(modelName = "时间方案",opration = "删除时间方案")
+  @OpAnnotation(modelName = "TimePlan",opration = "delete TimePlan")
   public String deleteScheme(Scheme scheme) {
     List<Strategy> strategies = strategyService.findByScheme(scheme);
     if (strategies != null && strategies.size() > 0) {
-      return "删除失败，该时间方案已经关联策略";
+      return "failed,this item has been related to strategy";
     }
     schemeService.delete(scheme.getId());
     return "success";

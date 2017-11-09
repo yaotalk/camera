@@ -64,4 +64,11 @@ public class CompareParam extends RestParam {
 		this.imageFile2 = imageFile2;
 	}
 
+  @Override
+  public String toString() {
+    return "CompareParam [faceToken1=" + faceToken1 + ", imageUrl1=" + imageUrl1 + ", imageFile1="
+        + imageFile1 + ", faceToken2=" + faceToken2 + ", imageUrl2=" + imageUrl2 + ", imageFile2="
+        + imageFile2 + "]";
+  }
+
 }

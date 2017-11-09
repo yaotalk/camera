@@ -1,0 +1,261 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/layout" >
+<div layout:fragment="sidebar" th:replace="layout/sidebar">
+</div>
+<div layout:fragment="content" th:fragment="content">
+	<div class="page-header">
+		<h1>Camera Group</h1>
+	</div>
+	<div class="table-header">
+		Camera Group
+	</div>
+	<div id="toolbar">
+		<div class="dt-buttons btn-overlap btn-group">
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span><i class="fa fa-plus bigger-110 green"></i>
+						<span class="hidden">add</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span><i class="fa fa-edit bigger-110 green"></i>
+				<span class="hidden">edit</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span> <i class="fa fa-trash bigger-110 red"></i>
+				<span class="hidden">delete</span></span>
+			</a>
+			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
+					<span> <i class="fa fa-refresh bigger-110 blue"></i>
+				<span class="hidden">refresh</span></span>
+			</a>
+		</div>
+	</div>
+	<div>
+		<table id="table"
+			   data-toolbar="#toolbar"
+			   data-maintain-selected="true"
+			   data-url="/cameragroup"
+			   data-pagination="true"
+			   data-search="true"
+			   data-click-to-select="true"
+			   data-show-columns="true">
+			<thead>
+			<tr>
+				<th data-checkbox="true"></th>
+				<th data-field="id">Id</th>
+				<th data-field="groupName">Name</th>
+				<th data-field="cameras"data-formatter="CameraFormatter">Camera Name</th>
+			</tr>
+			</thead>
+		</table>
+	</div>
+	<div class="modal" id="modal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" style="display: none">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="editModalLabel">Group</h4>
+				</div>
+				<div class="modal-body">
+					<form id="modal_form" class="form-horizontal">
+						<input type="hidden" name="id" id="editId">
+						<input type="hidden" name="_method" value="patch">
+						<div class="form-group">
+							<label for="name" class="col-sm-2 control-label">Name:</label>
+							<div class="col-sm-9">
+								<input class="form-control" name="groupName" id = "groupName" required="required" oninvalid="setCustomValidity('input name please')" oninput="setCustomValidity('')">
+							</div>
+						</div>
+						<div style="height: 400px;">
+							<table id="table2"
+								   data-maintain-selected="true"
+								   data-url="/camera"
+								   data-pagination="true"
+								   data-click-to-select="true"
+								   data-height="400"
+							     >
+								<thead>
+								<tr>
+									<th data-checkbox="true" data-formatter="stateFormatter"></th>
+									<th data-field="camera.id">Camera Id</th>
+									<th data-field="camera.deviceName">Camera Name</th>
+									<th data-field="camera.ip">Camera IP</th>
+								</tr>
+								</thead>
+							</table>
+						</div>
+						<div class="modal-footer" style="background-color:white;margin-top: auto">
+							<button type="submit" class="btn btn-primary" id="model_submit">submit</button>
+						</div>
+					</form>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+        var cameras = [];
+        var selfCameras = [];
+			$(function(){
+				$('#table').bootstrapTable({
+				  onDblClickRow:function(row){
+					 	  modelShow("dbclick",row);
+				 	  }
+				});
+			   $('#table').on('click-row.bs.table', function (e, row, $element) {
+					$('.success').removeClass('success');
+						$($element).addClass('success');
+			   });
+					 $(".fa-plus").parents("a").on('click',function(){
+					     $('#modal :input').val('');
+					     $('#modal :input[name="_method"]').val('');
+                         getCameras();
+                         selfCameras = [];
+                         $('#table2').bootstrapTable('destroy');
+                         $('#table2').bootstrapTable({});
+                         $('#table2').bootstrapTable('uncheckAll');
+						 $('#modal').modal('show');
+					 })
+					 $(".fa-edit").parents("a").on('click',function(){
+					    var ids = getIdSelections();
+    			 		if(ids.length ==0|| ids.length >1){
+							 $.alert({
+								title: 'prompt',
+								content: 'choose one please'
+							  });
+							 return;
+						}
+						 modelShow("button");
+					 })
+                    function modelShow(mode,row){
+                        getCameras();
+						 if(mode == "button"){
+								var group =  $('#table').bootstrapTable('getSelections')[0];
+							}
+						 else if(mode == 'dbclick')
+						   {
+							   var group =  row;
+						   }
+						$('#modal :input[name="_method"]').val('patch');
+						$('#modal :input[name="id"]').val(group.id);
+                        $('#modal :input[name="groupName"]').val(group.groupName);
+                        selfCameras= [];
+                        for(var camera of group.cameraResults){
+                            selfCameras.push(camera.id);
+						}
+                        $('#table2').bootstrapTable('destroy');
+                        $('#table2').bootstrapTable({});
+						$('#modal').modal('show');
+                    }
+ 					$(".fa-trash").parents("a").on('click',function(){
+    			 		var ids = getIdSelections();
+    			 		if(ids.length ==0 || ids.length>1){
+								 $.alert({
+									title: 'prompt',
+									content: 'choose one please'
+								  });
+						 	return;
+					 }
+				    $.ajax({
+							url: '/cameragroup',
+							type: 'post',
+							dataType:"text",
+							data:{
+								 id: ids[0],
+							     _method: 'DELETE'
+							},
+							success: function(result) {
+								$('#modal').modal('hide');
+								if(result == "success"){
+									$.alert({
+										title: 'prompt',
+										content: 'success'
+									});
+									 $('#table').bootstrapTable('refresh');
+								}
+								else $.alert(result);
+							}
+						});
+			      	 })
+			       $(".fa-refresh").parents("a").on('click',function(){
+							 $('#table').bootstrapTable('refresh');
+				    })
+			      $("#modal_form").on("submit", function(ev) {
+                      var cameraIds = getCameraIdSelections();
+                      if(cameraIds.length > 2 || cameraIds.length === 0){
+                          $.alert({
+                              title: 'prompt',
+                              content: 'choose two cameras please'
+                          });
+                          ev.preventDefault();
+                          return;
+					  }
+                      var data = $('#modal_form').serializeArray();
+                      data.push({name:"cameras",value:cameraIds});
+                      $.ajax({
+	               			url:'/cameragroup',
+	               			data: data,
+	               		    type: 'POST',
+	               		    dataType:"text",
+	               		    success: function(result) {
+	               		     $('#table').bootstrapTable('refresh');
+	               		    	if(result == "success"){
+	               		    		$('#modal').modal('hide');
+	               		    		$.alert({
+	            		    		    title: 'prompt',
+	            		    		    content: 'success'
+	            		    		});
+	               		    	}
+	               		    	else if(result =="failed"){
+	               		    		$.alert({
+	            		    		    title: 'prompt',
+	            		    		    content: 'failed'
+	            		    		});
+	               		    	}
+	               		    }
+               		  	});
+				 	    ev.preventDefault();
+                  });
+
+				  function getIdSelections() {
+							return $.map($('#table').bootstrapTable('getSelections'), function (row) {
+								return row.id;
+							});
+    			  }
+                function getCameraIdSelections() {
+                    return $.map($('#table2').bootstrapTable('getSelections'), function (row) {
+                        return row.camera.id;
+                    });
+                }
+
+            })//  ready end
+            function stateFormatter(value, row, index) {
+               if((cameras.indexOf(row.camera.id) !== -1) && selfCameras.indexOf(row.camera.id) === -1)
+                return {
+                    disabled: true
+                }
+                else if((cameras.indexOf(row.camera.id) !== -1) && selfCameras.indexOf(row.camera.id) !== -1) return {
+                   checked: true
+               }
+               else return value;
+            }
+			function getCameras() {
+				cameras = [];
+				for(var group of $('#table').bootstrapTable('getData')){
+					if(group.cameraResults.length >0){
+						for(var camera of group.cameraResults){
+							cameras.push(camera.id)
+						}
+					}
+				};
+			}
+			function CameraFormatter(value, row, index) {
+			    var cameras = [];
+				for(var camera of row.cameraResults){
+                    cameras.push(camera.deviceName)
+				}
+				return cameras;
+            }
+		</script>
+
+				</div>
+</html>

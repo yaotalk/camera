@@ -16,35 +16,45 @@ public class CameraResult {
     private Long regionId;
     private int  type;
     private boolean isOnline ;
-    private List<Long> entranceGuardIds;
-    private int isOut;
-    private String padId;
+    private String rtspUrl;
+
+    public String getRtspUrl() {
+        return rtspUrl;
+    }
+
+    public void setRtspUrl(String rtspUrl) {
+        this.rtspUrl = rtspUrl;
+    }
+
+    //private List<Long> entranceGuardIds;
+//    private int isOut;
+//    private String padId;
     public CameraResult() {
     }
 
-    public List<Long> getEntranceGuardIds() {
-        return entranceGuardIds;
-    }
+//    public List<Long> getEntranceGuardIds() {
+//        return entranceGuardIds;
+//    }
+//
+//    public void setEntranceGuardIds(List<Long> entranceGuardIds) {
+//        this.entranceGuardIds = entranceGuardIds;
+//    }
 
-    public void setEntranceGuardIds(List<Long> entranceGuardIds) {
-        this.entranceGuardIds = entranceGuardIds;
-    }
-
-    public int getIsOut() {
-        return isOut;
-    }
-
-    public void setIsOut(int isOut) {
-        this.isOut = isOut;
-    }
-
-    public String getPadId() {
-        return padId;
-    }
-
-    public void setPadId(String padId) {
-        this.padId = padId;
-    }
+//    public int getIsOut() {
+//        return isOut;
+//    }
+//
+//    public void setIsOut(int isOut) {
+//        this.isOut = isOut;
+//    }
+//
+//    public String getPadId() {
+//        return padId;
+//    }
+//
+//    public void setPadId(String padId) {
+//        this.padId = padId;
+//    }
 
     public Long getRegionId() {
         return regionId;

@@ -58,4 +58,8 @@ public class FaceSearchParam extends RestParam {
     this.threshold = threshold;
   }
 
+  @Override public String toString() {
+    return "FaceSearchParam{" + "imgfile=" + imgfile + ", facesetTokens='" + facesetTokens + '\''
+        + ", limit=" + limit + ", threshold=" + threshold + '}';
+  }
 }

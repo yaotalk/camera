@@ -3,28 +3,28 @@
 </div>
 <div layout:fragment="content" th:fragment="content">
 	<div class="page-header">
-		<h1>客户端用户</h1>
+		<h1>Client User</h1>
 	</div>
 	<div class="table-header">
-		客户端用户
+		Client User
 	</div>
 	<div id="toolbar">
 		<div class="dt-buttons btn-overlap btn-group">
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-plus bigger-110 green"></i>
-						<span class="hidden">新增客户端用户</span></span>
+						<span class="hidden">add</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-edit bigger-110 green"></i>
-				<span class="hidden">编辑客户端用户</span></span>
+				<span class="hidden">edit</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-trash bigger-110 red"></i>
-				<span class="hidden">删除客户端用户</span></span>
+				<span class="hidden">delete</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-refresh bigger-110 blue"></i>
-				<span class="hidden">重新加载</span></span>
+				<span class="hidden">refresh</span></span>
 			</a>
 		</div>
 	</div>
@@ -34,28 +34,34 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
 							aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="editModalLabel">客户端用户操作</h4>
+					<h4 class="modal-title" id="editModalLabel">Client User</h4>
 				</div>
 				<div class="modal-body">
 					<form id="modal_form" class="form-horizontal">
 						<input type="hidden" name="id" id="editId">
 						<input type="hidden" name="_method" value="patch">
 						<div class="form-group">
-							<label for="name" class="col-sm-2 control-label">客户端用户名称:</label>
+							<label for="username" class="col-sm-2 control-label">ClientUser Name:</label>
 							<div class="col-sm-9">
-								<input class="form-control" name="username" id="username">
+								<input class="form-control" name="username" id="username" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="ip" class="col-sm-2 control-label">用户密码:</label>
+							<label for="password" class="col-sm-2 control-label">Password:</label>
 							<div class="col-sm-9">
-								<input class="form-control" name="password" id="password">
+								<input class="form-control" name="password" id="password" type="password" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
 							</div>
 						</div>
+						<div class="form-group">
+							<label for="confirmPassword" class="col-sm-2 control-label">Confirm Password:</label>
+							<div class="col-sm-9">
+								<input class="form-control" name="confirmPassword" id="confirmPassword" type="password" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary" id="model_submit">submit</button>
+						</div>
 					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" id="model_submit">提交</button>
 				</div>
 			</div>
 		</div>
@@ -68,12 +74,11 @@
 			   data-pagination="true"
 			   data-search="true"
 			   data-click-to-select="true"
-			   data-show-columns="true"
-			   data-show-export="true">
+			   data-show-columns="true">
 			<thead>
 			<tr>
 				<th data-checkbox="true"></th>
-				<th data-field="username" >用户名称</th>
+				<th data-field="username" >User Name</th>
 			</tr>
 			</thead>
 		</table>
@@ -81,7 +86,11 @@
 
 	<script type="text/javascript">
 			$(function(){
-				$('#table').bootstrapTable();
+				$('#table').bootstrapTable({
+				onDblClickRow:function(row){
+					 	  modelShow("dbclick",row);
+				 	  }
+				});
 				
 				   $('#table').on('click-row.bs.table', function (e, row, $element) {
 						$('.success').removeClass('success');
@@ -97,23 +106,34 @@
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
 							 $.alert({
-								title: '提示',
-								content: '请选择一行',
+								title: 'prompt',
+								content: 'choose one please'
 							  });
 							 return;
 						}
-                        var user =  $('#table').bootstrapTable('getSelections');
-                        $('#modal :input[name="id"]').val(user[0].id);
-                        $('#modal :input[name="username"]').val(user[0].username);
-                        $('#modal').modal('show');
+ 					   modelShow("button");
 					 })
+					 function modelShow(mode,row){
+						 if(mode == "button"){
+							   var user =  $('#table').bootstrapTable('getSelections')[0];
+							}
+						 else if(mode == 'dbclick')
+						   {
+							   var user =  row;
+						   }
+                        $('#modal :input[name="id"]').val(user.id);
+                        $('#modal :input[name="username"]').val(user.username);
+                        $('#modal :input[name="password"]').val(user.password);
+                        $('#modal :input[name="confirmPassword"]').val(user.password);
+                        $('#modal').modal('show');
 
+                       }
  					$(".fa-trash").parents("a").on('click',function(){
     			 		var ids = getIdSelections();
     			 		if(ids.length ==0 || ids.length>1){
 								 $.alert({
-									title: '提示',
-									content: '请选择一行',
+									title: 'prompt',
+									content: 'choose one please'
 								  });
 						 	return;
 						 }
@@ -129,8 +149,8 @@
 								$('#modal').modal('hide');
 								if(result == "success"){
 									$.alert({
-										title: '提示',
-										content: '删除成功',
+										title: 'prompt',
+										content: 'success'
 									});
 									 $('#table').bootstrapTable('refresh');
 								}
@@ -141,9 +161,16 @@
 			        $(".fa-refresh").parents("a").on('click',function(){
 							 $('#table').bootstrapTable('refresh');
 				    })
-			       $('#model_submit').click(function(e){
-			       	   var url,type = 'POST',_method,data,contentType
+			       $("#modal_form").on("submit", function(ev) {
                        data =  $('#modal_form').serializeArray();
+                       if($('#modal :input[name="password"]').val() != $('#modal :input[name="confirmPassword"]').val()){
+                       		$.alert({
+	            		    		    title: 'prompt',
+	            		    		    content: 'Confirm Password is different from Password'
+	            		    });
+	            		    ev.preventDefault();
+	            		    return;
+                       };
 					   $.ajax({
 	               			url:'/clientuser',
 	               			data: data,
@@ -154,19 +181,20 @@
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
-	            		    		    title: '提示',
-	            		    		    content: '操作成功',
+	            		    		    title: 'prompt',
+	            		    		    content: 'success'
 	            		    		});
 	               		    	}
-	               		    	else if(result =="failed"){
+	               		    	else {
 	               		    		$.alert({
-	            		    		    title: '提示',
-	            		    		    content: '操作失败',
+	            		    		    title: 'warn',
+	            		    		    content:result
 	            		    		});
 	               		    	}
 	               		    }
                		  	});
-				 	  })
+               		  	 ev.preventDefault();
+				  })
 
 
 				  function getIdSelections() {

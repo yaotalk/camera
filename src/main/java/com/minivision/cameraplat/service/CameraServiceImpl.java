@@ -1,9 +1,6 @@
 package com.minivision.cameraplat.service;
 
-import com.minivision.cameraplat.domain.Camera;
-import com.minivision.cameraplat.domain.EntranceGuard;
-import com.minivision.cameraplat.domain.Region;
-import com.minivision.cameraplat.domain.Strategy;
+import com.minivision.cameraplat.domain.*;
 import com.minivision.cameraplat.mqtt.service.AnalyserConfigService;
 import com.minivision.cameraplat.mvc.ex.ServiceException;
 import com.minivision.cameraplat.repository.CameraRepository;
@@ -51,31 +48,37 @@ public class CameraServiceImpl implements CameraService {
   }
 
   @Override
-  public Camera update(Camera camera) throws ServiceException{
+  public Camera update(Camera camera,FaceSet faceSet) throws ServiceException{
     Assert.notNull(camera.getId(), "the camera id can not be null");
-    
     Camera oldCamera = cameraRepository.findOne(camera.getId());
     List<EntranceGuard.Door> doors = oldCamera.getDoors();
     camera.setDoors(doors);
+    camera.setFaceSet(faceSet);
     Assert.notNull(oldCamera, "the camera not exist");
-    if(oldCamera.getAnalyser().getId() != camera.getAnalyser().getId()){
-      if(analyserService.isOnline(oldCamera.getAnalyser().getId())){
-        analyserConfigService.asyncDeleteCamera(oldCamera);
+    if(null != oldCamera.getAnalyser()) {
+      if (oldCamera.getAnalyser().getId() != camera.getAnalyser().getId()) {
+        if (analyserService.isOnline(oldCamera.getAnalyser().getId())) {
+          analyserConfigService.asyncDeleteCamera(oldCamera);
+        }
       }
     }
 
-    if(analyserService.isOnline(camera.getAnalyser().getId())){
-      analyserConfigService.asyncAddOrUpdateCamera(camera);
+    if( null != camera.getAnalyser()) {
+      if (analyserService.isOnline(camera.getAnalyser().getId())) {
+        analyserConfigService.asyncAddOrUpdateCamera(camera);
+      }
     }
-
     return cameraRepository.save(camera);
   }
 
   @Override
-  public Camera create(Camera camera) {
+  public Camera create(Camera camera, FaceSet faceSet) {
+      camera.setFaceSet(faceSet);
       Camera save = cameraRepository.save(camera);
-    if(analyserService.isOnline(camera.getAnalyser().getId())){
-      analyserConfigService.asyncAddOrUpdateCamera(save);
+    if(null != camera.getAnalyser()) {
+      if (analyserService.isOnline(camera.getAnalyser().getId())) {
+        analyserConfigService.asyncAddOrUpdateCamera(save);
+      }
     }
     return save;
   }
@@ -83,8 +86,10 @@ public class CameraServiceImpl implements CameraService {
   @Override
   public void delete(Camera camera) {
     Camera old_camera = cameraRepository.findOne(camera.getId());
-    if(analyserService.isOnline(old_camera.getAnalyser().getId())){
-      analyserConfigService.asyncDeleteCamera(old_camera);
+    if(null != old_camera.getAnalyser()) {
+      if (analyserService.isOnline(old_camera.getAnalyser().getId())) {
+        analyserConfigService.asyncDeleteCamera(old_camera);
+      }
     }
     cameraRepository.delete(camera);
   }
@@ -141,20 +146,21 @@ public class CameraServiceImpl implements CameraService {
           cameraResult.setRegionId(camera.getRegion() == null?null:camera.getRegion().getId());
           cameraResult.setType(camera.getType());
           cameraResult.setOnline(isOnline);
-          cameraResult.setPadId(camera.getPadId());
-          cameraResult.setIsOut(camera.getIsOut());
-          if(camera.getDoors()!=null){
-            List<Long> ids = new ArrayList<>();
-            for(EntranceGuard.Door door : camera.getDoors()){
-                ids.add(door.getId());
-              }
-            Set<EntranceGuard> entranceGuards = entranceRepository.findBydoorsIdIn(ids);
-            ids.clear();
-            for(EntranceGuard entranceGuard : entranceGuards){
-               ids.add(entranceGuard.getId());
-             }
-            cameraResult.setEntranceGuardIds(ids);
-          }
+          cameraResult.setRtspUrl(camera.getRtspUrl());
+//          cameraResult.setPadId(camera.getPadId());
+//          cameraResult.setIsOut(camera.getIsOut());
+//          if(camera.getDoors()!=null){
+//            List<Long> ids = new ArrayList<>();
+//            for(EntranceGuard.Door door : camera.getDoors()){
+//                ids.add(door.getId());
+//              }
+//            Set<EntranceGuard> entranceGuards = entranceRepository.findBydoorsIdIn(ids);
+//            ids.clear();
+//            for(EntranceGuard entranceGuard : entranceGuards){
+//               ids.add(entranceGuard.getId());
+//             }
+//            cameraResult.setEntranceGuardIds(ids);
+//          }
           cameraResults.add(cameraResult);
         }
         return cameraResults;

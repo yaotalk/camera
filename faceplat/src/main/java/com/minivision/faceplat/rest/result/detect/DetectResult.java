@@ -2,8 +2,6 @@ package com.minivision.faceplat.rest.result.detect;
 
 import java.util.List;
 
-import com.minivision.faceplat.rest.result.DetectedFace;
-
 public class DetectResult {
 	private String imageId;
 	private List<DetectedFace> faces;

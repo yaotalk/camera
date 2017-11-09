@@ -9,7 +9,7 @@ import com.minivision.cameraplat.mqtt.message.MsgCameraStrategy;
 @Entity
 public class Strategy extends IdEntity {
   private String name;
-  private boolean blackList;
+  private StrategyType type;
   private boolean snapshot;
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "scheme_id")
@@ -29,6 +29,22 @@ public class Strategy extends IdEntity {
   private int snapInterval;
   @JsonView(MsgCameraStrategy.class)
   private int retryCounts;
+  @JsonView(MsgCameraStrategy.class)
+  private boolean forbidMultiFace;
+  @JsonView(MsgCameraStrategy.class)
+  private int forbidMultiFaceInterval;
+  
+  public enum StrategyType{
+    BlackList, WhiteList, DynaminFaceRepo
+  }
+
+  public int getForbidMultiFaceInterval() {
+    return forbidMultiFaceInterval;
+  }
+
+  public void setForbidMultiFaceInterval(int forbidMultiFaceInterval) {
+    this.forbidMultiFaceInterval = forbidMultiFaceInterval;
+  }
 
   public int getSnapInterval() {
     return snapInterval;
@@ -46,12 +62,12 @@ public class Strategy extends IdEntity {
     this.name = name;
   }
 
-  public boolean isBlackList() {
-    return blackList;
+  public StrategyType getType() {
+    return type;
   }
 
-  public void setBlackList(boolean blackList) {
-    this.blackList = blackList;
+  public void setType(StrategyType type) {
+    this.type = type;
   }
 
   public boolean isSnapshot() {
@@ -125,12 +141,20 @@ public class Strategy extends IdEntity {
   public void setRetryCounts(int retryCounts) {
     this.retryCounts = retryCounts;
   }
+  
+  public boolean isForbidMultiFace() {
+    return forbidMultiFace;
+  }
+
+  public void setForbidMultiFace(boolean forbidMultiFace) {
+    this.forbidMultiFace = forbidMultiFace;
+  }
 
   @Override public String toString() {
-    return "布控策略{id="  + id + '\'' + ",名称='" + name + '\'' + ", 是否黑名单=" + blackList + ", 是否抓拍="
-        + snapshot + ", 时间方案=" + (scheme==null?null:scheme.getId()) + ", 最大人脸数=" + maxfaceNum + ", 比对阈值="
-        + compareThreshold + ", 最小人脸像素=" + minFaceSize + ", 保存天数=" + preserveDays
-        + ", 人脸质量阈值=" + faceQualityThreshold + ", 识别入库间隔=" + intervals
-        + ", 抓拍间隔=" + snapInterval + ", 重试次数=" + retryCounts + '}';
+    return "Strategy{id="  + id + '\'' + ",Name='" + name + '\'' + ", StrategyType=" + type + ", Whether to capture="
+        + snapshot + ", Time Plan =" + (scheme==null?null:scheme.getId()) + ",  Person amount of each capture=" + maxfaceNum + ", Threshold of comparison="
+        + compareThreshold + ", Lowest Pixels=" + minFaceSize + ", Day of Data Saving=" + preserveDays
+        + ", Threshold for quality of capture =" + faceQualityThreshold + ", Interval for Recognition Data Storing=" + intervals
+        + ", Interval of each capture=" + snapInterval + ", Repeat times for recognition failure=" + retryCounts + '}';
   }
 }

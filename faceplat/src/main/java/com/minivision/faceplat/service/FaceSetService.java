@@ -5,6 +5,7 @@ import com.minivision.faceplat.rest.result.faceset.RemoveFaceResult;
 import com.minivision.faceplat.rest.result.faceset.SetCreateResult;
 import com.minivision.faceplat.rest.result.faceset.SetDeleteResult;
 import com.minivision.faceplat.rest.result.faceset.SetDetailResult;
+import com.minivision.faceplat.rest.result.faceset.SetListResult;
 import com.minivision.faceplat.rest.result.faceset.SetMergeResult;
 import com.minivision.faceplat.rest.result.faceset.SetModifyResult;
 import com.minivision.faceplat.service.ex.FacePlatException;
@@ -16,8 +17,11 @@ public interface FaceSetService {
 	 * 
 	 * @param owner
 	 *            Use appKey
+	 * @param capacity 
 	 * @return The facesetToken
 	 */
+	public SetCreateResult create(String owner, String outerId, String displayName, int capacity) throws FacePlatException;
+	
 	public SetCreateResult create(String owner, String outerId, String displayName) throws FacePlatException;
 	
 	/**
@@ -59,7 +63,9 @@ public interface FaceSetService {
 	 * @return
 	 * @throws FacePlatException
 	 */
-	public SetModifyResult modify(String setToken, String displayName) throws FacePlatException;
+	public SetModifyResult modify(String setToken, String displayName, int capacity) throws FacePlatException;
+	
+	//public SetModifyResult modify(String setToken, String displayName) throws FacePlatException;
 
 	/**
 	 * get faceset detail message
@@ -68,6 +74,15 @@ public interface FaceSetService {
 	 * @throws FacePlatException
 	 */
 	public SetDetailResult getFaceSetDetail(String setToken, long offset, long count) throws FacePlatException;
+	
+	
+	/**
+	 * @param offset
+	 * @param count
+	 * @return
+	 * @throws FacePlatException
+	 */
+	public SetListResult getFaceSetList(int offset, int count) throws FacePlatException;
 
 	/**
 	 * merge faceset1 and faceset2

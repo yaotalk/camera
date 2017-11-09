@@ -6,11 +6,13 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.*;
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.core.type.StandardAnnotationMetadata;
@@ -53,10 +55,28 @@ public class TopicMsgDeliver {
   
   @Autowired
   private CameraImageHandler imageHandler;
-  
+
+  private ExecutorService imageExecutor;
+
+  @Value("${faceservice.imageExecutorThreads:24}")
+  private int imageExecutorThreads = 24;
+
+  @Value("${faceservice.maxImageOverStock:256}")
+  private int maxImageOverStock = 256;
+
   @PostConstruct
   private void init(){
-    
+
+    imageExecutor = new ThreadPoolExecutor(imageExecutorThreads, imageExecutorThreads,
+        0L, TimeUnit.MILLISECONDS,
+        new LinkedBlockingQueue<Runnable>(maxImageOverStock), new RejectedExecutionHandler() {
+      @Override
+      public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+        logger.warn("image is overstock, {} discard", r);
+        //TODO notice alarm
+      }
+    });
+
     Map<String, Object> beans = context.getBeansWithAnnotation(MqttMessageHandler.class);
 
     for (Object instance : beans.values()) {
@@ -168,11 +188,22 @@ public class TopicMsgDeliver {
   @TopicHandler("/s/i")
   public void imageReport(@MqttMessageParam(ParamType.clientId) String clientId,
       @MqttMessageParam(ParamType.username) String username, @MqttMessageImage MonitorImage image) {
-    logger.trace("receive an image, clientId:{}, username:{}, cameraId:{}, serialNo:{}", clientId,
-        username, image.getCameraId(), image.getSerialNo());
+    logger.warn("receive an image, clientId:{}, username:{}, cameraId:{}, serialNo:{},trackId:{}", clientId,
+        username, image.getCameraId(), image.getSerialNo(),image.getTrackId());
     
     try {
-      imageHandler.onImageReceive(image, clientId);
+//      imageHandler.onImageReceive(image, clientId);
+      imageExecutor.submit(new Runnable() {
+        @Override
+        public void run() {
+          imageHandler.onImageReceive(image, clientId);
+        }
+        @Override
+        public String toString() {
+          return image+", clientId ["+clientId+"]";
+        }
+      });
+
     } catch (FacePlatException e) {
       logger.error("image process error, clientId:{}, username:{}, cameraId:{}, serialNo:{}", clientId,
           username, image.getCameraId(), image.getSerialNo(), e);

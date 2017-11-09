@@ -1,5 +1,6 @@
 package com.minivision.cameraplat.mvc;
 
+import com.minivision.cameraplat.config.OpAnnotation;
 import com.minivision.cameraplat.domain.User;
 import com.minivision.cameraplat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +28,37 @@ public class UserController {
   }
 
   @PostMapping
+  @OpAnnotation(modelName = "User",opration = "add User")
   public String createUser(User user) {
+    User oldUser = userService.findByUsername(user.getUsername());
+    if(oldUser !=null) {
+      return "failed,username can not be duplicate";
+    }
     this.userService.create(user);
     return "success";
   }
 
   @PatchMapping
+  @OpAnnotation(modelName = "User",opration = "edit User")
   public String updateUser(User user) {
+    User oldUser = userService.findByUsername(user.getUsername());
+    if(oldUser !=null && !oldUser.getId().equals(user.getId())){
+      return "failed,username can not be duplicate";
+    }
     this.userService.update(user);
     return "success";
   }
 
+  @PostMapping(value = "disabled")
+  @OpAnnotation(modelName = "User",opration = "enable User")
+  public String disabled(User user) {
+    this.userService.disable(user);
+    return "success";
+  }
+
   @DeleteMapping
-  public String deleteUser(User user) {
+  @OpAnnotation(modelName = "User",opration = "delete User")
+  public String delete(User user) {
     this.userService.delete(user);
     return "success";
   }

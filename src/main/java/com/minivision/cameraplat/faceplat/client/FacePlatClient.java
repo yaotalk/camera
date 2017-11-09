@@ -86,12 +86,12 @@ public class FacePlatClient {
   }
   
   
-  public DetectResult detect(byte[] image) throws FacePlatException{
-    return detectBase(image).getData();
+  public DetectResult detect(byte[] image, boolean faceAttributes) throws FacePlatException{
+    return detectBase(image, faceAttributes).getData();
   }
   
   @Deprecated
-  public RestResult<DetectResult> detectBase(byte[] image) throws FacePlatException{
+  public RestResult<DetectResult> detectBase(byte[] image, boolean faceAttributes) throws FacePlatException{
     LinkedMultiValueMap<String,Object> params = bulidParams();
     ByteArrayResource arrayResource = new ByteArrayResource(image){ 
       @Override
@@ -100,6 +100,7 @@ public class FacePlatClient {
       }
     }; 
     params.add("imageFile", arrayResource);
+    params.add("faceAttributes", faceAttributes);
     return postForResult(basePath+"/api/v1/detect", params, DetectResult.class);
   }
   

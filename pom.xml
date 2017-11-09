@@ -4,17 +4,19 @@
 
 	<groupId>com.minivision</groupId>
 	<artifactId>entrance</artifactId>
+	<description>Camera Plat</description>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>entrance</name>
+
 	<url>http://maven.apache.org</url>
-	
+
 	<parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2.RELEASE</version>
-    </parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.2.RELEASE</version>
+	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,11 +27,16 @@
 		<dist.start.class>com.minivision.cameraplat.App</dist.start.class>
 		<dist.jmx.port>50202</dist.jmx.port>
 		<!-- <hibernate.version>5.2.9.Final</hibernate.version> -->
-		
+
 		<thymeleaf.version>3.0.3.RELEASE</thymeleaf.version>
-    	<thymeleaf-layout-dialect.version>2.1.2</thymeleaf-layout-dialect.version>
-    	
-    	<!--<start-class>com.minivision.cameraplat.App</start-class>-->
+		<thymeleaf-layout-dialect.version>2.1.2</thymeleaf-layout-dialect.version>
+		<thymeleaf-extras-springsecurity4.version>3.0.2.RELEASE</thymeleaf-extras-springsecurity4.version>
+
+		<!--<start-class>com.minivision.cameraplat.App</start-class>-->
+
+		<dist.service.name>CameraPlat</dist.service.name>
+		<dist.dir>${project.build.directory}/dist</dist.dir>
+		<dist.jmx.port>50202</dist.jmx.port>
 	</properties>
 
 	<repositories>
@@ -53,9 +60,9 @@
 
 	<dependencies>
 		<!--<dependency>-->
-			<!--<groupId>org.springframework.boot</groupId>-->
-			<!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-			<!--<scope>provided</scope>-->
+		<!--<groupId>org.springframework.boot</groupId>-->
+		<!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+		<!--<scope>provided</scope>-->
 		<!--</dependency>-->
 		<!-- Compile -->
 		<dependency>
@@ -77,7 +84,6 @@
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
-			<version>3.0.2.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
@@ -100,8 +106,8 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
-		
+
+
 		<!-- Lib -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -113,7 +119,7 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.5</version>
 		</dependency>
-	    <dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<exclusions>
@@ -123,61 +129,46 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<!-- Swagger API Doc -->
 		<dependency>
-		    <groupId>io.springfox</groupId>
-		    <artifactId>springfox-swagger2</artifactId>
-		    <version>2.5.0</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.5.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>io.springfox</groupId>
-		    <artifactId>springfox-swagger-ui</artifactId>
-		    <version>2.5.0</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.5.0</version>
 		</dependency>
-		
+
 		<!-- MQTT Broker -->
 		<dependency>
-		    <groupId>io.moquette</groupId>
-		    <artifactId>moquette-broker</artifactId>
-		    <version>0.9</version>
+			<groupId>io.moquette</groupId>
+			<artifactId>moquette-broker</artifactId>
+			<version>0.9</version>
 		</dependency>
 		<!-- MQTT Client -->
 		<dependency>
-		    <groupId>org.eclipse.paho</groupId>
-		    <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-		    <version>1.1.0</version>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+			<version>1.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-daemon-integration</artifactId>
 			<version>1.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.8.2</version>
+		</dependency>
+
 	</dependencies>
-	
+
 	<build>
 		<plugins>
-			<!-- <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.minivision.faceplat.App</mainClass>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin> -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -251,5 +242,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-    </build>
+	</build>
 </project>

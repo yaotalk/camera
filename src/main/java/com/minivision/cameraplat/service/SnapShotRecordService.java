@@ -1,11 +1,12 @@
 package com.minivision.cameraplat.service;
 
-import java.util.List;
-
+import com.minivision.cameraplat.domain.record.SnapshotRecord;
 import com.minivision.cameraplat.rest.param.alarm.SnapShotParam;
-import com.minivision.cameraplat.rest.result.alarm.SnapShotResult;
+import com.minivision.cameraplat.rest.result.PageResult;
 
 public interface SnapShotRecordService {
 
-        List<SnapShotResult> findByTimeandCameraId(SnapShotParam param);
+  PageResult<SnapshotRecord> findByTimeandCameraId(SnapShotParam param);
+
+  int deleteByCameraIdAndTimestampLessThan(Long id, long time);
 }

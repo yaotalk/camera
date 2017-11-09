@@ -62,4 +62,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     registry.addInterceptor(ajaxInterceptor);
   }
+
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/**").allowedOrigins("*");
+    super.addCorsMappings(registry);
+  }
+
+
 }

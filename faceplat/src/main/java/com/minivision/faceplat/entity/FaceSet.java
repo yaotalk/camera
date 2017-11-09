@@ -26,7 +26,6 @@ public class FaceSet implements Serializable {
 	@Transient
 	private List<Face> faces;
 	
-	@JsonIgnore
 	private int capacity = 1000;
 
 	public String getFacesetToken() {

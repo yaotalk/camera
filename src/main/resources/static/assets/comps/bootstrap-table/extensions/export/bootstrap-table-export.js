@@ -8,17 +8,17 @@
     var sprintf = $.fn.bootstrapTable.utils.sprintf;
 
     var TYPE_NAME = {
-        json: 'JSON',
-        xml: 'XML',
-        png: 'PNG',
-        csv: 'CSV',
-        txt: 'TXT',
-        sql: 'SQL',
-        doc: 'MS-Word',
-        excel: 'MS-Excel',
-        xlsx: 'MS-Excel (OpenXML)',
-        powerpoint: 'MS-Powerpoint',
-        pdf: 'PDF'
+//        json: 'JSON',
+//        xml: 'XML',
+//        png: 'PNG',
+//        csv: 'CSV',
+//        txt: 'TXT',
+//        sql: 'SQL',
+//        doc: 'MS-Word',
+          excel: 'export MS-Excel'
+//        xlsx: 'MS-Excel (OpenXML)',
+//        powerpoint: 'MS-Powerpoint',
+//        pdf: 'PDF'
     };
 
     $.extend($.fn.bootstrapTable.defaults, {

@@ -20,5 +20,7 @@ public interface CameraRepository extends PagingAndSortingRepository<Camera, Lon
 
   List<Camera> findByfaceSetsToken(String token);
 
+  List<Camera> findByfaceSetToken(String token);
+
   List<Camera> findBydoorsId(long id);
 }

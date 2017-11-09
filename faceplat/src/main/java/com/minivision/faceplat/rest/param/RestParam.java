@@ -2,7 +2,8 @@ package com.minivision.faceplat.rest.param;
 
 import java.io.Serializable;
 
-import org.hibernate.validator.constraints.NotBlank;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import io.swagger.annotations.ApiModel;
 
@@ -11,7 +12,7 @@ public abstract class RestParam implements Serializable {
 
 	private static final long serialVersionUID = 1922721475810919555L;
 
-	@NotBlank(message = "apiKey must not be empty")
+/*	@NotBlank(message = "apiKey must not be empty")
 	protected String apiKey;
 
 	@NotBlank(message = "apiSecret must not be empty")
@@ -36,6 +37,11 @@ public abstract class RestParam implements Serializable {
 	@Override
 	public String toString() {
 		return "RestRequest [apiKey=" + apiKey + ", apiSecret=" + apiSecret + "]";
+	}*/
+	
+	@Override
+	public String toString() {
+	  return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 }

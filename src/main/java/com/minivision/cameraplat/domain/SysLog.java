@@ -1,5 +1,8 @@
 package com.minivision.cameraplat.domain;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,7 +10,8 @@ import java.util.Date;
 public class SysLog extends IdEntity {
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "userid")
+  @JoinColumn(name = "userid",foreignKey = @ForeignKey(name = "none",value = ConstraintMode.NO_CONSTRAINT))
+  @NotFound(action = NotFoundAction.IGNORE)
   private User user;
   private String ip;
   private String modelName; // 操作模块

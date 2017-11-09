@@ -1,6 +1,6 @@
 package com.minivision.faceplat.rest.param.detect;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Max;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,12 +13,13 @@ public class SearchParam extends RestParam {
 
 	private String faceToken;
 	private String imageUrl;
+	private String faceFeature;
 	private MultipartFile imageFile;
 
 	@NotBlank(message = "facesetToken must not be empty")
 	private String facesetToken;
 
-	@Size(min = 1, max = 100, message = "Returns the number between 1 and 100")
+	@Max(100)
 	private int resultCount = 1;
 
 	public String getFaceToken() {
@@ -61,4 +62,19 @@ public class SearchParam extends RestParam {
 		this.resultCount = resultCount;
 	}
 
+	
+  public String getFaceFeature() {
+    return faceFeature;
+  }
+
+  public void setFaceFeature(String faceFeature) {
+    this.faceFeature = faceFeature;
+  }
+
+  @Override
+  public String toString() {
+    return "SearchParam [faceToken=" + faceToken + ", imageUrl=" + imageUrl + ", imageFile="
+        + imageFile + ", facesetToken=" + facesetToken + ", resultCount=" + resultCount + "]";
+  }
+	
 }

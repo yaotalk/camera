@@ -108,9 +108,9 @@ public class EntranceGuard extends IdEntity {
    }
 
    @Override public String toString() {
-      return "门禁设备{ id= " + id + '\'' + ",设备编号='" + serialNumber + '\'' + ", 设备类型="
-          + deviceType + ", 门数=" + gates + ", ip='" + ip + '\'' + ", 设备端口=" + devicePort
-          + ", 控制器地址 =" + controlAddress + ", 控制器类型 =" + controlType
-          + ", 控制器密码 ='" + controlPassword + '\'' + '}';
+      return "Access{ id= " + id + '\'' + ",DeviceNo='" + serialNumber + '\'' + ", DeviceType="
+          + deviceType + ", Door Amount=" + gates + ", ip='" + ip + '\'' + ", DevicePort=" + devicePort
+          + ", Controller Address =" + controlAddress + ", Controller Type =" + controlType
+          + ", Controller Password ='" + controlPassword + '\'' + '}';
    }
 }

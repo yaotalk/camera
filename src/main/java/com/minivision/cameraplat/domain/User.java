@@ -1,6 +1,5 @@
 package com.minivision.cameraplat.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,9 +9,8 @@ import java.util.List;
 
 @Entity(name="users")
 public class User extends IdEntity implements UserDetails{
-  @Column(unique = true)
+  @Column(unique = true,nullable = false)
   private String username;
-  @JsonIgnore
   private String password;
   private boolean enabled = true;
 
@@ -76,4 +74,8 @@ public class User extends IdEntity implements UserDetails{
     return false;
   }
 
+  @Override public String toString() {
+    return "User{" + "User Id='" + id  + ", User Name='" + username + '\'' + ", password='" + password + '\''
+        + ", roles=" + (roles!=null?roles.size():null) + '}';
+  }
 }

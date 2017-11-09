@@ -45,7 +45,7 @@
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text"> 库管理 </span>
+                <span class="menu-text"> Face DB Manage </span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -56,7 +56,7 @@
                 <li class="">
                     <a href="/faceset" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        人脸库注册
+                        Face DB Register
                     </a>
 
                     <b class="arrow"></b>
@@ -65,7 +65,7 @@
                 <li class="">
                     <a href="/faceset/face" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        人脸库查询
+                        Face Search
                     </a>
 
                     <b class="arrow"></b>
@@ -76,7 +76,7 @@
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text"> 人员管理 </span>
+                <span class="menu-text"> Face  Manage </span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -87,7 +87,7 @@
                 <li class="">
                     <a href="/face" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        单人注册
+                        Single Member Register
                     </a>
 
                     <b class="arrow"></b>
@@ -96,7 +96,16 @@
                 <li class="">
                     <a href="/face/batch" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        批量注册
+                        Batch Register
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+				
+				<li class="" id="checkRepeat">
+                    <a href="/face/checkRepeat" class="pjax">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                          Remove Duplicate
                     </a>
 
                     <b class="arrow"></b>
@@ -108,7 +117,7 @@
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text"> 系统管理 </span>
+                <span class="menu-text"> System Manage </span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -119,7 +128,7 @@
                 <li class="">
                     <a href="/sysinfo" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        系统信息
+                        System Info
                     </a>
 
                     <b class="arrow"></b>
@@ -127,7 +136,7 @@
                 <li class="">
                     <a href="/region" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        区域管理
+                        Area Manage
                     </a>
 
                     <b class="arrow"></b>
@@ -136,15 +145,22 @@
                 <li class="">
                     <a href="/analyser" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        人脸分析仪管理
+                        Analysis Server Manage
                     </a>
 
                     <b class="arrow"></b>
                 </li>
                 <li class="">
+                    <a href="/cameragroup" class="pjax">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        Camera GroupManage
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+                <li class="">
                     <a href="/entrance" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        门禁设备管理
+                        Access Control Manage
                     </a>
 
                     <b class="arrow"></b>
@@ -152,7 +168,7 @@
                 <li class="">
                     <a href="/camera" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        摄像机管理
+                        Camera Manage
                     </a>
 
                     <b class="arrow"></b>
@@ -160,7 +176,7 @@
                 <li class="">
                     <a href="/camera/bindcameras" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        摄像机关联
+                        Camera Relevance
                     </a>
 
                     <b class="arrow"></b>
@@ -168,7 +184,7 @@
                 <li class="">
                     <a href="/entrance/binddoors" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        门禁关联
+                        Access Control Relevance
                     </a>
 
                     <b class="arrow"></b>
@@ -176,7 +192,7 @@
                 <li class="">
                     <a href="/user" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        用户管理
+                        User Acount Manage
                     </a>
 
                     <b class="arrow"></b>
@@ -184,7 +200,7 @@
                 <li class="">
                     <a href="/clientuser" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        客户端用户管理
+                        Client User Acount Manage
                     </a>
 
                     <b class="arrow"></b>
@@ -192,19 +208,19 @@
                 <li class="">
                     <a href="/syslog" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        操作日志
+                        Operation Log
                     </a>
 
                     <b class="arrow"></b>
                 </li>
-                <!--<li class="">-->
-                    <!--<a href="/sysmanage/loginset" class="pjax">-->
-                        <!--<i class="menu-icon fa fa-caret-right"></i>-->
-                        <!--系统设置-->
-                    <!--</a>-->
+                <li class="">
+                    <a href="/backup" class="pjax">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        System Backup
+                    </a>
 
-                    <!--<b class="arrow"></b>-->
-                <!--</li>-->
+                    <b class="arrow"></b>
+                </li>
             </ul>
         </li>
     </ul>
@@ -213,7 +229,7 @@
         <li class="">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-desktop"></i>
-                <span class="menu-text">布控管理</span>
+                <span class="menu-text">Strategy Manage</span>
 
                 <b class="arrow fa fa-angle-down"></b>
             </a>
@@ -224,7 +240,7 @@
                 <li class="">
                     <a href="/strategy" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        布控策略管理
+                        Strategy Manage
                     </a>
 
                     <b class="arrow"></b>
@@ -233,7 +249,7 @@
                 <li class="">
                     <a href="/scheme" class="pjax">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        时间方案
+                        Time Span
                     </a>
 
                     <b class="arrow"></b>

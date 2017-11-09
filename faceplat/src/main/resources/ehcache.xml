@@ -21,5 +21,15 @@
 		overflowToDisk="false"
 		diskPersistent="true" 
 		diskExpiryThreadIntervalSeconds="120" />
+		
+	<cache 
+		name="features" 
+		maxElementsInMemory="100" 
+		eternal="true"
+		timeToIdleSeconds="21600" 
+		timeToLiveSeconds="21600" 
+		overflowToDisk="false"
+		diskPersistent="false" 
+		diskExpiryThreadIntervalSeconds="120" />
 
 </ehcache>

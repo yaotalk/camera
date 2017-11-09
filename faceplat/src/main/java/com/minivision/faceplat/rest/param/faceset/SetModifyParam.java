@@ -12,6 +12,8 @@ public class SetModifyParam extends RestParam {
 	private String facesetToken;
 	
 	private String displayName;
+	
+	private int capacity;
 
 	public String getFacesetToken() {
 		return facesetToken;
@@ -29,4 +31,12 @@ public class SetModifyParam extends RestParam {
 		this.displayName = displayName;
 	}
 
+    public int getCapacity() {
+      return capacity;
+    }
+  
+    public void setCapacity(int capacity) {
+      this.capacity = capacity;
+    }
+	
 }

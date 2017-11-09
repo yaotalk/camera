@@ -1,6 +1,7 @@
 package com.minivision.cameraplat.service;
 
 import com.minivision.cameraplat.domain.Camera;
+import com.minivision.cameraplat.domain.FaceSet;
 import com.minivision.cameraplat.domain.Region;
 import com.minivision.cameraplat.mvc.ex.ServiceException;
 import com.minivision.cameraplat.rest.result.system.CameraResult;
@@ -15,9 +16,9 @@ public interface CameraService {
 
     List<CameraShow> findAllWithStatus();
 
-    Camera update(Camera camera) throws ServiceException;
+    Camera update(Camera camera,FaceSet faceSet) throws ServiceException;
 
-    Camera create(Camera camera) throws ServiceException;
+    Camera create(Camera camera,FaceSet faceSet) throws ServiceException;
 
     void delete(Camera camera);
 

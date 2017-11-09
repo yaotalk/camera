@@ -43,7 +43,8 @@ public class OAuth2ClientConfig {
   private String username;
   @Value("${faceservice.oauth.password}")
   private String password;
-  
+  @Value("${faceservice.maxConcurrent:32}")
+  private int maxConcurrent;
   @Bean
   protected OAuth2ProtectedResourceDetails resource() {
 
@@ -87,8 +88,8 @@ public class OAuth2ClientConfig {
 
     PoolingHttpClientConnectionManager cm =
         new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-    cm.setMaxTotal(32);
-    cm.setDefaultMaxPerRoute(32);// 单路由最大并发数
+    cm.setMaxTotal(maxConcurrent);
+    cm.setDefaultMaxPerRoute(maxConcurrent);// 单路由最大并发数
 
     return HttpClients.custom().setConnectionManager(cm).build();
   }

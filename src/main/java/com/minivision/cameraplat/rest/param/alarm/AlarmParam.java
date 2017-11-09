@@ -2,29 +2,48 @@ package com.minivision.cameraplat.rest.param.alarm;
 import com.minivision.cameraplat.rest.param.RestParam;
 
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiParam;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 
 public class AlarmParam extends RestParam {
 
     private static final long serialVersionUID = -5324699653300472053L;
 
-//    @NotBlank(message = "startTime can not be empty")
+    @NotNull(message = "startTime can not be empty")
     private long startTime;
 
-//    @NotBlank(message = "endTime can not be empty")
+    @NotNull(message = "endTime can not be empty")
     private long endTime;
 
-    @ApiParam(required = true)
     @ApiModelProperty(value = "摄像机ID")
-    private long cameraId;
+    private Long cameraId;
 
     private String name;
 
     private String sex;
+    
+    private String faceToken;
 
-    @ApiParam(required = true)
-    @ApiModelProperty(value = "报警类型")
-    private String logType;
+    private int offset = 0;
+
+    @Max(100)
+    private int limit = 10;
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
 
     public long getStartTime() {
       return startTime;
@@ -42,11 +61,11 @@ public class AlarmParam extends RestParam {
       this.endTime = endTime;
     }
 
-    public long getCameraId() {
+    public Long getCameraId() {
         return cameraId;
     }
 
-    public void setCameraId(long cameraId) {
+    public void setCameraId(Long cameraId) {
         this.cameraId = cameraId;
     }
 
@@ -66,11 +85,12 @@ public class AlarmParam extends RestParam {
         this.sex = sex;
     }
 
-    public String getLogType() {
-        return logType;
+    public String getFaceToken() {
+      return faceToken;
     }
 
-    public void setLogType(String logType) {
-        this.logType = logType;
+    public void setFaceToken(String faceToken) {
+      this.faceToken = faceToken;
     }
+    
 }

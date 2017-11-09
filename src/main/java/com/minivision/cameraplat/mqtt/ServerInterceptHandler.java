@@ -47,11 +47,11 @@ public class ServerInterceptHandler implements InterceptHandler{
   
   private ExecutorService exxcutor;
   
-  private int maxThreads = 4;
+  //private int maxThreads = 4;
   
   @PostConstruct
   private void init(){
-    exxcutor = Executors.newFixedThreadPool(maxThreads);
+    exxcutor = Executors.newCachedThreadPool();
     
     Map<String, Object> beans = context.getBeansWithAnnotation(MqttMessageHandler.class);
 

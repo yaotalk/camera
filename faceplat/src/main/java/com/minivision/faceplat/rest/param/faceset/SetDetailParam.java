@@ -1,7 +1,6 @@
 package com.minivision.faceplat.rest.param.faceset;
 
-import javax.validation.constraints.Size;
-
+import javax.validation.constraints.Max;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.minivision.faceplat.rest.param.RestParam;
@@ -16,8 +15,8 @@ public class SetDetailParam extends RestParam {
 	private String outerId;
 
 	private int faceOffset = 0;
-
-	@Size(min = 1, max = 100, message = "Returns the number between 1 and 100")
+	
+	@Max(100)
 	private int faceCount;
 
 	public String getFacesetToken() {

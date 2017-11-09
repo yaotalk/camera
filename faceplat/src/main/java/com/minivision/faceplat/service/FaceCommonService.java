@@ -1,16 +1,23 @@
 package com.minivision.faceplat.service;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.minivision.faceplat.entity.Face;
 import com.minivision.faceplat.entity.FaceSet;
-import com.minivision.faceplat.repository.FaceRepository;
 import com.minivision.faceplat.repository.FaceSetRepository;
 import com.minivision.faceplat.service.ex.ErrorType;
 import com.minivision.faceplat.service.ex.FacePlatException;
@@ -26,11 +33,17 @@ public class FaceCommonService {
 	@Autowired
 	private FaceSetRepository setRepository;
 
-	@Autowired
-	private FaceRepository faceRepository;
+	//@Autowired
+	//private FaceRepository faceRepository;
 
 	@Autowired
 	private Cache faceCache;
+	
+	@Autowired
+    private StringRedisTemplate stringRedisTemplate; 
+	
+	@Autowired
+	private RedisTemplate<String, float[]> futureTemplate;
 	
 	@Value(value = "${face.image.path}")
 	private String filePath;
@@ -64,14 +77,14 @@ public class FaceCommonService {
 			return (Face) element.getObjectValue();
 		}
 
-		Face face = faceRepository.findOne(faceToken);
+		Face face = findOneFaceFromRedis(faceToken);
 		if (face == null) {
 			LOGGER.error("face:[{}] not exist", faceToken);
 			throw new FacePlatException(ErrorType.FACE_NOT_EXIST);
 		}
 		return face;
 	}
-
+	
 	/**
 	 * 根据faceToken查找人脸
 	 * 
@@ -94,9 +107,67 @@ public class FaceCommonService {
 	 * @param faceToken
 	 * @return
 	 */
-	public Face findOneFaceFromRedis(String faceToken) {
-		return faceRepository.findOne(faceToken);
+	public Face findOneFaceFromRedis(String faceToken){
+	  String key = getFaceKey(faceToken);
+	  float[] feature = futureTemplate.opsForValue().get(key+":feature");
+	  if(feature == null){
+	    return null;
+	  }
+	  Face face = new Face();
+	  face.setToken(faceToken);
+	  face.setFeature(feature);
+	  return face;
 	}
+	
+	public int addReferenceCnt(String faceToken){
+	  String key = getFaceKey(faceToken);
+	  Long ref = stringRedisTemplate.opsForValue().increment(key+":referenceCnt", 1);
+	  return ref.intValue();
+	}
+	
+	public int decreaseReferenceCnt(String faceToken){
+      String key = getFaceKey(faceToken);
+      Long ref = stringRedisTemplate.opsForValue().increment(key+":referenceCnt", -1);
+      if(ref.intValue() <= 0){
+        stringRedisTemplate.delete(key+":referenceCnt");
+      }
+      return ref.intValue();
+    }
+	
+	public List<float[]> getAllFeatures(Set<String> faceTokens){
+	  List<String> keys = faceTokens.stream().map(t -> getFaceKey(t)+":feature").collect(Collectors.toList());
+	  List<float[]> list = futureTemplate.opsForValue().multiGet(keys);
+	  return list;
+	}
+	
+	@Cacheable(cacheNames="features", key="#facesetToken")
+	public Map<String, float[]> getAllFeaturesOfFaceSet(String facesetToken){
+	  Set<String> faceTokens = stringRedisTemplate.opsForZSet().rangeByScore(getFaceSetKey(facesetToken), 0, 0);
+	  List<float[]> features = getAllFeatures(faceTokens);
+	  Map<String, float[]> res = new HashMap<>();
+	  int i = 0;
+	  for(String face: faceTokens){
+	    res.put(face, features.get(i));
+	    i++;
+	  }
+	  return res;
+	}
+	
+	
+	public Face save(Face face){
+	  //String token = RedisIdGenerator.nextId();
+	  String token = face.getToken();
+	  String key = getFaceKey(token);
+	  futureTemplate.opsForValue().set(key+":feature", face.getFeature());
+	  face.setToken(token);
+	  return face;
+	}
+	
+	public Face delete(Face face){
+      String key = getFaceKey(face.getToken());
+      futureTemplate.delete(key+":feature");
+      return face;
+    }
 
 	/**
 	 * get the key of faceset(Redis Set) in redis
@@ -105,7 +176,11 @@ public class FaceCommonService {
 	 * @return
 	 */
 	public String getFaceSetKey(String faceSetToken) {
-		return "facesets:" + faceSetToken + ":faces";
+	  return "facesets:" + faceSetToken + ":faces";
+	}
+	
+	public String getFaceKey(String faceToken){
+	  return "faces:"+faceToken;
 	}
 	
 	public File getFaceImg(String faceToken){

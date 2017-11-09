@@ -23,6 +23,7 @@ public class AjaxInterceptor extends HandlerInterceptorAdapter {
   }
   
   
+  @SuppressWarnings("unused")
   private boolean isAjaxRequest(HttpServletRequest request){
     return (request.getHeader("x-requested-with") != null) && (request.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest"));
   }

@@ -8,7 +8,6 @@ import com.minivision.cameraplat.domain.Scheme;
 import com.minivision.cameraplat.repository.PeriodRepository;
 import com.minivision.cameraplat.repository.SchemeRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

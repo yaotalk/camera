@@ -4,6 +4,7 @@ import com.minivision.cameraplat.config.OpAnnotation;
 import com.minivision.cameraplat.domain.*;
 import com.minivision.cameraplat.mvc.ex.ServiceException;
 import com.minivision.cameraplat.service.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -53,22 +54,29 @@ public class CameraController {
   }
 
   @PostMapping
-  @OpAnnotation(modelName = "摄像机",opration = "新增摄像机")
-  public String createCamera(Camera camera) {
+  @OpAnnotation(modelName = "Camera",opration = "add Camera")
+  public String createCamera(Camera camera,@RequestParam(name = "token",required = false) String faceSetToken) {
     try {
-      this.cameraService.create(camera);
+      FaceSet faceSet = null;
+      if(!StringUtils.isBlank(faceSetToken)) {
+          faceSet = this.faceSetService.find(faceSetToken);
+      }
+      this.cameraService.create(camera,faceSet);
     } catch (ServiceException e) {
-      e.getMessage();
       return "failed";
     }
     return "success";
   }
 
   @PatchMapping
-  @OpAnnotation(modelName = "摄像机",opration = "编辑摄像机")
-  public String updateCamera(Camera camera) {
+  @OpAnnotation(modelName = "Camera",opration = "edit Camera")
+  public String updateCamera(Camera camera,@RequestParam(name = "token",required = false) String faceSetToken) {
     try {
-      this.cameraService.update(camera);
+      FaceSet faceSet = null;
+      if(!StringUtils.isBlank(faceSetToken)) {
+        faceSet = this.faceSetService.find(faceSetToken);
+      }
+      this.cameraService.update(camera,faceSet);
     } catch (ServiceException e) {
       return "failed";
     }
@@ -77,7 +85,7 @@ public class CameraController {
 
 
   @DeleteMapping
-  @OpAnnotation(modelName = "摄像机",opration = "删除摄像机")
+  @OpAnnotation(modelName = "Camera",opration = "delete Camera")
   public String deleteCamera(Camera camera) {
     this.cameraService.delete(camera);
     return "success";
@@ -101,7 +109,7 @@ public class CameraController {
   }
 
   @GetMapping("/updataAnaCamera")
-  @OpAnnotation(modelName = "摄像机",opration = "关联摄像机")
+  @OpAnnotation(modelName = "Camera",opration = "Camera Relevance")
   public String updateAnaCamera(
       @RequestParam(value = "analyserid", defaultValue = "") Long analyserid,
       @RequestParam(value = "items", defaultValue = "") List<String> items) {
@@ -125,15 +133,16 @@ public class CameraController {
   }
 
   @GetMapping("/bindwithEntrance")
-  @OpAnnotation(modelName = "摄像机",opration = "摄像机关联门禁")
+  @OpAnnotation(modelName = "Camera",opration = "Access Control Relevance")
   public String bindwithEntrance( @RequestParam(value = "cameraId", defaultValue = "") Long cameraId,
        @RequestParam(value = "doorIds", defaultValue = "") List<Long> doorIds )
        {
        Camera camera = cameraService.findByid(cameraId);
        List<EntranceGuard.Door> doors = entranceService.findByDoorIds(doorIds);
        camera.setDoors(doors);
+       FaceSet faceSet = camera.getFaceSet();
          try {
-           cameraService.update(camera);
+           cameraService.update(camera,faceSet);
          } catch (ServiceException e) {
               e.printStackTrace();
          }

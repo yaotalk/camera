@@ -2,20 +2,18 @@ package com.minivision.faceplat.rest.result.detect;
 
 import java.util.List;
 
-import com.minivision.faceplat.rest.result.DetectedFace;
-
 public class CompareResult {
-	private float confidence;
+	private double confidence;
 	private String imageId1;
 	private String imageId2;
 	private List<DetectedFace> faces1;
 	private List<DetectedFace> faces2;
 
-	public float getConfidence() {
+	public double getConfidence() {
 		return confidence;
 	}
 
-	public void setConfidence(float confidence) {
+	public void setConfidence(double confidence) {
 		this.confidence = confidence;
 	}
 

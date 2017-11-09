@@ -9,9 +9,9 @@
 		</style>
 	</head>
 	<body style="margin: 0px">
-		<script type="text/javascript" src="/jquery/jquery.min.js"></script>
-		<script type="text/javascript" src="/stomp/sockjs.min.js"></script>
-		<script type="text/javascript" src="/stomp/stomp.min.js"></script>
+		<script type="text/javascript" src="/assets/comps/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/comps/stomp/sockjs.min.js"></script>
+		<script type="text/javascript" src="/assets/comps/stomp/stomp.min.js"></script>
 		
 		<div style="position: absolute;">
 			<img id="snapshot" src="">
@@ -35,7 +35,7 @@
 	    		var snapshot = JSON.parse(message.body);
 	    		console.log(snapshot);
 	    		
-	    		$("#snapshot").attr("src", "snapshot/"+snapshot.photoFileName+"?"+Math.random())
+	    		$("#snapshot").attr("src", "/snapshot/"+snapshot.photoFileName+"?"+Math.random())
 	    		var left = $("#pos").get(0).offsetLeft;
 	    		var top = $('#snapshot').css("top");
 	    		
@@ -50,7 +50,14 @@
 	    		console.log("alarm:");
 	    		var alarm = JSON.parse(message.body);
 	    		console.log(alarm);
-	    		$("#alarm").attr("src", "snapshot/"+alarm.snapshot.photoFileName+"?"+Math.random())
+	    		$("#alarm").attr("src", "/snapshot/"+alarm.snapshot.photoFileName+"?"+Math.random())
+	    	});
+	    	
+	    	stompClient.subscribe('/c/multiFace', function(message){
+	    		console.log("multiFace:");
+	    		var alarm = JSON.parse(message.body);
+	    		console.log(alarm);
+	    		//$("#alarm").attr("src", "snapshot/"+alarm.snapshot.photoFileName+"?"+Math.random())
 	    	});
 	    });
 	</script>

@@ -24,10 +24,20 @@ public class FaceSet {
   @Transient
   private int faceCount;
 
-  @Temporal(TemporalType.DATE)
+  @Temporal(TemporalType.TIMESTAMP)
   private Date createTime;
 
   private int capacity;
+
+  private int priority;
+
+  public int getPriority() {
+    return priority;
+  }
+
+  public void setPriority(int priority) {
+    this.priority = priority;
+  }
 
   public FaceSet(){}
   public FaceSet(String facesetToken) {
@@ -41,6 +51,7 @@ public class FaceSet {
   public void setFaces(Set<Face> faces) {
     this.faces = faces;
   }
+  @SuppressWarnings("deprecation")
   @JsonIgnore
   @org.hibernate.annotations.ForeignKey(name = "none")
   @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY,mappedBy="faceSet")
@@ -120,7 +131,7 @@ public class FaceSet {
   }
 
   @Override public String toString() {
-    return "人脸库{" + "token='" + token + '\'' + ", 名称='" + name + '\'' + ", 创建时间=" + createTime + ", 容量=" + capacity +'}';
+    return "FaceDB{" + "token='" + token + '\'' + ", name='" + name + '\'' + ", create Time =" + createTime + ", capacity =" + capacity +'}';
   }
   // TODO
   
