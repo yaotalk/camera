@@ -6,28 +6,28 @@
     <!-- <div th:replace="fragments :: navbar"></div> -->
     <!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
     <div class="page-header">
-        <h1>Batch Register</h1>
+        <h1>批量注册 </h1>
     </div>
 
     <div class="row">
         <div class="col-sm-6" th:hidden="${task} != null" id="new_task_form">
             <form class="form-horizontal" id="import_form" action="createTask" method="post" enctype="multipart/form-data" >
                 <div class="form-group">
-                    <label for="faceset" class="col-sm-2 control-label">Face DB</label>
+                    <label for="faceset" class="col-sm-2 control-label">人脸库</label>
                     <div class="input-group col-sm-6">
                         <select class="form-control" id="faceset" name="faceSetToken" required="required">
                         </select>
                     </div>
-                    <label for="faceset" class="col-sm-2 control-label" style="margin-top: 10px">import type</label>
+                    <label for="faceset" class="col-sm-2 control-label" style="margin-top: 10px">导入方式</label>
                     <div class="input-group col-sm-6" style="margin-top: 10px">
                         <select class="form-control" id="type" name="type" required="required">
-                            <option value="local">local</option>
-                            <option value="remote">remote</option>
+                            <option value="local">本地</option>
+                            <option value="remote">远程</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group" id="local">
-                    <label for="faceset" class="col-sm-2 control-label" style="padding-top: 6%">local choose</label>
+                    <label for="faceset" class="col-sm-2 control-label" style="padding-top: 6%">本地选择</label>
                     <div class="col-xs-8">
                         <div style="margin-left: -15px">
                             <div class="filelarge">
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="form-group" style="display: none" id="remote">
-                    <label for="faceset" class="col-sm-2 control-label">remote path</label>
+                    <label for="faceset" class="col-sm-2 control-label">远程路径</label>
                     <div class="input-group col-sm-6">
                         <input type="text" class="form-control" placeholder="" id="path_input" name="path"
                                required="required" readonly="readonly">
@@ -49,12 +49,12 @@
 									<button type="button" class="btn btn-purple btn-sm" data-toggle="modal"
                                             data-target="#browser">
 										<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-										choose
+										浏览
 									</button>
 								</span>
                     </div>
                 </div>
-                <span id="uploadText" class=" control-label" style="float: left;margin-left: 7%;padding-top: 1px;display: none">upload progress</span>
+                <span id="uploadText" class=" control-label" style="float: left;margin-left: 7%;padding-top: 1px;display: none">上传进度</span>
                 <div id="uploadProgress" style="width:90%;margin-left: 15%;display: none">
                     <div  style="width:58%;float:left;">
                         <div class="progress progress-mini progress-striped active" style="height: 20px;">
@@ -64,28 +64,28 @@
                     <div style="float: left;width: 44.5%;margin-left: -30%"><span id="percentage">0%</span></div>
                 </div>
                 <div class="list-group-item" style="width: 52%;margin-left: 15%;margin-top:7%;margin-bottom:2%;display: none">
-                    <h6>logs</h6>
+                    <h6>日志</h6>
                     <div id="uplog_container">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="button" class="btn btn-default" id="import_btn">import</button>
+                        <button type="button" class="btn btn-default" id="import_btn">导入</button>
                     </div>
                 </div>
             </form>
-            <div class="alert alert-danger" role="alert" th:if="${createTask == false}">create failed</div>
+            <div class="alert alert-danger" role="alert" th:if="${createTask == false}">创建失败</div>
         </div>
 
         <div th:if="${task != null}" id="current_task">
             <div id="task_container" class="col-sm-6">
-                <h3>Current Task</h3>
+                <h3>当前任务</h3>
                 <div class="panel panel-default">
-                    <div class="panel-heading" th:text="${task.taskId}">Task Name</div>
+                    <div class="panel-heading" th:text="${task.taskId}">任务名</div>
                     <div class="list-group">
                         <div class="list-group-item">
                             <h6><span id="task_progress_info"
-                                      th:text="|progress  (${task.progress}/${task.total})， failed:${task.error}|">(/)</span>
+                                      th:text="|进度  (${task.progress}/${task.total})， 失败:${task.error}个|">(/)</span>
                             </h6>
                             <div class="progress pos-rel progress-large" id="task_progress" data-percent="66%"
                                  th:data-percent="${#numbers.formatPercent(task.progress*1f/task.total, 0, 2)}">
@@ -96,41 +96,41 @@
                         <div class="list-group-item">
                             <div class='row'>
                                 <div class="col-sm-12">
-                                    <span class="col-sm-2">creator</span>
+                                    <span class="col-sm-2">启动者</span>
                                     <span class="col-sm-6" th:text="${task.creator}">admin</span>
                                 </div>
                                 <div class="col-sm-12">
-                                    <span class="col-sm-2">startTime</span>
+                                    <span class="col-sm-2">开始时间</span>
                                     <span class="col-sm-6"
                                           th:text="${#calendars.format(task.createTime,'MM-dd HH:mm:ss')}">time</span>
                                 </div>
                                 <div class="col-sm-12">
-                                    <span class="col-sm-2">file path</span>
+                                    <span class="col-sm-2">文件路径</span>
                                     <span class="col-sm-6" th:text="${task.filePath}">dir</span>
                                 </div>
                                 <div class="col-sm-12">
-                                    <span class="col-sm-2">Face DB</span>
+                                    <span class="col-sm-2">人脸库</span>
                                     <span class="col-sm-6" th:text="${task.faceSet.name}">admin</span>
                                 </div>
                             </div>
                         </div>
                         <div class="list-group-item">
-                            <h6>logs</h6>
+                            <h6>日志</h6>
                             <div id="log_container">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="new_task" th:hidden="${task.status!=2}">
-                    <button class="btn btn-primary">new ImportTask</button>
+                    <button class="btn btn-primary">新导入</button>
                 </div>
                 <div id="stop_btn" th:hidden="${task.status==2}">
-                    <button class="btn btn-primary">stop</button>
+                    <button class="btn btn-primary">停止</button>
                 </div>
             </div>
 
             <div th:if="${task.status} ==2" id="error_container" class="col-sm-6">
-                <h3>error counts</h3>
+                <h3>错误统计</h3>
                 <div id="error_div">
                     <table data-pagination="true" id="error_table"
                            data-url="batch/error"
@@ -180,7 +180,7 @@
 
                         var left = formatCostTime(costTime(leftTime));
 
-                        var info = "progress  (" + task.progress + "/" + task.total + "), failed:" + task.error + ". cost:" + cost + ", Left time: " + left;
+                        var info = "进度  (" + task.progress + "/" + task.total + ")， 失败:" + task.error + "个。 已用时:" + cost + "， 预计剩余时间: " + left;
 
 
                         $('#task_progress_info').text(info);
@@ -205,6 +205,7 @@
                         $('#stop_btn').hide();
                     });
                 });
+
                 function progress_done() {
                     $('#new_task').show();
                     $("#task_progress .progress-bar").removeClass('active').removeClass('progress-bar-striped').addClass('progress-bar-success');
@@ -230,15 +231,15 @@
                 function formatCostTime(time) {
                     var s = "";
                     if (time.day > 0) {
-                        s += time.day + "days"
+                        s += time.day + "天"
                     }
                     if (time.hour > 0) {
-                        s += time.hour + "hours"
+                        s += time.hour + "小时"
                     }
                     if (time.min > 0) {
-                        s += time.min + "minutes"
+                        s += time.min + "分钟"
                     }
-                    s += time.sec + "seconds";
+                    s += time.sec + "秒";
                     return s;
                 }
 
@@ -274,17 +275,17 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="browserModalLabel">Appoint input File Path</h4>
+                    <h4 class="modal-title" id="browserModalLabel">选择批量导入文件路径</h4>
                 </div>
                 <div class="modal-body" style="max-height: 690px;">
                     <div class="form-group">
                         <div class="form-group-cell root-select-cell" style="width: 100px">
-                            <label>dir:</label>
+                            <label>磁盘:</label>
                             <select id="disk">
                             </select>
                         </div>
                         <div class="form-group-cell folder-select-cell" style="width: 350px">
-                            <label class="ng-binding">file path</label>
+                            <label class="ng-binding">路径</label>
                             <input type="text" autocomplete="off" id="path" readonly="readonly">
                         </div>
                         <div class="form-group-cell form-button form-link">
@@ -304,8 +305,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">cancel</button>
-                    <button type="button" class="btn btn-primary" id="path_select_btn">choose</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="path_select_btn">选择</button>
                 </div>
             </div>
         </div>
@@ -316,15 +317,15 @@
 
                 if($("#type").val() === 'local' && $("#my-file-input").val() ==='') {
                     $.alert({
-                        title: 'prompt',
-                        content: 'Please select a picture package',
+                        title: '提示',
+                        content: '请选择图片压缩包',
                     });
                     return;
                 }
                 if($("#type").val() === 'remote' && $("#path_input").val() ==='') {
                     $.alert({
-                        title: 'prompt',
-                        content: 'Please select a path',
+                        title: '提示',
+                        content: '请选择路径',
                     });
                     return;
                 }
@@ -346,26 +347,7 @@
                 xhr.open("post", FileController, true);
                 xhr.onload = function () {
                     if($("#type").val() === 'local') {
-                        $('#uplog_container .scroll-content').append($('<br>')).append($('<span>').text('unzipping...'));
-                        var socket = new WebSocket('ws://' + window.location.host + '/client');
-                        var stompClient = Stomp.over(socket);
-                        stompClient.connect({}, function (frame) {
-                            stompClient.subscribe('/i/registry/', function (message) {
-                                $('#uplog_container .scroll-content').append($('<br>')).append($('<span>').text(message.body));
-                            });
-                            stompClient.subscribe('/i/registryStatus/', function (message) {
-                                var task_status = JSON.parse(message.body).status;
-                                var task_percent = JSON.parse(message.body).percent;
-                                $("#percentage").text(task_percent);
-                                $("#progressBar").css("width",task_percent);
-                                if (task_status === 2) {
-                                    location.href = '/face/batch';
-                                }
-                                else if(task_status === 3){
-                                    $("#import_btn").removeAttr("disabled");
-                                }
-                            })
-                        });
+//                        $('#uplog_container .scroll-content').append($('<br>')).append($('<span>').text('正在解压中...'));
                     }
                     else
                      location.href = '/face/batch';
@@ -387,14 +369,32 @@
                     if(evt.loaded==evt.total){
                         $('#uplog_container').ace_scroll({size: 200});
                         $(".list-group-item").show();
-                        $('#uplog_container .scroll-content').append($('<br>')).append($('<span>').text('Upload finished, waiting for decompression, please do not leave this page...'));
+                        $('#uplog_container .scroll-content').append($('<br>')).append($('<span>').text('上传完毕，正在等待解压，请勿离开此页...'));
                         $("#progressBar").css("width","0%");
                         $("#percentage").text(0 + "%");
-                        $("#uploadText").text("progress of unzip");
+                        $("#uploadText").text("解压进度");
                         setTimeout(function () {
                             $("#progressBar").removeClass("progress-bar-purple").addClass("progress-bar-yellow");
                         },1000)
-
+                        var socket = new WebSocket('ws://' + window.location.host + '/client');
+                        var stompClient = Stomp.over(socket);
+                        stompClient.connect({}, function (frame) {
+                            stompClient.subscribe('/i/registry/', function (message) {
+                                $('#uplog_container .scroll-content').append($('<br>')).append($('<span>').text(message.body));
+                            });
+                            stompClient.subscribe('/i/registryStatus/', function (message) {
+                                var task_status = JSON.parse(message.body).status;
+                                var task_percent = JSON.parse(message.body).percent;
+                                $("#percentage").text(task_percent);
+                                $("#progressBar").css("width",task_percent);
+                                if (task_status === 2) {
+                                    location.href = '/face/batch';
+                                }
+                                else if(task_status === 3){
+                                    $("#import_btn").removeAttr("disabled");
+                                }
+                            })
+                        });
                     }
                 }
             }
@@ -407,7 +407,7 @@
                 style: 'well',
                 no_file: 'Click to choose or drag & drop',
                 droppable: true, //html5 browsers only
-                btn_choose: "Upload the image compressed package",
+                btn_choose: "上传图片压缩包",
                 thumbnail: 'large', //html5 browsers only
                 maxSize: 2024 * 1024 * 1024, //~100 KB
                 allowExt: ['zip','rar']
@@ -469,24 +469,41 @@
             })
 
             $(".browse-container").on("dblclick", ".browse-item-row", function (e) {
+                var os = 'windows';
                 var path = $(this).find(".path").data('path');
-                listDir(path);
+                if(path.indexOf("\/") !== -1){
+                    os = 'linux';
+                }
+                    listDir(path,os);
             })
 
             $("#disk").change(function (e) {
-                listDir($(this).val());
+                var os = 'windows';
+                if($(this).val().indexOf("\/") !== -1){
+                      os = 'linux'
+                }
+                listDir($(this).val(),os);
                 $("#path").val("");
             });
 
             $("#up-folder").click(function (e) {
                 e.preventDefault();
                 var current_folder = $('#current_folder_path').val();
-                if (isRoot(current_folder)) {
+                var os = 'windows';
+                if(current_folder.indexOf("\/") != -1){
+                    os = 'linux';
+                }
+                if (isRoot(current_folder,os)) {
                     return;
                 }
                 var parent = current_folder.substring(0, current_folder.lastIndexOf("\\"));
-                listDir(parent);
-                if (isRoot(parent)) {
+                if(os === 'linux'){
+                    parent = current_folder.substring(0, current_folder.lastIndexOf("\/"));
+                    if(parent == '')
+                        parent = '/';
+                }
+                listDir(parent,os);
+                if (isRoot(parent,os)) {
                     $("#path").val("");
                 } else {
                     $("#path").val(parent);
@@ -498,13 +515,29 @@
                 $('#browser').modal('hide');
             });
 
-            function isRoot(path) {
-                if (path.indexOf("\\") == -1) {
-                    return true;
+            function isRoot(path,os) {
+                if(os == 'windows'){
+                    if (path.indexOf("\\") == -1) {
+                        return true;
+                    }
+                    else if(path.indexOf("\\") !== -1) {
+                        var path_ary = path.split("\\");
+                        if (path_ary.length == 1 || path_ary[1] == "") {
+                            return true;
+                        }
+                    }
+
                 }
-                var path_ary = path.split("\\");
-                if (path_ary.length == 1 || path_ary[1] == "") {
-                    return true;
+               else if(os == 'linux'){
+                    if (path.indexOf("\/") == -1) {
+                        return true;
+                    }
+                    else if(path.indexOf("\/") !== -1){
+                        var path_ary = path.split("\/");
+                        if (path_ary.length == 1 || path_ary[1] == "") {
+                            return true;
+                        }
+                    }
                 }
                 return false;
             }
@@ -521,28 +554,52 @@
             });
 
 
-            function listDir(folder) {
+            function listDir(folder,os) {
+
                 $.getJSON("listDir", {parent: folder}, function (json) {
                     $('#current_folder_path').val(folder);
                     $("#browse-container").empty();
-                    for (var dir of json) {
-                        $("#browse-container").append(
-                            $('<div>', {
-                                'class': "browse-item-row",
-                                tabindex: "0"
-                            }).append(
+                    if(os == 'windows') {
+                        for (var dir of json) {
+                            $("#browse-container").append(
                                 $('<div>', {
-                                    'class': "file-wrapper browse-item"
+                                    'class': "browse-item-row",
+                                    tabindex: "0"
                                 }).append(
-                                    $('<span>', {'class': 'icon'}).append($('<i>', {'class': "menu-icon fa fa-folder-open-o"}))
-                                ).append(
-                                    $('<span>', {
-                                        'class': 'path',
-                                        'data-path': dir
-                                    }).text(dir.substring(dir.lastIndexOf("\\") + 1))
+                                    $('<div>', {
+                                        'class': "file-wrapper browse-item"
+                                    }).append(
+                                        $('<span>', {'class': 'icon'}).append($('<i>', {'class': "menu-icon fa fa-folder-open-o"}))
+                                    ).append(
+                                        $('<span>', {
+                                            'class': 'path',
+                                            'data-path': dir
+                                        }).text(dir.substring(dir.lastIndexOf("\\") + 1))
+                                    )
                                 )
-                            )
-                        );
+                            );
+                        }
+                    }
+                    else{
+                        for (var dir of json) {
+                            $("#browse-container").append(
+                                $('<div>', {
+                                    'class': "browse-item-row",
+                                    tabindex: "0"
+                                }).append(
+                                    $('<div>', {
+                                        'class': "file-wrapper browse-item"
+                                    }).append(
+                                        $('<span>', {'class': 'icon'}).append($('<i>', {'class': "menu-icon fa fa-folder-open-o"}))
+                                    ).append(
+                                        $('<span>', {
+                                            'class': 'path',
+                                            'data-path': dir
+                                        }).text(dir.substring(dir.lastIndexOf("\/") + 1))
+                                    )
+                                )
+                            );
+                        }
                     }
 
                     if (isRoot(folder)) {

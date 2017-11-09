@@ -4,7 +4,7 @@
 	</div>
 	<div layout:fragment="content" th:fragment="content">
 		<div class="page-header">
-			<h1>Camera Relevance</h1>
+			<h1>摄像机关联</h1>
 		</div>
 		<div>
 		<div class="row" style="margin-left:25%">
@@ -13,7 +13,7 @@
 					<div class="col-sm-6" style="margin-left:-50px">
 						<div class="widget-box widget-color-blue2" style="height:400px;">
 							<div class="widget-header">
-								<h4 class="widget-title lighter smaller">Analysers</h4>
+								<h4 class="widget-title lighter smaller">人脸分析仪</h4>
 							</div>
 							<div style="overflow: scroll;height:350px">
 							<div class="widget-body">
@@ -30,7 +30,7 @@
 					<div class="col-sm-6" style="margin-left:50px">
 						<div class="widget-box widget-color-blue2"  style="height:400px">
 							<div class="widget-header">
-								<h4 class="widget-title lighter smaller">Cameras</h4>
+								<h4 class="widget-title lighter smaller">摄像机列表</h4>
 							</div>
 							<div style="overflow: scroll;height:350px">
 								<div class="widget-body">
@@ -45,7 +45,7 @@
 			</div><!-- /.col -->
 		</div>
 		<div style="margin-left:42%;margin-top:2%">
-			<button class="btn btn-primary" style="margin-left:80px">submit</button>
+			<button class="btn btn-primary" style="margin-left:80px">保存</button>
 		</div>
 		</div>
 <script type="text/javascript">
@@ -98,7 +98,7 @@ jQuery(function($){
 					data.items = items.join(",");
 					$.get('updataAnaCamera',data,function(result){
 									if(result == "success"){
-												$.alert("success","prompt");
+												$.alert("保存成功","提示");
 												$($("#tree1").tree("selectedItems")).each(function(index,data){
 														data.analyseid = analyserid;
 												})

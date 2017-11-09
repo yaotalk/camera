@@ -3,28 +3,28 @@
 </div>
 <div layout:fragment="content" th:fragment="content">
 	<div class="page-header">
-		<h1>User Account</h1>
+		<h1>用户</h1>
 	</div>
 	<div class="table-header">
-		User Account
+		用户
 	</div>
 	<div id="toolbar">
 		<div class="dt-buttons btn-overlap btn-group">
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-plus bigger-110 green"></i>
-						<span class="hidden">add</span></span>
+						<span class="hidden">新增用户</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-edit bigger-110 green"></i>
-				<span class="hidden">edit</span></span>
+				<span class="hidden">编辑用户</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-trash bigger-110 red"></i>
-				<span class="hidden">delete</span></span>
+				<span class="hidden">删除用户</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-refresh bigger-110 blue"></i>
-				<span class="hidden">refresh</span></span>
+				<span class="hidden">重新加载</span></span>
 			</a>
 		</div>
 	</div>
@@ -34,42 +34,42 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
 							aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="editModalLabel">User Account</h4>
+					<h4 class="modal-title" id="editModalLabel">用户操作</h4>
 				</div>
 				<div class="modal-body">
 					<form id="modal_form" class="form-horizontal">
 						<input type="hidden" name="id" id="editId">
 						<input type="hidden" name="_method" value="patch">
 						<div class="form-group">
-							<label for="name" class="col-sm-2 control-label">Username:</label>
+							<label for="name" class="col-sm-2 control-label">用户名称:</label>
 							<div class="col-sm-9">
-								<input class="form-control" name="username" id="name" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input class="form-control" name="username" id="name" required="required">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="name" class="col-sm-2 control-label">Password:</label>
+							<label for="name" class="col-sm-2 control-label">用户密码:</label>
 							<div class="col-sm-9">
-								<input class="form-control" name="password" id="password" required="required" type="password" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input class="form-control" name="password" id="password" required="required" type="password">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="confirmPassword" class="col-sm-2 control-label">Confirm Password:</label>
+							<label for="confirmPassword" class="col-sm-2 control-label">确认密码:</label>
 							<div class="col-sm-9">
-								<input class="form-control" name="confirmPassword" id="confirmPassword" type="password" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input class="form-control" name="confirmPassword" id="confirmPassword" type="password">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="ip" class="col-sm-2 control-label">User Role:</label>
+							<label for="ip" class="col-sm-2 control-label">用户角色:</label>
 							<div class="col-sm-9">
-								<select id="rolesId"  class="chosen-select form-control" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<select id="rolesId"  class="chosen-select form-control" required="required">
 									<!--<option  value=0>超级管理员</option>-->
-									<option value=1>admin</option>
-									<option value=2>user</option>
+									<option value=1>管理员</option>
+									<option value=2>普通用户</option>
 								</select>
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button type="submit" class="btn btn-primary" id="model_submit">submit</button>
+							<button type="submit" class="btn btn-primary" id="model_submit">提交</button>
 						</div>
 					</form>
 				</div>
@@ -88,9 +88,9 @@
 			<thead>
 			<tr>
 				<th data-radio="true"></th>
-				<th data-field="username" >username</th>
-				<th data-field="roles" data-formatter="roleFormatter">User Role</th>
-				<th data-field="enabled" data-formatter="enableFormatter" >Enable</th>
+				<th data-field="username" >用户名称</th>
+				<th data-field="roles" data-formatter="roleFormatter">用户角色</th>
+				<th data-field="enabled" data-formatter="enableFormatter" >是否启用</th>
 			</tr>
 			</thead>
 		</table>
@@ -117,8 +117,8 @@
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
 							 $.alert({
-								title: 'prompt',
-								content: 'choose one please'
+								title: '提示',
+								content: '请选择一行',
 							  });
 							 return;
 						}
@@ -149,8 +149,8 @@
     			 		var ids = getIdSelections();
     			 		if(ids.length ==0 || ids.length>1){
 								 $.alert({
-									title: 'prompt',
-									content: 'choose one please'
+									title: '提示',
+									content: '请选择一行',
 								  });
 						 	return;
 						 }
@@ -166,8 +166,8 @@
 								$('#modal').modal('hide');
 								if(result == "success"){
 									$.alert({
-										title: 'prompt',
-										content: 'success'
+										title: '提示',
+										content: '删除成功',
 									});
 									 $('#table').bootstrapTable('refresh');
 								}
@@ -181,8 +181,8 @@
 			       $("#modal_form").on("submit", function(ev) {
 			       	   if($('#modal :input[name="password"]').val() != $('#modal :input[name="confirmPassword"]').val()){
                        		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'Password different from confirmation password'
+	            		    		    title: '提示',
+	            		    		    content: '密码与确认密码不相同',
 	            		    });
 	            		    ev.preventDefault();
 	            		    return;
@@ -207,22 +207,22 @@
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'success'
+	            		    		    title: '提示',
+	            		    		    content: '操作成功',
 	            		    		});
 	               		    	}
 	               		    	else {
 	               		    		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content:result
+	            		    		    title: '提示',
+	            		    		    content:result,
 	            		    		});
 	               		    	}
 	               		    },
 	               		    error:function(errorcode,msg){
 	               		        if(errorcode.status == 403 )
 	               		        $.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'forbidden'
+	            		    		    title: '提示',
+	            		    		    content: '您无权操作此项',
 	            		    		});
 	               		    }
                		  	});
@@ -249,8 +249,8 @@
 								$('#modal').modal('hide');
 								if(result == "success"){
 									$.alert({
-										title: 'prompt',
-										content: 'success'
+										title: '提示',
+										content: '操作成功',
 									});
 									 <!--$('#table').bootstrapTable('refresh');-->
 								}
@@ -262,10 +262,10 @@
    			  })//  ready end
    			 function roleFormatter(data){
    			     if(data.length == 2){
-   			     		return 'admin';
+   			     		return '管理员';
    			     }
    			     else
-   			     	return 'user';
+   			     	return '普通用户';
    			 }
    			 function enableFormatter(data){
    			    if(data == 0){

@@ -5,7 +5,5 @@ import com.minivision.cameraplat.rest.param.alarm.AlarmParam;
 import com.minivision.cameraplat.rest.result.PageResult;
 
 public interface MonitorRecordService {
-  PageResult<MonitorRecord> findMonitorRecords(AlarmParam param);
-
-    int deleteBySnapshotCameraIdAndSnapshotTimestampLessThan(Long id, long time);
+    PageResult<MonitorRecord> findMonitorRecords(AlarmParam param);
 }

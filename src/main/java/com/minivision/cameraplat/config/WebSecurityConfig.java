@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -38,7 +39,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
           .rememberMe().key("camera")
               .and().authorizeRequests()
               .antMatchers("/assets/**",
-                  "/login", "/test/**","/api/v1/**","/webjars/**","/swagger-ui.html","/swagger-resources","/v2/api-docs","/c/**","/client","/snapshot/**","/people/**","/client.exe","/pingan.apk").permitAll()
+                  "/login", "/test/**","/api/v1/**","/webjars/**","/swagger-ui.html","/swagger-resources","/v2/api-docs","/c/**","/client","/snapshot/**","/people/**","/client.exe","/pingan.apk","/registry").permitAll()
+              .antMatchers(HttpMethod.GET,"/user/initUser").authenticated()
+              .antMatchers(HttpMethod.POST,"/user/initUser").permitAll()
               .antMatchers("/user").fullyAuthenticated()
               .and().authorizeRequests()
               .anyRequest().hasRole("USER")

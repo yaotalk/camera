@@ -5,7 +5,7 @@
 			<!-- <div th:replace="fragments :: navbar"></div> -->
 			<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
 			<div class="page-header">
-				<h1>System Backup</h1>
+				<h1>系统备份</h1>
 			</div>
 			<div class="col-sm-6" style="margin-left:20%">
 				<!--<div class="row">-->
@@ -40,19 +40,19 @@
                     <!--</div>-->
                 <!--</div>-->
                 <div class="form-group" style="padding-left: 15%">
-                    <label for="faceset" class="col-sm-2 control-label" style="padding-top:1%;text-align: center">File Path</label>
+                    <label for="faceset" class="col-sm-2 control-label" style="padding-top:1%;text-align: center">路径</label>
                     <div class="input-group col-sm-6">
-                        <input type="text" class="form-control" placeholder="Zip File Path" id="path_input" name="path" required="required" readonly="readonly" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+                        <input type="text" class="form-control" placeholder="具有压缩包的路径" id="path_input" name="path" required="required" readonly="readonly">
                         <span class="input-group-btn">
 									<button type="button" class="btn btn-purple btn-sm" data-toggle="modal" data-target="#browser">
 										<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-										choose
+										浏览
 									</button>
 								</span>
                     </div>
                     <div style="margin-left: 25%;margin-top: 3%;">
-                        <button id="export" type="button" class="btn btn-primary ladda-button" data-style="slide-up">export</button>
-                        <button  class="btn btn-primary ladda-button" data-style="slide-up" id="import">import</button>
+                        <button id="export" type="button" class="btn btn-primary ladda-button" data-style="slide-up">导出</button>
+                        <button  class="btn btn-primary ladda-button" data-style="slide-up" id="import">导入</button>
                     </div>
                 </div>
 
@@ -61,17 +61,17 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="browserModalLabel">choose file path to import</h4>
+                                <h4 class="modal-title" id="browserModalLabel">选择导入文件路径</h4>
                             </div>
                             <div class="modal-body" style="max-height: 690px;">
                                 <div class="form-group">
                                     <div class="form-group-cell root-select-cell" style="width: 100px">
-                                        <label>dir:</label>
+                                        <label>磁盘:</label>
                                         <select id="disk">
                                         </select>
                                     </div>
                                     <div class="form-group-cell folder-select-cell" style="width: 350px">
-                                        <label class="ng-binding">path</label>
+                                        <label class="ng-binding">路径</label>
                                         <input type="text" autocomplete="off" id="path" readonly="readonly">
                                     </div>
                                     <div class="form-group-cell form-button form-link">
@@ -91,14 +91,14 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">cancel</button>
-                                <button type="button" class="btn btn-primary" id="path_select_btn">choose</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                <button type="button" class="btn btn-primary" id="path_select_btn">选择</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="list-group-item">
-                    <h6>logs</h6>
+                    <h6>日志</h6>
                     <div id="log_container">
                     </div>
                 </div>
@@ -113,19 +113,19 @@
                $('#log_container').ace_scroll({size: 200});
 
                if(task_status == 1){
-                   $('#log_container .scroll-content').append($('<br>')).append($('<span>').text('Some tasks are being imported. Please wait a moment.......'));
+                   $('#log_container .scroll-content').append($('<br>')).append($('<span>').text('有任务正在导入，请稍后......'));
                    $("#import").attr("disabled",true);
                }
                if(import_status == 1){
-                   $('#log_container .scroll-content').append($('<br>')).append($('<span>').text('Some tasks are being imported. Please wait a moment......'));
+                   $('#log_container .scroll-content').append($('<br>')).append($('<span>').text('有任务正在导出，请稍后......'));
                    $("#export").attr("disabled",true);
                }
 
                if(task_status == 2){
-                   $('#log_container .scroll-content').append($('<br>')).append($('<span>').text('import success'));
+                   $('#log_container .scroll-content').append($('<br>')).append($('<span>').text('导入任务成功'));
                }
                if(import_status == 2){
-                  var text = 'Backup finish, please click<a href="people/export.zip">backup package</a>downloading if web dose not download itself automatically';
+                  var text = '任务备份完成,如浏览器未自动下载,请点击<a href="people/export.zip">备份包</a>下载';
                   $('#log_container .scroll-content').append($('<br>')).append($('<span>').html(text));
                }
                 $("#export").on('click',function(){
@@ -142,7 +142,7 @@
                                      import_status =  JSON.parse(message.body).status;
                                      if(import_status == 2){
                                             $("#export").attr("disabled",false);
-                                            var text = 'Backup finish, please click<a href="people/export.zip">backup package</a>downloading if web dose not download itself automatically';
+                                            var text = '如浏览器未自动下载,请点击<a href="people/export.zip">备份包</a>下载';
                                             $('#log_container .scroll-content').append($('<br>')).append($('<span>').html(text));
                                      }
                             })
@@ -161,13 +161,13 @@
 					style: 'well',
 					no_file: 'Click to choose or drag & drop',
 					droppable: true, //html5 browsers only
-					btn_choose:"upload zip file",
+					btn_choose:"上传zip压缩包",
 					thumbnail: 'large', //html5 browsers only
 					maxSize: 10240*1024*1024, //~100 KB
 					allowExt:  ['zip']
 					//allowMime: ['application/zip'] //html5 browsers only
 				});
-				 $(".ace-file-container").attr("data-title",'upload zip file').css("height","150px");
+				 $(".ace-file-container").attr("data-title",'上传zip压缩包').css("height","150px");
 
                 $('#path_select_btn').click(function(e){
                      $('#path_input').val($('#path').val());
@@ -202,15 +202,15 @@
                      $("#import").on('click',function () {
                          if($("#path").val() === "" || $("#path").val().trim() ===""){
                              $.alert({
-                                title: 'prompt',
-                                content: 'choose file path please'
+                                title: '提示',
+                                content: '请选择路径',
                               });
                              return;
                          }
                          Ladda.bind('#import');
                          var l = Ladda.create($("#import")[0]);
                          l.start();
-                         $('#log_container .scroll-content').append($('<br>')).append($('<span>').text('importing,please wait......'));
+                         $('#log_container .scroll-content').append($('<br>')).append($('<span>').text('正在导入，请稍后......'));
                          var socket = new WebSocket('ws://'+window.location.host+'/client');
                          var stompClient = Stomp.over(socket);
                          stompClient.connect({}, function(frame){
@@ -227,7 +227,7 @@
                         $.post('import',{'filepath':$("#path").val()},function (data) {
                             stompClient.disconnect();
                             $.alert({
-                                title: 'prompt',
+                                title: '提示',
                                 content: data
                             });
                             l.stop();

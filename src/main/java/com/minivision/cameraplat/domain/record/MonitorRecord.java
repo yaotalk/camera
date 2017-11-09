@@ -1,43 +1,18 @@
 package com.minivision.cameraplat.domain.record;
 
-import javax.persistence.*;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.minivision.cameraplat.domain.Face;
-import com.minivision.cameraplat.domain.IdEntity;
 
-import io.swagger.annotations.ApiModelProperty;
-
-import java.util.List;
-
-@Entity
-@JsonInclude(Include.NON_EMPTY)
-public class MonitorRecord extends IdEntity{
-  @OneToOne(cascade =CascadeType.REMOVE)
-  @JoinColumn(name="snapshot")
+@Document
+public class MonitorRecord extends IdDocument{
   private SnapshotRecord snapshot;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="faceToken", foreignKey = @ForeignKey(name = "none" , value= ConstraintMode.NO_CONSTRAINT))
-  @NotFound(action = NotFoundAction.IGNORE)
-  private Face face;
-
-  @Transient
-  @ApiModelProperty(hidden = true)
-  private List<FaceInfo> faceInfos;
-
-  public List<FaceInfo> getFaceInfos() {
-    return faceInfos;
-  }
-
-  public void setFaceInfos(List<FaceInfo> faceInfos) {
-    this.faceInfos = faceInfos;
-  }
-
+  @Indexed
+  private FaceInfo face;
+  
   public MonitorRecord() {
+    
   }
 
   public MonitorRecord(SnapshotRecord snapshot) {
@@ -50,36 +25,67 @@ public class MonitorRecord extends IdEntity{
   public void setSnapshot(SnapshotRecord snapshot) {
     this.snapshot = snapshot;
   }
-  public Face getFace() {
+  
+  public FaceInfo getFace() {
     return face;
   }
-  public void setFace(Face face) {
+  
+  public void setFace(FaceInfo face) {
     this.face = face;
   }
+  
+  
 
   public static class FaceInfo{
-    private Face face;
-    private float confidence;
+    private String id;
+    private String name;
+    private String sex;
+    private String faceSet;
+    private String imgUrl;
 
-    public FaceInfo(Face face, float confidence) {
-      this.face = face;
-      this.confidence = confidence;
+    public FaceInfo(){};
+    
+    public FaceInfo(Face face){
+      this.id = face.getId();
+      this.name = face.getName();
+      this.sex = face.getSex();
+      this.faceSet = face.getFaceSet().getToken();
+      this.imgUrl = face.getImgUrl();
     }
 
-    public Face getFace() {
-      return face;
+    public String getImgUrl() {
+      return imgUrl;
     }
 
-    public void setFace(Face face) {
-      this.face = face;
+    public void setImgUrl(String imgUrl) {
+      this.imgUrl = imgUrl;
     }
 
-    public float getConfidence() {
-      return confidence;
+    public String getId() {
+      return id;
     }
-
-    public void setConfidence(float confidence) {
-      this.confidence = confidence;
+    public void setId(String id) {
+      this.id = id;
     }
+    public String getName() {
+      return name;
+    }
+    public void setName(String name) {
+      this.name = name;
+    }
+    public String getSex() {
+      return sex;
+    }
+    public void setSex(String sex) {
+      this.sex = sex;
+    }
+    public String getFaceSet() {
+      return faceSet;
+    }
+    public void setFaceSet(String faceSet) {
+      this.faceSet = faceSet;
+    }
+    
   }
+
 }

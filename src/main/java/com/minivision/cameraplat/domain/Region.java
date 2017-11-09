@@ -1,17 +1,13 @@
 package com.minivision.cameraplat.domain;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 
 @Entity
-@ApiModel
 public class Region extends IdEntity{
   private String name; // 区域名称
   @ManyToOne(optional = true)
   @JoinColumn(name = "parent_id", nullable = true)
-  @ApiModelProperty(hidden = true)
   private Region parentNode; // 父节点
 
   public String getName() {
@@ -21,6 +17,7 @@ public class Region extends IdEntity{
   public void setName(String name) {
     this.name = name;
   }
+
   public Region getParentNode() {
     return parentNode;
   }
@@ -38,6 +35,6 @@ public class Region extends IdEntity{
     }
   }
   @Override public String toString() {
-    return "Area { id='" + id + '\''+ ", Name='" + name + '\'' + ", ParentNode=" + (parentNode==null?null:parentNode.getId()) + '}';
+    return "区域{ id='" + id + '\''+ ", 名称='" + name + '\'' + ", 父节点ID=" + (parentNode==null?null:parentNode.getId()) + '}';
   }
 }

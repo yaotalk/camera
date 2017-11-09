@@ -40,31 +40,31 @@ public class RegionController {
   }
 
   @PostMapping
-  @OpAnnotation(modelName = "Area",opration = "add Area")
+  @OpAnnotation(modelName = "区域",opration = "新增区域")
   public String addRegion(Region region) {
     this.regionService.create(region);
     return "success";
   }
 
   @PatchMapping
-  @OpAnnotation(modelName = "Area",opration = "edit Area")
+  @OpAnnotation(modelName = "区域",opration = "编辑区域")
   public String updateRegion(Region region) {
     this.regionService.update(region);
     return "success";
   }
 
   @DeleteMapping
-  @OpAnnotation(modelName = "Area",opration = "delete Area")
+  @OpAnnotation(modelName = "区域",opration = "删除区域")
   public String deleteRegion(Region region) {
     Region old_region = regionService.findById(region.getId());
     // 判断是否含有子节点
     if (regionService.findChildren(old_region).size() > 0) {
-      return "delete failed,this region is a parent node";
+      return "删除失败，该区域为父区域，无法删除";
     }
     // 判断是否已经关联摄像头
     List<Camera> cameras = cameraService.findByRegion(old_region);
     if (cameras.size() > 0) {
-      return "delete failed,this region has been related to cameras,please delete cameras first";
+      return "删除失败，该区域包含摄像头，请先删除摄像头";
     }
     regionService.delete(old_region.getId());
     return "success";

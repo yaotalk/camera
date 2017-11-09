@@ -1,33 +1,24 @@
 package com.minivision.cameraplat.domain.record;
 
-import com.minivision.cameraplat.domain.EntranceGuard;
-import com.minivision.cameraplat.domain.IdEntity;
 import com.minivision.cameraplat.domain.MonitorImage;
 import com.minivision.cameraplat.faceplat.result.detect.DetectedFace;
 
-import java.util.Set;
-
 import javax.persistence.*;
 
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-public class SnapshotRecord extends IdEntity{
+@Document
+public class SnapshotRecord extends IdDocument{
   private long timestamp;
+  @Indexed
   private long cameraId;
   private String photoFileName;
   private String photoUrl;
-  private float confidence;
-  @Embedded
-  private SnapShotFace face;
   
-  @Transient
-  private int isOut;
-  @Transient
-  private String padId;
-  @Transient
-  private Set<EntranceGuard> entranceGuards;
-  @Transient
-  private String doorNumber;
+  private float confidence;
+
+  private SnapShotFace face;
   
   public SnapshotRecord() {
     
@@ -37,7 +28,7 @@ public class SnapshotRecord extends IdEntity{
     this.timestamp = image.getTimestamp();
     this.cameraId = image.getCameraId();
     this.photoFileName = image.getFileName();
-    this.photoUrl = image.getFileName();
+    this.photoUrl = image.getFileUrl();
     
     SnapShotFace.FacePos facePosition = new SnapShotFace.FacePos();
     facePosition.top = face.getFaceRectangle().getTop();
@@ -105,47 +96,11 @@ public class SnapshotRecord extends IdEntity{
   public void setConfidence(float confidence) {
     this.confidence = confidence;
   }
+
   
-  
-  public int getIsOut() {
-    return isOut;
-  }
-
-  public void setIsOut(int isOut) {
-    this.isOut = isOut;
-  }
-
-  public String getPadId() {
-    return padId;
-  }
-
-  public void setPadId(String padId) {
-    this.padId = padId;
-  }
-
-  public Set<EntranceGuard> getEntranceGuards() {
-    return entranceGuards;
-  }
-
-  public void setEntranceGuards(Set<EntranceGuard> entranceGuards) {
-    this.entranceGuards = entranceGuards;
-  }
-
-  public String getDoorNumber() {
-    return doorNumber;
-  }
-
-  public void setDoorNumber(String doorNumber) {
-    this.doorNumber = doorNumber;
-  }
-
-
-
   @Embeddable
   public static class SnapShotFace{
-    @Embedded
     private FacePos facePosition;
-    @Embedded
     private FaceAttr faceAttributes;
     
     public FacePos getFacePosition() {

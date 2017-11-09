@@ -7,11 +7,9 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.minivision.cameraplat.domain.Face;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface FaceRepository extends PagingAndSortingRepository<Face, String> ,JpaSpecificationExecutor<Face> {
     void deleteByIdIn(List<String> ids);
     Page<Face> findByFaceSetToken(String facesetToken,Pageable pageable);
-    List<Face> findByIdIn(List<String> faceTokens);
 }

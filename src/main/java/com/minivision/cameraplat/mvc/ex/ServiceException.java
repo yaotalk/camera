@@ -7,7 +7,7 @@ public class ServiceException extends Exception{
   private Throwable throwable;
   
   //TODO error code
-
+  
   public ServiceException(String msg, Throwable throwable) {
     this.msg = msg;
     this.throwable = throwable;

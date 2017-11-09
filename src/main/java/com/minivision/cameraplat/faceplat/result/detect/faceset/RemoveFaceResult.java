@@ -50,10 +50,4 @@ public class RemoveFaceResult {
 	public void setFailureDetail(List<FailureDetail> failureDetail) {
 		this.failureDetail = failureDetail;
 	}
-
-	@Override public String toString() {
-		return "RemoveFaceResult{" + "facesetToken='" + facesetToken + '\'' + ", outerId='" + outerId
-			+ '\'' + ", faceRemoved=" + faceRemoved + ", faceCount=" + faceCount + ", failureDetail="
-			+ failureDetail + '}';
-	}
 }

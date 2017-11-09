@@ -30,14 +30,14 @@ public class AnalyserController {
   }
 
   @PostMapping
-  @OpAnnotation(modelName = "Analyser",opration = "add Analyser")
+  @OpAnnotation(modelName = "分析仪",opration = "新增分析仪")
   public String createAnalyser(Analyser analyser) {
     this.analyserService.create(analyser);
     return "success";
   }
 
   @DeleteMapping
-  @OpAnnotation(modelName = "Analyser",opration = "delete Analyser")
+  @OpAnnotation(modelName = "分析仪",opration = "删除分析仪")
   public String deleteAnalyser(Analyser analyser) {
     Analyser oldanalyser = analyserService.findById(analyser.getId());
     if (oldanalyser.getCameras().size() > 0) {
@@ -48,7 +48,7 @@ public class AnalyserController {
   }
 
   @PatchMapping
-  @OpAnnotation(modelName = "Analyser",opration = "edit Analyser")
+  @OpAnnotation(modelName = "分析仪",opration = "编辑分析仪")
   public String updateAnalyser(Analyser analyser) {
     this.analyserService.update(analyser);
     return "success";

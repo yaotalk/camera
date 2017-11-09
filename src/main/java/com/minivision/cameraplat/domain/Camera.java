@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.minivision.cameraplat.mqtt.message.MsgAnalyserConfig;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,32 +43,20 @@ public class Camera extends IdEntity {
   @JoinColumn(name = "region_id")
   private Region region;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "faceset_id", foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
-  private FaceSet faceSet;
-
 //  @JsonIgnore
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "cam_fs", joinColumns = {@JoinColumn(name = "camera_id")},
       inverseJoinColumns = {@JoinColumn(name = "face_token")})
   private Set<FaceSet> faceSets;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "cam_door",joinColumns = {@JoinColumn(name = "camera_id")},inverseJoinColumns = {@JoinColumn(name = "door_id")})
-  private List<EntranceGuard.Door> doors;
+  private String videoPlayUrl;
 
-  private int isOut;
-
-  private String padId;
-
-  private String doorNumber;
-
-  public FaceSet getFaceSet() {
-    return faceSet;
+  public String getVideoPlayUrl() {
+    return videoPlayUrl;
   }
 
-  public void setFaceSet(FaceSet faceSet) {
-    this.faceSet = faceSet;
+  public void setVideoPlayUrl(String videoPlayUrl) {
+    this.videoPlayUrl = videoPlayUrl;
   }
 
   public String getRtspUrl() {
@@ -78,38 +65,6 @@ public class Camera extends IdEntity {
 
   public void setRtspUrl(String rtspUrl) {
     this.rtspUrl = rtspUrl;
-  }
-
-  public String getDoorNumber() {
-    return doorNumber;
-  }
-
-  public void setDoorNumber(String doorNumber) {
-    this.doorNumber = doorNumber;
-  }
-
-  public List<EntranceGuard.Door> getDoors() {
-    return doors;
-  }
-
-  public void setDoors(List<EntranceGuard.Door> doors) {
-    this.doors = doors;
-  }
-
-  public int getIsOut() {
-    return isOut;
-  }
-
-  public void setIsOut(int isOut) {
-    this.isOut = isOut;
-  }
-
-  public String getPadId() {
-    return padId;
-  }
-
-  public void setPadId(String padId) {
-    this.padId = padId;
   }
 
   public int getType() {
@@ -211,11 +166,10 @@ public class Camera extends IdEntity {
 
   @Override public String toString() {
 
-    return "Camera{id="  + id + '\'' + ",DeviceType=" + type + ", ip='" + ip + '\'' + ", username='" + username + '\''
-        + ", password='" + password + '\'' + ", deviceName='" + deviceName + '\'' + ", port=" + port
-        + ", webPort=" + webPort + ", rtspPort=" + rtspPort + ", strategy=" + (strategy==null?null:strategy.getId())
-        + ", analyser=" + (analyser==null?null:analyser.getId()) + ", region=" + (region==null?null:region.getId())+ ", faceSets=" + (faceSets==null?null:
-        faceSets.stream().map(FaceSet::getToken).collect(Collectors.toList())) +
-        ", in or out（0 in, 1 out）=" + isOut + ", padId='" + padId + '\'' +'\'' + '}';
+    return "摄像机{id="  + id + '\'' + ",设备类型=" + type + ", ip='" + ip + '\'' + ", 用户名='" + username + '\''
+        + ", 密码='" + password + '\'' + ", 设备名称='" + deviceName + '\'' + ", 端口=" + port
+        + ", web端口=" + webPort + ", rtsp端口=" + rtspPort + ", 布控策略=" + (strategy==null?null:strategy.getId())
+        + ", 分析仪=" + (analyser==null?null:analyser.getId()) + ", 区域=" + (region==null?null:region.getId())+ ", 人脸库=" + (faceSets==null?null:
+        faceSets.stream().map(FaceSet::getToken).collect(Collectors.toList())) + '}';
   }
 }

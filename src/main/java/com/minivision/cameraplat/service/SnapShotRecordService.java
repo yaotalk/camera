@@ -7,6 +7,4 @@ import com.minivision.cameraplat.rest.result.PageResult;
 public interface SnapShotRecordService {
 
   PageResult<SnapshotRecord> findByTimeandCameraId(SnapShotParam param);
-
-  int deleteByCameraIdAndTimestampLessThan(Long id, long time);
 }

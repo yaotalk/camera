@@ -15,7 +15,7 @@
 //        txt: 'TXT',
 //        sql: 'SQL',
 //        doc: 'MS-Word',
-          excel: 'export MS-Excel'
+          excel: '导出MS-Excel'
 //        xlsx: 'MS-Excel (OpenXML)',
 //        powerpoint: 'MS-Powerpoint',
 //        pdf: 'PDF'

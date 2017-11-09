@@ -45,6 +45,7 @@ public class OAuth2ClientConfig {
   private String password;
   @Value("${faceservice.maxConcurrent:32}")
   private int maxConcurrent;
+  
   @Bean
   protected OAuth2ProtectedResourceDetails resource() {
 

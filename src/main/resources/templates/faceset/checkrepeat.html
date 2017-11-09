@@ -5,15 +5,15 @@
 			<!-- <div th:replace="fragments :: navbar"></div> -->
 			<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
 			<div class="page-header">
-				<h1>Check Repeated Pictures </h1>
+				<h1>检测重复图片 </h1>
 			</div>
 			<div class="row">
 				<div th:if="${checkRepeatTaskContext != null}">
 				<div class="col-sm-6">
-					<div class="alert alert-success" role="alert">人脸库&nbsp;<span style="font-weight:bold;" th:text="${checkRepeatTaskContext.faceSetName}"></span>&nbsp;The data needed to detect duplicate pictures are in preparation !</div>
+					<div class="alert alert-success" role="alert">人脸库&nbsp;<span style="font-weight:bold;" th:text="${checkRepeatTaskContext.faceSetName}"></span>&nbsp;检测重复图片所需数据正在准备中！</div>
 					<div>
 						<div id="stop_init" style="display:none">
-							  <button class="btn btn-primary">stop</button>
+							  <button class="btn btn-primary">停止</button>
 						 </div>
 					</div>
 				</div>
@@ -21,7 +21,7 @@
 				<div class="col-sm-6" th:if="${checkRepeatTaskContext == null}" th:hidden="${checkRepeatTask != null && checkRepeatTask.taskId != null} " id="new_task_form">
 					<form class="form-horizontal" id="import_form" action="checkIfHasNotDetected" method="post">
 						<div class="form-group">
-						    <label for="faceset" class="col-sm-2 control-label">Face DB</label>
+						    <label for="faceset" class="col-sm-2 control-label">人脸库</label>
 						    <div class="input-group col-sm-6">
 						      <select  class="form-control" id="faceset"  name="faceSetToken" required="required">
 						      </select>
@@ -30,7 +30,7 @@
 					
 						<div class="form-group">
 						    <div class="col-sm-offset-2 col-sm-10">
-						      <button type="submit" class="btn btn-default" id="import_btn">start to check</button>
+						      <button type="submit" class="btn btn-default" id="import_btn">开始检测</button>
 						    </div>
 						</div>
 					</form>
@@ -40,12 +40,12 @@
 								
 			<div th:if="${checkRepeatTask != null && checkRepeatTask.taskId != null && checkRepeatTaskContext == null}" id="current_task" >
 				<div class="col-sm-6">
-				<div class="alert alert-success" th:if="${checkRepeatTask != null}" role="alert" style="display:none" id="nonrepeat">Face DB&nbsp;<span id="facesetName"></span>&nbsp;No duplicate pictures!</div>
+				<div class="alert alert-success" th:if="${checkRepeatTask != null}" role="alert" style="display:none" id="nonrepeat">人脸库&nbsp;<span id="facesetName"></span>&nbsp;暂无重复图片！</div>
 				<div class="panel panel-default" id="progressBar" th:hidden="${checkRepeatTask.totalNum <= 0}">
-							<div class="panel-heading" th:text="${checkRepeatTask.faceSetName}">task name</div>
+							<div class="panel-heading" th:text="${checkRepeatTask.faceSetName}">任务名</div>
 							<div class="list-group">
 								<div class="list-group-item">
-									<h6><span id="repeat_task_progress_info" th:text="|progress  (${checkRepeatTask.processedNum}/${checkRepeatTask.totalNum})|">(/)</span><span id="stillRepeat"></span></h6>
+									<h6><span id="repeat_task_progress_info" th:text="|进度  (${checkRepeatTask.processedNum}/${checkRepeatTask.totalNum})|">(/)</span><span id="stillRepeat"></span></h6>
 									<div class="progress pos-rel progress-large" id="repeat_task_progress" data-percent="66%" th:data-percent="${#numbers.formatPercent(checkRepeatTask.processedNum*1f/checkRepeatTask.totalNum, 0, 2)}">
 										<div class="progress-bar progress-bar-striped active" th:style="|width: ${checkRepeatTask.processedNum*100f/checkRepeatTask.totalNum}%;|"></div>
 									</div>
@@ -53,10 +53,10 @@
 							</div>
 				</div>
 						<div id="new_task" th:hidden="${checkRepeatTask.taskStatus!=2}">
-							<button class="btn btn-primary">new check</button>
+							<button class="btn btn-primary">新检测</button>
 						</div>
 						<div id="stop_btn" th:hidden="${checkRepeatTask.taskStatus!=1}">
-							  <button class="btn btn-primary">stop</button>
+							  <button class="btn btn-primary">停止</button>
 						 </div>
 				</div>
 
@@ -122,14 +122,14 @@
 									}
 									var progress = (task.processedNum*100/task.totalNum).toFixed(2) +'%';
 									
-										var info = "progress  ("+task.processedNum+"/"+task.totalNum+")";
+										var info = "进度  ("+task.processedNum+"/"+task.totalNum+")";
 										$('#repeat_task_progress_info').text(info);
 										
 										$("#repeat_task_progress").attr('data-percent',progress);
 										$("#repeat_task_progress .progress-bar").css('width', progress);
 										if(task.taskStatus==2){
 											if(task.stillRepeatNumber > 0){
-												$("#stillRepeat").text(" Finished processing，remaining  "+task.stillRepeatNumber+" to deal with.");
+												$("#stillRepeat").text(" 处理完毕，还剩余"+task.stillRepeatNumber+"条未处理.");
 											}
 									    	progress_done();
 										}
@@ -139,13 +139,13 @@
 										if(task.taskStatus==2){
 											var progress = (task.processedNum*100/task.totalNum).toFixed(2) +'%';
 											
-											var info = "progress  ("+task.processedNum+"/"+task.totalNum+")";
+											var info = "进度  ("+task.processedNum+"/"+task.totalNum+")";
 											$('#repeat_task_progress_info').text(info);
 											
 											$("#repeat_task_progress").attr('data-percent',progress);
 											$("#repeat_task_progress .progress-bar").css('width', progress);
 											if(task.stillRepeatNumber > 0){
-												$("#stillRepeat").text("  Finished processing, remaining  "+task.stillRepeatNumber+"to deal with..");
+												$("#stillRepeat").text(" 处理完毕，还剩余"+task.stillRepeatNumber+"条未处理.");
 											}
 											progress_done();
 											return;
@@ -155,13 +155,13 @@
 													if(task.taskStatus==2){
 													var progress = (task.processedNum*100/task.totalNum).toFixed(2) +'%';
 													
-													var info = "progress  ("+task.processedNum+"/"+task.totalNum+")";
+													var info = "进度  ("+task.processedNum+"/"+task.totalNum+")";
 													$('#repeat_task_progress_info').text(info);
 													
 													$("#repeat_task_progress").attr('data-percent',progress);
 													$("#repeat_task_progress .progress-bar").css('width', progress);
 														if(task.stillRepeatNumber > 0){
-															$("#stillRepeat").text(" Finished processing ,remaining "+task.stillRepeatNumber+"to deal with.");
+															$("#stillRepeat").text(" 处理完毕，还剩余"+task.stillRepeatNumber+"条未处理.");
 														}
 														progress_done();
 														return;
@@ -205,7 +205,7 @@
 						}
 						
 						if([[${checkRepeatTask.stillRepeatNumber}]] > 0){
-							$("#stillRepeat").text(" Finished processing,remaining "+[[${checkRepeatTask.stillRepeatNumber}]]+" to deal with.");
+							$("#stillRepeat").text(" 处理完毕，还剩余"+[[${checkRepeatTask.stillRepeatNumber}]]+"条未处理。");
 						}
 						
 						

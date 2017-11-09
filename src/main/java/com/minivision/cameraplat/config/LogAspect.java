@@ -21,13 +21,12 @@ import com.minivision.cameraplat.service.SysLogService;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
 public class LogAspect {
-
+  
   private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
     @Autowired
@@ -60,9 +59,7 @@ public class LogAspect {
             logger.info("HTTP_METHOD : " + request.getMethod());
             logger.info("IP : " + request.getRemoteAddr());
             logger.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-            User user = null;
-        try {
-            logger.info("ARGS : " + Arrays.toString(Optional.ofNullable(joinPoint.getArgs()).orElse(null)));
+            logger.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));
             String username;
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal instanceof UserDetails) {
@@ -70,10 +67,12 @@ public class LogAspect {
             } else {
                 username = principal.toString();
             }
+            User user = null;
             if (username != null) {
                 user = userRepository.findByUsername(username);
             }
-            if (obj != null && "success".equals(obj)) {
+            try {
+                if (obj != null && "success".equals(obj)) {
                     String target_name = joinPoint.getSignature().getName();
                     Class<?> target = joinPoint.getTarget().getClass();
                     Class<?> target_class = Class.forName(target.getName());
@@ -88,10 +87,10 @@ public class LogAspect {
                             String details;
                             if ("updateAnaCamera".equals(method.getName())) {
                                 details =
-                                    "{analyserID: " + joinPoint.getArgs()[0] + ",cameraID: " + joinPoint.getArgs()[1]
+                                    "{分析仪ID: " + joinPoint.getArgs()[0] + ",摄像机ID: " + joinPoint.getArgs()[1]
                                         + " }";
                             } else if ("bindwithEntrance".equals(method.getName())) {
-                                details = "{cameraID: " + joinPoint.getArgs()[0] + ",doorID: " + joinPoint
+                                details = "{摄像机ID: " + joinPoint.getArgs()[0] + ",门ID: " + joinPoint
                                     .getArgs()[1] + " }";
                             } else
                                 details = (joinPoint.getArgs()[0]).toString();
@@ -104,8 +103,8 @@ public class LogAspect {
                     }
                 }
             } catch (Exception e) {
-                SysLog sysLog = new SysLog(user, request.getRemoteAddr(), "opreate error", "opreate error",
-                    Calendar.getInstance().getTime(), "log error" + e.getMessage());
+                SysLog sysLog = new SysLog(user, request.getRemoteAddr(), "", "",
+                    Calendar.getInstance().getTime(), "日志异常" + e.getMessage());
                 sysLogService.save(sysLog);
                 logger.error(e.getMessage());
             }

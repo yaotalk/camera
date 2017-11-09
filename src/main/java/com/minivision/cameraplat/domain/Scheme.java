@@ -101,12 +101,12 @@ public class Scheme extends IdEntity{
     }
 
     @Override public String toString() {
-      return "Period{" + "id=" + id + ", startTime ='" + startTime + '\'' + ", endTime ='" + endTime
+      return "周期{" + "id=" + id + ", 开始时间='" + startTime + '\'' + ", 结束时间='" + endTime
           + '\'' + ", weekday=" + weekday + '}';
     }
   }
 
   @Override public String toString() {
-    return "Time Span{id="  + id + '\'' +",Name ='" + name + '\'' +  '}';
+    return "时间方案{id="  + id + '\'' +",名称='" + name + '\'' +  '}';
   }
 }

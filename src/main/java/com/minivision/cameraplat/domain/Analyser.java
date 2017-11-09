@@ -79,8 +79,8 @@ public class Analyser extends IdEntity{
   }
 
   @Override public String toString() {
-    return "analgyser{id = " + id +'\'' + ",name='" + name + '\'' + ", ip='" + ip + '\'' + ", port='" + port + '\''
-        + ", username='" + username + '\'' + ", password='" + password + '\'' + "} ";
+    return "分析仪{id = " + id +'\'' + ",名称='" + name + '\'' + ", ip='" + ip + '\'' + ", 端口='" + port + '\''
+        + ", 用户名='" + username + '\'' + ", 密码='" + password + '\'' + "} ";
   }
 
 }

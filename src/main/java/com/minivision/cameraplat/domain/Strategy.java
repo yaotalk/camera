@@ -151,10 +151,10 @@ public class Strategy extends IdEntity {
   }
 
   @Override public String toString() {
-    return "Strategy{id="  + id + '\'' + ",Name='" + name + '\'' + ", StrategyType=" + type + ", Whether to capture="
-        + snapshot + ", Time Plan =" + (scheme==null?null:scheme.getId()) + ",  Person amount of each capture=" + maxfaceNum + ", Threshold of comparison="
-        + compareThreshold + ", Lowest Pixels=" + minFaceSize + ", Day of Data Saving=" + preserveDays
-        + ", Threshold for quality of capture =" + faceQualityThreshold + ", Interval for Recognition Data Storing=" + intervals
-        + ", Interval of each capture=" + snapInterval + ", Repeat times for recognition failure=" + retryCounts + '}';
+    return "布控策略{id="  + id + '\'' + ",名称='" + name + '\'' + ", 类型=" + type + ", 是否抓拍="
+        + snapshot + ", 时间方案=" + (scheme==null?null:scheme.getId()) + ", 最大人脸数=" + maxfaceNum + ", 比对阈值="
+        + compareThreshold + ", 最小人脸像素=" + minFaceSize + ", 保存天数=" + preserveDays
+        + ", 人脸质量阈值=" + faceQualityThreshold + ", 识别入库间隔=" + intervals
+        + ", 抓拍间隔=" + snapInterval + ", 重试次数=" + retryCounts + '}';
   }
 }

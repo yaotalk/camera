@@ -23,15 +23,16 @@ public class Face {
   @CreatedDate
   @Temporal(TemporalType.TIMESTAMP)
   private Date createTime;
+  
+  private String phoneNumber;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "faceset_id",
+      foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
+  private FaceSet faceSet;
+  private String imgpath;
+  private String imgUrl;
 
   public Face() {}
-
-  public Face(String name,String idCard, String sex, String phoneNumber) {
-    this.name = name;
-    this.idCard = idCard;
-    this.sex = sex;
-    this.phoneNumber = phoneNumber;
-  }
 
   public Face(String name, String sex, String idCard, String phoneNumber, FaceSet faceSet,
       String imgpath) {
@@ -42,13 +43,6 @@ public class Face {
     this.faceSet = faceSet;
     this.imgpath = imgpath;
   }
-
-  private String phoneNumber;
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "faceset_id",
-      foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT))
-  private FaceSet faceSet;
-  private String imgpath;
 
   public String getEmployeeId() {
     return employeeId;
@@ -74,7 +68,15 @@ public class Face {
     this.imgpath = imgpath;
   }
 
-  public String getName() {
+  public String getImgUrl() {
+	return imgUrl;
+}
+
+public void setImgUrl(String imgUrl) {
+	this.imgUrl = imgUrl;
+}
+
+public String getName() {
     return name;
   }
 
@@ -140,10 +142,10 @@ public class Face {
 
   @Override
   public String toString() {
-    return "Face{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", sex（0 womam 1 man）='" + sex + '\''
-        + ", IDCard ='" + idCard + '\'' + ", employeeId ='" + employeeId + '\'' + ", phoneNumber='" + phoneNumber
-        + '\'' + ", FaceDB=" + faceSet.getToken() + ", pic path ='" + imgpath + '\'' + ", picSize ='"
-        + picSize + '\'' + ", pic MD5 ='" + picMd5 + '\'' + '}';
+    return "人脸{" + "id='" + id + '\'' + ", 姓名='" + name + '\'' + ", 性别（0男1女）='" + sex + '\''
+        + ", 身份证号='" + idCard + '\'' + ", 工号='" + employeeId + '\'' + ", 电话号码='" + phoneNumber
+        + '\'' + ", 所属人脸库token=" + faceSet.getToken() + ", 图片路径='" + imgpath + '\'' + ", 文件大小='"
+        + picSize + '\'' + ", 文件的md5值='" + picMd5 + '\'' + '}';
   }
 
 }

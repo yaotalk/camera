@@ -41,7 +41,7 @@ public class LoginInSuccessHandler implements AuthenticationSuccessHandler
             user = userRepository.findByUsername(username);
         }
         SysLog sysLog =
-            new SysLog(user, httpServletRequest.getRemoteAddr(), "Login", "Login",
+            new SysLog(user, httpServletRequest.getRemoteAddr(), "登录", "登录",
                 Calendar.getInstance().getTime(),username);
         sysLogService.save(sysLog);
         httpServletResponse.sendRedirect("/faceset");
@@ -72,7 +72,7 @@ class LoginOutSuccessHandler implements LogoutSuccessHandler {
             user = userRepository.findByUsername(username);
         }
         SysLog sysLog =
-            new SysLog(user, httpServletRequest.getRemoteAddr(), "Login", "LoginOut",
+            new SysLog(user, httpServletRequest.getRemoteAddr(), "登录", "登出",
                 Calendar.getInstance().getTime(),username);
         sysLogService.save(sysLog);
         httpServletResponse.sendRedirect("/login");

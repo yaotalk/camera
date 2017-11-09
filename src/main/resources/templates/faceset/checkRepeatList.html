@@ -5,25 +5,25 @@
 			<!-- <div th:replace="fragments :: navbar"></div> -->
 			<!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
 			<div class="page-header">
-				<h1>Check Repeated Pictures </h1>
+				<h1>检测重复图片 </h1>
 			</div>
 				<form action="startCheckRepeat" id="startForm" method="post">
 					<input type="hidden" name="faceSetToken" id="faceSetToken" th:value="${faceSetToken}"/>
 				</form>
 			<div class="table-header">
-				Repeated Face list
+				有重复图片的人脸列表
 			</div>
 			<div id="toolbar">
 				
 				<div class="dt-buttons btn-overlap btn-group">
 
-					<div th:if="${facesetName != null}" style="float:left;width:420px;"><span>Face DB:</span>
+					<div th:if="${facesetName != null}" style="float:left;width:420px;"><span>人脸库：</span>
 					<span th:text="${facesetName}"></span>
-					<button class="btn btn-primary" id="start_clear">start to check</button>
-					<button class="btn btn-default" id="cancel_clear">cancel</button>
+					<button class="btn btn-primary" id="start_clear">开始去重</button>
+					<button class="btn btn-default" id="cancel_clear">取消去重</button>
 					<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 						<span> <i class="fa fa-refresh bigger-110 blue"></i>
-                    <span class="hidden">refresh</span></span>
+                    <span class="hidden">重新加载</span></span>
 					</a>
 					</div>
 					
@@ -41,15 +41,15 @@
 					   data-show-export="true" >
 					<thead>
 					<tr>
-						<th data-field="index" data-formatter="indexFormatter" >NO</th>
-						<th data-field="id" >Face ID</th>
-						<th data-field="name">Name</th>
-						<th data-field="employeeId">EmployeeId</th>
-						<th data-field="sex" data-formatter="actionFormatter" >Sex</th>
-						<th data-field="idCard">IdCard</th>
-						<th data-field="phoneNumber">PhoneNumber</th>
-						<th data-field="picMd5">PicMd5</th>
-						<th data-field="isStore" data-formatter="storeFormatter">Retain</th>
+						<th data-field="index" data-formatter="indexFormatter" >序号</th>
+						<th data-field="id" >人脸ID</th>
+						<th data-field="name">姓名</th>
+						<th data-field="employeeId">工号</th>
+						<th data-field="sex" data-formatter="actionFormatter" >性别</th>
+						<th data-field="idCard">身份证号</th>
+						<th data-field="phoneNumber">电话</th>
+						<th data-field="picMd5">图片md5</th>
+						<th data-field="isStore" data-formatter="storeFormatter">保留</th>
 					</tr>
 					</thead>
 				</table>
@@ -64,7 +64,7 @@
 					<div class="modal-content" style="width: 150%;margin-left: -20%;">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<h4 class="modal-title" id="editModalLabel">details</h4>
+							<h4 class="modal-title" id="editModalLabel">详情</h4>
 						</div>
 						<div class="modal-body">
 							<form id="edit_form" action="/face/saveTmp" class="form-horizontal" method="post">
@@ -80,47 +80,47 @@
 								</div>
 								<div style="width: 50%;margin-top: 30px;float: right;">
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-3 control-label">Name:</label>
+										<label for="recipient-name" class="col-sm-3 control-label">姓名:</label>
 										<div class="col-sm-9">
 											<span class="control-label" id="name" ></span>
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-3 control-label">Sex:</label>
+										<label for="recipient-name" class="col-sm-3 control-label">性别:</label>
 										<div class="col-sm-9">
 											<span class="control-label" id="sex" ></span>
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-3 control-label">IdCard:</label>
+										<label for="recipient-name" class="col-sm-3 control-label">身份证号:</label>
 										<div class="col-sm-9">
 											<span class="control-label" id="idCard" ></span>
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-3 control-label">EmployeeId:</label>
+										<label for="recipient-name" class="col-sm-3 control-label">工号:</label>
 										<div class="col-sm-9">
 											<span class="control-label" id="employeeId"></span>
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-3 control-label">PhoneNumber:</label>
+										<label for="recipient-name" class="col-sm-3 control-label">电话:</label>
 										<div class="col-sm-9">
 											<span class="control-label" id="phoneNumber"></span>
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-3 control-label"><span style="color:red">*</span>Retain:</label>
+										<label for="recipient-name" class="col-sm-3 control-label"><span style="color:red">*</span>是否保存:</label>
 										<div class="col-sm-9">
 											<select name="isStore" id="isStore" class="chosen-select form-control" required="required">
-												<option value="1">yes</option>
-												<option value="0">no</option>
+												<option value="1">是</option>
+												<option value="0">否</option>
 											</select>
 										</div>
 									</div>
 									<div class="form-group" style="float: right;padding-right: 12%;">
-										<button type="submit" class="btn btn-primary" id="edit_submit">submit</button>
-										<button data-dismiss="modal" class="btn btn-default" id="edit_close">close</button>
+										<button type="submit" class="btn btn-primary" id="edit_submit">保存</button>
+										<button data-dismiss="modal" class="btn btn-default" id="edit_close">关闭</button>
 									</div>
 								</div>
 							</form>
@@ -139,18 +139,18 @@
 				
 				function storeFormatter(value,row,index){
 					if(value=='1')
-						return 'yes';
+						return '是';
 					else
-						return 'no'
+						return '否'
 				}
 				
 				function actionFormatter(value, row, index) {
       				 if(value == '0')
-						return 'female'
+						return '男'
 					else if(value == '1'){
-						return 'male'
+						return '女'
 						}
-				    else return 'unknown';
+				    else return '未知';
     			}
 				$(function(){
 					
@@ -162,8 +162,8 @@
             			console.log(responseText);
 						if(responseText.ret=='already'){
 							$.alert({
-	            		    	title: 'failed',
-	            		    	content: 'MD5 the same picture can only choose to retain one'
+	            		    	title: '保存失败',
+	            		    	content: 'md5相同的图片只能选择保留一张',
 	            		    });
 						}
 						$("#edit_modal").modal('hide');
@@ -178,20 +178,22 @@
 					$("#start_clear").click(function(){
 					
 					$.confirm({
-					content:"Will delete the same image content of the face, the same picture only retain one, please confirm ?",
+					content:"将会删掉图片内容一样的人脸，相同的图片只保留一张，请确认？",
 					onclick: function(s) {
  							 if (s) {
  							  $("#startForm").submit();
  							 }
  							},
-					buttons: {"confirm":function(){
+					buttons: {"确认":function(){
 						$("#startForm").submit();
 					},
-						'cancel': function(){
+						'取消': function(){
 								return;
 						}},
-					title:"confirm to clear"});
-
+					title:"确认清除"});
+					
+					
+					
 					});
 					
 						
@@ -220,7 +222,8 @@
 					$('#edit_modal #employeeId').text(face.employeeId);
 					$('#edit_modal #idCard').text(face.idCard);
 					$('#edit_modal #phoneNumber').text(face.phoneNumber);
-					$("#peopleImg").attr("src","/people/"+face.imgpath);
+					//$("#peopleImg").attr("src","/people/"+face.imgpath);
+					$("#peopleImg").attr("src",face.imgUrl);
 					$("#sex").text(actionFormatter(face.sex));
 					$('#isStore').val(face.isStore)
 					$('#edit_modal').modal('show');

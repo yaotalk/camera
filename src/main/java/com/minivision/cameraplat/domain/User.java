@@ -16,7 +16,7 @@ public class User extends IdEntity implements UserDetails{
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id")},
-      inverseJoinColumns = {@JoinColumn(name = "role_id")})
+      inverseJoinColumns = {@JoinColumn(name = "role_id")},foreignKey = @ForeignKey(name = "none",value = ConstraintMode.NO_CONSTRAINT))
   private List<Role> roles;
 
   public List<Role> getRoles() {
@@ -75,7 +75,7 @@ public class User extends IdEntity implements UserDetails{
   }
 
   @Override public String toString() {
-    return "User{" + "User Id='" + id  + ", User Name='" + username + '\'' + ", password='" + password + '\''
+    return "用户{" + "用户ID='" + id  + ", 用户名='" + username + '\'' + ", password='" + password + '\''
         + ", roles=" + (roles!=null?roles.size():null) + '}';
   }
 }

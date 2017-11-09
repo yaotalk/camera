@@ -1,10 +1,11 @@
 package com.minivision.cameraplat.service;
 
-import com.minivision.cameraplat.domain.*;
+import com.minivision.cameraplat.domain.Camera;
+import com.minivision.cameraplat.domain.Region;
+import com.minivision.cameraplat.domain.Strategy;
 import com.minivision.cameraplat.mqtt.service.AnalyserConfigService;
 import com.minivision.cameraplat.mvc.ex.ServiceException;
 import com.minivision.cameraplat.repository.CameraRepository;
-import com.minivision.cameraplat.repository.EntranceRepository;
 import com.minivision.cameraplat.rest.result.system.CameraResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,6 @@ public class CameraServiceImpl implements CameraService {
   
   private Map<Long, Integer> onlineCameras = new HashMap<>();
 
-  @Autowired
-  private EntranceRepository entranceRepository;
   @Override
   public  List<Camera> findAll(){
        return cameraRepository.findAll();
@@ -48,12 +47,9 @@ public class CameraServiceImpl implements CameraService {
   }
 
   @Override
-  public Camera update(Camera camera,FaceSet faceSet) throws ServiceException{
+  public Camera update(Camera camera) throws ServiceException{
     Assert.notNull(camera.getId(), "the camera id can not be null");
     Camera oldCamera = cameraRepository.findOne(camera.getId());
-    List<EntranceGuard.Door> doors = oldCamera.getDoors();
-    camera.setDoors(doors);
-    camera.setFaceSet(faceSet);
     Assert.notNull(oldCamera, "the camera not exist");
     if(null != oldCamera.getAnalyser()) {
       if (oldCamera.getAnalyser().getId() != camera.getAnalyser().getId()) {
@@ -72,8 +68,7 @@ public class CameraServiceImpl implements CameraService {
   }
 
   @Override
-  public Camera create(Camera camera, FaceSet faceSet) {
-      camera.setFaceSet(faceSet);
+  public Camera create(Camera camera) {
       Camera save = cameraRepository.save(camera);
     if(null != camera.getAnalyser()) {
       if (analyserService.isOnline(camera.getAnalyser().getId())) {
@@ -146,21 +141,7 @@ public class CameraServiceImpl implements CameraService {
           cameraResult.setRegionId(camera.getRegion() == null?null:camera.getRegion().getId());
           cameraResult.setType(camera.getType());
           cameraResult.setOnline(isOnline);
-          cameraResult.setRtspUrl(camera.getRtspUrl());
-//          cameraResult.setPadId(camera.getPadId());
-//          cameraResult.setIsOut(camera.getIsOut());
-//          if(camera.getDoors()!=null){
-//            List<Long> ids = new ArrayList<>();
-//            for(EntranceGuard.Door door : camera.getDoors()){
-//                ids.add(door.getId());
-//              }
-//            Set<EntranceGuard> entranceGuards = entranceRepository.findBydoorsIdIn(ids);
-//            ids.clear();
-//            for(EntranceGuard entranceGuard : entranceGuards){
-//               ids.add(entranceGuard.getId());
-//             }
-//            cameraResult.setEntranceGuardIds(ids);
-//          }
+          cameraResult.setVideoPlayUrl(camera.getVideoPlayUrl());
           cameraResults.add(cameraResult);
         }
         return cameraResults;

@@ -3,28 +3,28 @@
 </div>
 <div layout:fragment="content" th:fragment="content">
     <div class="page-header">
-        <h1>Area Name</h1>
+        <h1>区域</h1>
     </div>
     <div class="table-header">
-        Area Name
+        区域
     </div>
     <div id="toolbar">
         <div class="dt-buttons btn-overlap btn-group">
             <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-plus bigger-110 green"></i>
-						<span class="hidden">add</span></span>
+						<span class="hidden">新增区域</span></span>
             </a>
             <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-edit bigger-110 green"></i>
-				<span class="hidden">edit</span></span>
+				<span class="hidden">编辑区域</span></span>
             </a>
             <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-trash bigger-110 red"></i>
-				<span class="hidden">delete</span></span>
+				<span class="hidden">删除区域</span></span>
             </a>
             <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-refresh bigger-110 blue"></i>
-				<span class="hidden">refresh</span></span>
+				<span class="hidden">重新加载</span></span>
             </a>
         </div>
     </div>
@@ -34,27 +34,27 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="editModalLabel">Area</h4>
+                    <h4 class="modal-title" id="editModalLabel">区域修改</h4>
                 </div>
                 <div class="modal-body">
                     <form id="modal_form" class="form-horizontal">
                         <input type="hidden" name="id" id="editId">
                         <input type="hidden" name="_method" value="patch">
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Area Name:</label>
+                            <label for="name" class="col-sm-2 control-label">区域名称:</label>
                             <div class="col-sm-9">
-                                <input class="form-control" name="name" id="name" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+                                <input class="form-control" name="name" id="name" required="required">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="parent" class="col-sm-2 control-label">Parent Area Name:</label>
+                            <label for="parent" class="col-sm-2 control-label">父域名称:</label>
                             <div class="col-sm-9">
-                                <select name="parentNode.id"  class="chosen-select form-control" id="parent" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+                                <select name="parentNode.id"  class="chosen-select form-control" id="parent">
                                 </select>
                             </div>
                         </div>
                         <div class="modal-footer" style="background-color:white">
-                            <button type="submit" class="btn btn-primary" id="model_submit">submit</button>
+                            <button type="submit" class="btn btn-primary" id="model_submit">提交</button>
                         </div>
                     </form>
                 </div>
@@ -73,9 +73,9 @@
             <thead>
             <tr>
                 <th data-checkbox="true"></th>
-                <th data-field="id" >Area ID</th>
-                <th data-field="name">Area Name</th>
-                <th data-field="parentNode.name">Parent Area Name</th>
+                <th data-field="id" >区域ID</th>
+                <th data-field="name">区域名称</th>
+                <th data-field="parentNode.name">父类名称</th>
             </tr>
             </thead>
         </table>
@@ -96,7 +96,7 @@
 					     $('#modal :input').val('');
 					      $('#modal :input[name="_method"]').val('');
 					      $('#modal select[name="parentNode.id"]').children().remove();
-                           var last = "<option value=''>choose</option>";
+                           var last = "<option value=''>请选择</option>";
                            $(last).appendTo($('#modal select[name="parentNode.id"]'));
                            $.getJSON("/region",function(data,status){
                                for(var index in  data){
@@ -111,8 +111,8 @@
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
 							 $.alert({
-								title: 'prompt',
-								content: 'choose one please'
+								title: '提示',
+								content: '请选择一行',
 							  });
 							 return;
 						}
@@ -130,7 +130,7 @@
                         $('#modal :input[name="id"]').val(region.id);
                         $('#modal :input[name="name"]').val(region.name);
                         $('#modal select[name="parentNode.id"]').children().remove();
-                        var last = "<option value=''>choose</option>";
+                        var last = "<option value=''>请选择</option>";
                         $(last).appendTo($('#modal select[name="parentNode.id"]'));
                         $.getJSON("/region?regionid="+region.id,function(data,status){
                            for(var index in  data){
@@ -148,8 +148,8 @@
     			 		var ids = getIdSelections();
     			 		if(ids.length ==0 || ids.length>1){
 								 $.alert({
-									title: 'prompt',
-									content: 'choose one please'
+									title: '提示',
+									content: '请选择一行',
 								  });
 						 	return;
 						 }
@@ -165,8 +165,8 @@
 								$('#modal').modal('hide');
 								if(result == "success"){
 									$.alert({
-										title: 'prompt',
-										content: 'success'
+										title: '提示',
+										content: '删除成功',
 									});
 									 $('#table').bootstrapTable('refresh');
 								}
@@ -189,14 +189,14 @@
                                     if(result == "success"){
                                         $('#modal').modal('hide');
                                         $.alert({
-                                            title: 'prompt',
-                                            content: 'success'
+                                            title: '提示',
+                                            content: '操作成功',
                                         });
                                     }
                                     else if(result =="failed"){
                                         $.alert({
-                                            title: 'prompt',
-                                            content: 'failed'
+                                            title: '提示',
+                                            content: '操作失败',
                                         });
                                     }
                                 }

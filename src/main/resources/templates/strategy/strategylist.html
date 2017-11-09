@@ -3,28 +3,28 @@
 </div>
 <div layout:fragment="content" th:fragment="content">
 	<div class="page-header">
-		<h1>Strategy</h1>
+		<h1>布控策略</h1>
 	</div>
 	<div class="table-header">
-		Strategy
+		布控策略
 	</div>
 	<div id="toolbar">
 		<div class="dt-buttons btn-overlap btn-group">
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-plus bigger-110 green"></i>
-						<span class="hidden">add Strategy</span></span>
+						<span class="hidden">新增布控策略</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-edit bigger-110 green"></i>
-				<span class="hidden">edit Strategy</span></span>
+				<span class="hidden">编辑布控策略</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-trash bigger-110 red"></i>
-				<span class="hidden">delete Strategy</span></span>
+				<span class="hidden">删除布控策略</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-refresh bigger-110 blue"></i>
-				<span class="hidden">refresh</span></span>
+				<span class="hidden">重新加载</span></span>
 			</a>
 		</div>
 	</div>
@@ -36,18 +36,20 @@
 			   data-pagination="true"
 			   data-search="true"
 			   data-click-to-select="true"
-			   data-show-columns="true">
+			   data-show-columns="true"
+			   data-detail-view="true"
+			   data-detail-formatter="detailFormatter">
 			<thead>
 			<tr>
 				<th data-checkbox="true"></th>
-				<th data-field="id" >Strategy Id</th>
-				<th data-field="name">Strategy Name</th>
-				<th data-field="type" data-formatter="blacklistFormatter">Strategy Type</th>
-				<th data-field="snapshot" data-formatter="snapFormatter">Capture</th>
+				<th data-field="id" >策略ID</th>
+				<th data-field="name">策略名称</th>
+				<th data-field="type" data-formatter="blacklistFormatter">布控类型</th>
+				<th data-field="snapshot" data-formatter="snapFormatter">是否抓拍</th>
 				<th data-field="scheme_name">
-					Time Plan
+					时间方案
 				</th>
-				<th data-field="compareThreshold" >Threshold</th>
+				<th data-field="compareThreshold" >阈值</th>
 			</tr>
 			</thead>
 		</table>
@@ -57,99 +59,99 @@
 			<div class="modal-content" style="width:140%;margin-left:-35%">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="editModalLabel">Strategy</h4>
+					<h4 class="modal-title" id="editModalLabel">布控策略操作</h4>
 				</div>
 				<div class="modal-body">
 					<form id="modal_form" class="form-horizontal">
 						<input type="hidden" name="id" id="editId">
 						<input type="hidden" name="_method" value="patch">
 						<div class="form-group">
-								<label for="name" class="col-sm-2 control-label">Name:</label>
+								<label for="name" class="col-sm-2 control-label">策略名称:</label>
 								<div class="col-sm-4">
-									<input class="form-control" name="name" id = "name" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+									<input class="form-control" name="name" id = "name" required="required">
 								</div>
-							<label for="ip" class="col-sm-2 control-label" style="text-align:left;width:100px">Strategy Type:</label>
+							<label for="ip" class="col-sm-2 control-label" style="text-align:left;width:100px">布控类型:</label>
 							<div class="col-sm-4" style="padding-left:0px" >
-								<select name="type" class="chosen-select form-control" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
-									<option value='BlackList'>Blacklist</option>
-									<option value='WhiteList'>Whitelist</option>
-									<option value='DynaminFaceRepo'>Dynamic</option>
+								<select name="type" class="chosen-select form-control" required="required">
+									<option value='BlackList'>黑名单</option>
+									<option value='WhiteList'>白名单</option>
+									<option value='DynaminFaceRepo'>动态底库</option>
 								</select>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="ip" class="col-sm-2 control-label">Capture:</label>
+							<label for="ip" class="col-sm-2 control-label">是否抓拍:</label>
 							<div class="col-sm-4">
-								<select name="snapshot" class="chosen-select form-control" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
-									<option value=true>yes</option>
-									<option value=false>no</option>
+								<select name="snapshot" class="chosen-select form-control" required="required">
+									<option value=true>抓拍</option>
+									<option value=false>不抓拍</option>
 								</select>
 							</div>
-							<label for="ip" class="col-sm-2 control-label" style="text-align:left;width:100px">Time Plan:</label>
+							<label for="ip" class="col-sm-2 control-label" style="text-align:left;width:100px">时间方案:</label>
 							<div class="col-sm-4" style="padding-left:0px">
-								<select name="scheme" th:remove="none" class="chosen-select form-control" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
-									<option th:value=null th:text="choose"></option>
+								<select name="scheme" th:remove="none" class="chosen-select form-control" required="required">
+									<option th:value=null th:text="请选择"></option>
 									<option th:each="scheme:${schemes}"
 											th:value="${scheme.id}" th:text="${scheme.name}">/option>
 								</select>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="port" class="col-sm-2 control-label">capture amount:</label>
+							<label for="port" class="col-sm-2 control-label">每帧最多抓拍人脸数(1-10):</label>
 							<div class="col-sm-4">
-								<input type="text" class="form-control" name="maxfaceNum" id="maxfaceNum" required="required" pattern="^[0-9]*$" placeholder="Person amount of each capture(1-10)" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="maxfaceNum" id="maxfaceNum" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
-							<label for="username" class="col-sm-2 control-label" style="text-align:left;width:100px">Threshold:</label>
+							<label for="username" class="col-sm-2 control-label" style="text-align:left;width:100px">比对阀值:</label>
 							<div class="col-sm-4" style="padding-left:0px">
-								<input type="text" class="form-control" name="compareThreshold" id="compareThreshold" required="required" pattern="^\d+\.{0,1}\d*$" placeholder="Threshold of comparison(number)" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="compareThreshold" id="compareThreshold" required="required" pattern="^\d+\.{0,1}\d*$" placeholder="请输入数字">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="password" class="col-sm-2 control-label">Lowest Pixels:</label>
+							<label for="password" class="col-sm-2 control-label">最小人脸像素:</label>
 							<div class="col-sm-4">
-								<input type="text" class="form-control" name="minFaceSize" id="minFaceSize"  required="required" pattern="^[0-9]*$" placeholder="Please input number(>=64)" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="minFaceSize" id="minFaceSize"  required="required" pattern="^[0-9]*$" placeholder="请输入大于64的数字">
 							</div>
-							<label for="password" class="col-sm-2 control-label" style="text-align:left;width:100px">Days:</label>
+							<label for="password" class="col-sm-2 control-label" style="text-align:left;width:100px">人脸数据保存天数:</label>
 							<div class="col-sm-4" style="padding-left:0px">
-								<input type="text" class="form-control" name="preserveDays" id="preserveDays" required="required" pattern="^[0-9]*$"  placeholder="Days for Face Data Saving(number)" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')" >
+								<input type="text" class="form-control" name="preserveDays" id="preserveDays" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="recipient-name" class="col-sm-2 control-label">capture quality:</label>
+							<label for="recipient-name" class="col-sm-2 control-label">抓拍人脸质量阈值(0-100):</label>
 							<div class="col-sm-4">
-								<input type="text" class="form-control" name="faceQualityThreshold" required="required" pattern="^[0-9]*$"  placeholder="Threshold for quality of capture" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="faceQualityThreshold" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
-							<label for="recipient-name" class="col-sm-2 control-label"  style="text-align:left;width:100px">capture Interval:</label>
+							<label for="recipient-name" class="col-sm-2 control-label"  style="text-align:left;width:100px">抓拍间隔(毫秒):</label>
 							<div class="col-sm-4" style="padding-left:0px">
-								<input type="text" class="form-control" name="snapInterval" required="required" pattern="^[0-9]*$" placeholder="Interval of each capture(ms)" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="snapInterval" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="recipient-name" class="col-sm-2 control-label">Repeat times:</label>
+							<label for="recipient-name" class="col-sm-2 control-label">陌生人重试次数:</label>
 							<div class="col-sm-4">
-								<input type="text" class="form-control" name="retryCounts" required="required" pattern="^[0-9]*$" placeholder="Repeat times for recognition failure" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="retryCounts" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
-							<label for="recipient-name" class="col-sm-2 control-label"  style="text-align:left;width:100px">Storing Interval:</label>
+							<label for="recipient-name" class="col-sm-2 control-label"  style="text-align:left;width:100px">识别入库间隔:</label>
 							<div class="col-sm-4" style="padding-left:0px">
-								<input type="text" class="form-control" name="intervals" required="required" pattern="^[0-9]*$"  placeholder="Interval for Recognition Data Storing" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="intervals" required="required" pattern="^[0-9]*$" placeholder="请输入数字">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="ip" class="col-sm-2 control-label">Forbid Multi:</label>
+							<label for="ip" class="col-sm-2 control-label">禁止多人检测:</label>
 							<div class="col-sm-4">
-								<select name="forbidMultiFace" class="chosen-select form-control" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
-									<option value=false>no</option>
-									<option value=true>yes</option>
+								<select name="forbidMultiFace" class="chosen-select form-control" required="required">
+									<option value=false>否</option>
+									<option value=true>是</option>
 								</select>
 							</div>
-							<label id="intervalLabel" class="col-sm-2 control-label"  style="text-align:left;width:100px;display:none">Waiting Time:</label>
+							<label id="intervalLabel" class="col-sm-2 control-label"  style="text-align:left;width:100px;display:none">多人检测等待时间:</label>
 							<div id="intervalDiv" class="col-sm-4" style="padding-left:0px;display:none">
-								<input type="text" class="form-control" name="forbidMultiFaceInterval" pattern="^[0-9]*$" value=0 placeholder="Multi Recognition Waiting Time" >
+								<input type="text" class="form-control" name="forbidMultiFaceInterval" pattern="^[0-9]*$" value=0 placeholder="请输入数字">
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button type="submit" class="btn btn-primary" id="modal_submit">submit</button>
+							<button type="submit" class="btn btn-primary" id="modal_submit">提交</button>
 						</div>
 					</form>
 				</div>
@@ -177,8 +179,8 @@
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
 							 $.alert({
-								title: 'prompt',
-								content: 'choose one please',
+								title: '提示',
+								content: '请选择一行',
 							  });
 							 return;
 						}
@@ -245,7 +247,7 @@
                                       $("#intervalDiv").hide();
 								  }
 						})
-						var optionvalue = "<option value=''>choose</option>";
+						var optionvalue = "<option value=''>请选择</option>";
 						$(optionvalue).appendTo($('#edit_modal select[name="scheme"]'));
 						 $.getJSON("/scheme",function (json) {
 							$(json).each(function (index,data) {
@@ -263,8 +265,8 @@
     			 		var ids = getIdSelections();
     			 		if(ids.length ==0 || ids.length>1){
 								 $.alert({
-									title: 'prompt',
-									content: 'choose one please'
+									title: '提示',
+									content: '请选择一行',
 								  });
 						 	return;
 					 }
@@ -272,10 +274,10 @@
 											if(data != 'success')
 										  {
 													 $.confirm({
-															 title: 'warn',
+															 title: '警告',
 															 content: data,
 															 buttons: {
-																  'confirm': function(){
+																  '确认': function(){
 																		 $.ajax({
 																			url: '/strategy',
 																			type: 'post',
@@ -295,7 +297,7 @@
 																			}
 																		});
 																},
-																'cancel': function(){
+																'取消': function(){
 																		return;
 																}
 														}
@@ -314,8 +316,8 @@
 															success: function(result) {
 																if(result == "success"){
 																	$.alert({
-																		title: 'prompt',
-																		content: 'success'
+																		title: '提示',
+																		content: '删除成功',
 																	});
 																  $('#table').bootstrapTable('refresh');
 																}
@@ -336,8 +338,8 @@
 					   }
 					   else  if($('#modal :input[name="forbidMultiFaceInterval"]').val() == ""){
                            $.alert({
-                               title: 'prompt',
-                               content: 'input Multi Recognition Waiting Time please'
+                               title: '提示',
+                               content: '请输入多人检测等待时间',
 
                            });
                            ev.preventDefault();
@@ -345,8 +347,8 @@
                        }
 			       	   if($('#modal :input[name="minFaceSize"]').val() < 64){
 			       	   $.alert({
-								title: 'prompt',
-								content: 'Lowest Pixels can not less than 64'
+								title: '提示',
+								content: '最小人脸像素最小值为64，请重新输入',
 
 	            		 });
 	            		 ev.preventDefault();
@@ -363,14 +365,14 @@
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'success'
+	            		    		    title: '提示',
+	            		    		    content: '操作成功',
 	            		    		});
 	               		    	}
 	               		    	else if(result =="failed"){
 	               		    		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'failed'
+	            		    		    title: '提示',
+	            		    		    content: '操作失败',
 	            		    		});
 	               		    	}
 	               		    }
@@ -390,14 +392,14 @@
    				  function blacklistFormatter(data){
 
 					    if(data == 'BlackList')
-				  			return 'BlackList';
+				  			return '黑名单';
 					    else if(data == 'WhiteList')
-					        return 'WhiteList';
+					        return '白名单';
                         else if(data == 'DynaminFaceRepo')
-                            return 'Dynamic';
+                            return '动态底库';
 				  }
 				  function snapFormatter(data){
-				  		return data == true?'capture':'no capture';
+				  		return data == true?'抓拍':'不抓拍';
 				  }
 	              function detailFormatter(index,row){
                        var html = [];

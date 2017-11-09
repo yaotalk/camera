@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8089
   address: 0.0.0.0
 spring:
   http.multipart.max-file-size: 10240Mb
@@ -17,11 +17,15 @@ spring:
 #    hibernate.dialect: org.hibernate.dialect.MySQLDialect
   datasource:
     #url: jdbc:h2:file:~/.h2/camaraplat;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;
-    #url: jdbc:mysql://192.168.123.12:3306/dev?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://192.168.123.12:3306/test?autoReconnect=true&useSSL=false
     #url: jdbc:mysql://172.16.6.20:3306/camera?characterEncoding=UTF-8&autoReconnect=true&useSSL=false
-    url: jdbc:mysql://localhost:3306/camera?characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+    #url: jdbc:mysql://localhost:3306/camera?characterEncoding=UTF-8&autoReconnect=true&useSSL=false
     username: root
     password: root
+  data.mongodb:
+    host: localhost
+    port: 27017
+    database: test
 logging:
   level:
     root: INFO
@@ -35,15 +39,13 @@ system:
   store.people: ${system.store}people
   client: C:\Minivision\MiniFacePlat\Web\client\
   batch: F://test
-  fileSchedule: 00 00 03 * * ?
-  recordSchedule: 00 00 03 * * ?
-  faceSetPriority: true
+#  taskSchedule: 00 00 02 * * ?
 faceservice:
   maxConcurrent: 32
   imageExecutorThreads: 10
   maxImageOverStock: 256
   bathPath: http://localhost:8081
-  #bathPath: http://172.16.6.20:8081
+#  bathPath: http://172.16.6.20:8081
   oauth: 
     apiKey: faceplat_user
     apiSecret: faceplat

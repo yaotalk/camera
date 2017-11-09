@@ -3,28 +3,28 @@
 </div>
 <div layout:fragment="content" th:fragment="content">
 	<div class="page-header">
-		<h1>Face Analysis Server</h1>
+		<h1>人脸分析仪</h1>
 	</div>
 	<div class="table-header">
-		Face Analysis Server
+		人脸分析仪
 	</div>
 	<div id="toolbar">
 		<div class="dt-buttons btn-overlap btn-group">
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-plus bigger-110 green"></i>
-						<span class="hidden">add Analysis</span></span>
+						<span class="hidden">新增分析仪</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-edit bigger-110 green"></i>
-				<span class="hidden">edit Analysis</span></span>
+				<span class="hidden">编辑分析仪</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-trash bigger-110 red"></i>
-				<span class="hidden">delete Analysis</span></span>
+				<span class="hidden">删除分析仪</span></span>
 			</a>
 			<a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0" aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-refresh bigger-110 blue"></i>
-				<span class="hidden">refresh</span></span>
+				<span class="hidden">重新加载</span></span>
 			</a>
 		</div>
 	</div>
@@ -40,14 +40,14 @@
 			<thead>
 			<tr>
 				<th data-checkbox="true"></th>
-				<th data-field="analyser.id" >Server ID</th>
-				<th data-field="analyser.name">Server Name</th>
-				<th data-field="analyser.ip">Server IP</th>
-				<th data-field="analyserStatus.cpu" data-formatter="cupFormatter">CPU Usage Ratio</th>
+				<th data-field="analyser.id" >服务器ID</th>
+				<th data-field="analyser.name">服务器名称</th>
+				<th data-field="analyser.ip">服务器IP</th>
+				<th data-field="analyserStatus.cpu" data-formatter="cupFormatter">CPU使用率</th>
 				<th data-field="analyserStatus.mem" data-formatter="memFormatter">
-					Memory Usage Ratio
+					内存使用率
 				</th>
-				<th data-field="isonline" data-formatter="statusFormatter" >status</th>
+				<th data-field="isonline" data-formatter="statusFormatter" >状态</th>
 			</tr>
 			</thead>
 		</table>
@@ -57,44 +57,44 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="editModalLabel">Analysis</h4>
+					<h4 class="modal-title" id="editModalLabel">人脸分析仪操作</h4>
 				</div>
 				<div class="modal-body">
 					<form id="modal_form" class="form-horizontal">
 						<input type="hidden" name="id" id="editId">
 						<input type="hidden" name="_method" value="patch">
 						<div class="form-group">
-							<label for="name" class="col-sm-2 control-label">name:</label>
+							<label for="name" class="col-sm-2 control-label">名称:</label>
 							<div class="col-sm-9">
-								<input class="form-control" name="name" id = "name" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input class="form-control" name="name" id = "name" required="required">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="ip" class="col-sm-2 control-label">ip:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="ip" id="ip" required="required" placeholder="Please input IP address" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="ip" id="ip" required="required" placeholder="请输入ip格式" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="port" class="col-sm-2 control-label">port:</label>
+							<label for="port" class="col-sm-2 control-label">端口:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="port" id="port" required="required" pattern="^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$" placeholder="Please input port" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="port" id="port" required="required" pattern="^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$" placeholder="请输入端口">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="username" class="col-sm-2 control-label">username:</label>
+							<label for="username" class="col-sm-2 control-label">用户名:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="username" id="username" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="username" id="username" required="required">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="password" class="col-sm-2 control-label">password:</label>
+							<label for="password" class="col-sm-2 control-label">密码:</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="password" id="password" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+								<input type="text" class="form-control" name="password" id="password" required="required">
 							</div>
 						</div>
 						<div class="modal-footer" style="background-color:white">
-							<button type="submit" class="btn btn-primary" id="model_submit">submit</button>
+							<button type="submit" class="btn btn-primary" id="model_submit">提交</button>
 						</div>
 					</form>
 				</div>
@@ -123,8 +123,8 @@
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
 							 $.alert({
-								title: 'prompt',
-								content: 'choose one please'
+								title: '提示',
+								content: '请选择一行',
 							  });
 							 return;
 						}
@@ -151,8 +151,8 @@
     			 		var ids = getIdSelections();
     			 		if(ids.length ==0 || ids.length>1){
 								 $.alert({
-									title: 'prompt',
-									content: 'choose one please'
+									title: '提示',
+									content: '请选择一行',
 								  });
 						 	return;
 					 }
@@ -168,8 +168,8 @@
 								$('#modal').modal('hide');
 								if(result == "success"){
 									$.alert({
-										title: 'prompt',
-										content: 'success'
+										title: '提示',
+										content: '删除成功',
 									});
 									 $('#table').bootstrapTable('refresh');
 								}
@@ -192,14 +192,14 @@
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'success'
+	            		    		    title: '提示',
+	            		    		    content: '操作成功',
 	            		    		});
 	               		    	}
 	               		    	else if(result =="failed"){
 	               		    		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'success'
+	            		    		    title: '提示',
+	            		    		    content: '操作失败',
 	            		    		});
 	               		    	}
 	               		    }
@@ -224,10 +224,10 @@
 				   }
 			  	  function statusFormatter(value, row, index) {
       				 if(value == false){
-						 return '<span class="label label-sm label-inverse arrowed-in">Off-line</span>'
+						 return '<span class="label label-sm label-inverse arrowed-in">离线</span>'
 					  }
 					  else if(value == true){
-						 return '<span class="label label-sm label-success">On-line</span>'
+						 return '<span class="label label-sm label-success">在线</span>'
 					  }
     			}
 		</script>

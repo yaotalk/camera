@@ -24,20 +24,10 @@ public class FaceSet {
   @Transient
   private int faceCount;
 
-  @Temporal(TemporalType.TIMESTAMP)
+  @Temporal(TemporalType.DATE)
   private Date createTime;
 
   private int capacity;
-
-  private int priority;
-
-  public int getPriority() {
-    return priority;
-  }
-
-  public void setPriority(int priority) {
-    this.priority = priority;
-  }
 
   public FaceSet(){}
   public FaceSet(String facesetToken) {
@@ -131,7 +121,7 @@ public class FaceSet {
   }
 
   @Override public String toString() {
-    return "FaceDB{" + "token='" + token + '\'' + ", name='" + name + '\'' + ", create Time =" + createTime + ", capacity =" + capacity +'}';
+    return "人脸库{" + "token='" + token + '\'' + ", 名称='" + name + '\'' + ", 创建时间=" + createTime + ", 容量=" + capacity +'}';
   }
   // TODO
   

@@ -4,9 +4,6 @@ public class FailureDetail {
 	private String faceToken;
 	private String reason;
 
-	public FailureDetail() {
-	}
-
 	public FailureDetail(String faceToken, String reason) {
 		this.faceToken = faceToken;
 		this.reason = reason;
@@ -28,7 +25,4 @@ public class FailureDetail {
 		this.reason = reason;
 	}
 
-	@Override public String toString() {
-		return "FailureDetail{" + "faceToken='" + faceToken + '\'' + ", reason='" + reason + '\'' + '}';
-	}
 }

@@ -2,6 +2,7 @@ package com.minivision.cameraplat.config;
 
 import javax.annotation.PostConstruct;
 
+import com.minivision.cameraplat.config.interceptor.LoginInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -39,6 +40,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
   @Autowired
   private AjaxInterceptor ajaxInterceptor;
 
+  @Autowired
+  private LoginInterceptor loginInterceptor;
+
   @Override
   public void configureViewResolvers(ViewResolverRegistry registry) {
     registry.enableContentNegotiation(new MappingJackson2JsonView());
@@ -49,25 +53,23 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
   public void addViewControllers(ViewControllerRegistry registry) {
     registry.addViewController("/login").setViewName("login/login");
     registry.addViewController("/").setViewName("redirect:/faceset");
+    registry.addViewController("/registry").setViewName("login/registry");
     super.addViewControllers(registry);
   }
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    /*
-     * registry.addInterceptor(loginInterceptor).addPathPatterns("/**")
-     * .excludePathPatterns("/api/v1/**").excludePathPatterns("/swagger*")
-     * .excludePathPatterns("/v2/**");
-     */
 
-    registry.addInterceptor(ajaxInterceptor);
+      registry.addInterceptor(loginInterceptor).addPathPatterns("/*")
+      .excludePathPatterns("/api/v1*").excludePathPatterns("/swagger*")
+      .excludePathPatterns("/v2*");
+      registry.addInterceptor(ajaxInterceptor);
   }
 
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/**").allowedOrigins("*");
+//    registry.addMapping("/**").allowedOrigins("*");
     super.addCorsMappings(registry);
   }
-
 
 }

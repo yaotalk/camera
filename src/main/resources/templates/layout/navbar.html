@@ -8,7 +8,7 @@
 			<a href="#" class="navbar-brand">
 				<small>
 					<i class="fa fa-leaf"></i>
-					MV Face Platform
+					小视科技视频监控平台
 				</small>
 			</a>
 
@@ -31,9 +31,9 @@
 		      </ul>
 		    </li> -->
 		
-		    <li data-nav="face"><a href="/faceset" class="pjax">Face DB Management</a></li>
-		    <li data-nav="sys"><a href="/camera" class="pjax">System Management</a></li>
-		    <li data-nav="str"><a href="/strategy" class="pjax">Strategy Management</a></li>
+		    <li data-nav="face"><a href="/faceset" class="pjax">人脸库管理</a></li>
+		    <li data-nav="sys"><a href="/camera" class="pjax">系统管理</a></li>
+		    <li data-nav="str"><a href="/strategy" class="pjax">布控管理</a></li>
 		
 		  </ul>
 		
@@ -161,12 +161,61 @@
 				<!--</li>-->
 
 				<!-- #section:basics/navbar.user_menu -->
+				<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+										aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title" id="editModalLabel">用户操作</h4>
+							</div>
+							<div class="user-body">
+								<form id="user-form" class="form-horizontal">
+									<input type="hidden" name="id" id="editId">
+									<input type="hidden" name="_method" value="patch">
+									<div class="form-group">
+										<label for="name" class="col-sm-2 control-label">用户名称:</label>
+										<div class="col-sm-9">
+											<input class="form-control" name="username" id="name" required="required">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="name" class="col-sm-2 control-label">用户密码:</label>
+										<div class="col-sm-9">
+											<input class="form-control" name="password" id="password" required="required" type="password">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="confirmPassword" class="col-sm-2 control-label">确认密码:</label>
+										<div class="col-sm-9">
+											<input class="form-control" name="confirmPassword" id="confirmPassword" type="password">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="ip" class="col-sm-2 control-label">用户角色:</label>
+										<div class="col-sm-9">
+											<select id="rolesId"  class="chosen-select form-control" required="required">
+												<!--<option  value=0>超级管理员</option>-->
+												<option value=1>管理员</option>
+												<option value=2>普通用户</option>
+											</select>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="submit" class="btn btn-primary" id="model_submit">提交</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<li class="light-blue dropdown-modal">
 					<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 						<img class="nav-user-photo" src="/assets/avatars/ava.png" alt="photo" />
 						<span class="user-info">
-							<small>WELCOME,</small>
-							<span sec:authentication="principal.username">username</span>
+							<small>欢迎,</small>
+							<span sec:authentication="principal.username" id="authName">username</span>
 						</span>
 
 						<i class="ace-icon fa fa-caret-down"></i>
@@ -174,9 +223,9 @@
 
 					<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
 						<li>
-							<a href="#">
+							<a href="#" class="setup">
 								<i class="ace-icon fa fa-cog"></i>
-								Set Up
+								设置
 							</a>
 						</li>
 
@@ -185,7 +234,7 @@
 						<li>
 							<a href="/logout">
 								<i class="ace-icon fa fa-power-off"></i>
-								LogOut
+								登出
 							</a>
 						</li>
 					</ul>
@@ -194,12 +243,73 @@
 				<!-- /section:basics/navbar.user_menu -->
 			</ul>
 		</div>
-
 <script>
-	$('li[data-nav] a').click(function(){
-		refresh_nav($(this).attr('href'));
+    $('li[data-nav] a').click(function(){
+        refresh_nav($(this).attr('href'));
+    })
+	$(document).ready(function () {
+		$(".setup").on('click',function () {
+			$.get('/user/userInfo?username='+$("#authName").text(),function (data) {
+				$('.user-body :input[name="_method"]').val('patch');
+				$('.user-body :input[name="id"]').val(data.id);
+				$('.user-body :input[name="username"]').val(data.username);
+				$('.user-body :input[name="password"]').val("******");
+				$('.user-body :input[name="confirmPassword"]').val("******");
+				$('#modal2').modal('show');
+			})
+		})
 	})
 
+    $("#user-form").on("submit", function(ev) {
+        if($('.user-body :input[name="password"]').val() !== $('.user-body :input[name="confirmPassword"]').val()){
+            $.alert({
+                title: '提示',
+                content: '密码与确认密码不相同',
+            });
+            ev.preventDefault();
+            return;
+        };
+        data =  $('#user-form').serializeArray();
+        var roleIds = [];
+        if($(".user-body #rolesId").val() == 1){
+            roleIds.push(1);
+            roleIds.push(2);
+        }
+        else{
+            roleIds.push(2);
+        }
+        data.push({name:"roles",value:roleIds});
+        $.ajax({
+            url:'/user',
+            data: data,
+            type: 'POST',
+            dataType:"text",
+            success: function(result) {
+//                $('#table').bootstrapTable('refresh');
+                if(result == "success"){
+                    $('#modal2').modal('hide');
+                    $.alert({
+                        title: '提示',
+                        content: '操作成功',
+                    });
+                }
+                else {
+                    $.alert({
+                        title: '提示',
+                        content:result,
+                    });
+                }
+            },
+            error:function(errorcode,msg){
+                if(errorcode.status == 403 )
+                    $.alert({
+                        title: '提示',
+                        content: '您无权操作此项',
+                    });
+            }
+        });
+        ev.preventDefault();
+    });
 </script>
 		<!-- /section:basics/navbar.dropdown -->
 	</div><!-- /.navbar-container -->

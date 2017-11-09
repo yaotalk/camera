@@ -27,7 +27,7 @@ public class ClientUser extends IdEntity {
     }
 
     @Override public String toString() {
-        return "clientUser{" + "userId='" + id  + ", username='" + username + '\'' + ", password='" + password + '\''
+        return "客户端用户{" + "用户ID='" + id  + ", 用户名='" + username + '\'' + ", password='" + password + '\''
             + '}';
     }
 }

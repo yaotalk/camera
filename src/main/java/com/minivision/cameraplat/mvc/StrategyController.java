@@ -40,7 +40,7 @@ public class StrategyController {
   }
 
   @PostMapping
-  @OpAnnotation(modelName = "Strategy",opration = "add Strategy")
+  @OpAnnotation(modelName = "布控策略",opration = "新增布控策略")
   public String addStrategy(Strategy strategy, String schemeId) {
     if (!StringUtils.isEmpty(schemeId)) {
       Scheme scheme = schemeService.findOne(Long.valueOf(schemeId));
@@ -51,7 +51,7 @@ public class StrategyController {
   }
 
   @PatchMapping
-  @OpAnnotation(modelName = "Strategy",opration = "edit Strategy")
+  @OpAnnotation(modelName = "布控策略",opration = "修改布控策略")
   public String updateStrategy(Strategy strategy, String schemeId) {
     if (!StringUtils.isEmpty(schemeId)) {
       Scheme scheme = schemeService.findOne(Long.valueOf(schemeId));
@@ -65,13 +65,13 @@ public class StrategyController {
   public String isused(String id) {
     List<Camera> cameras = cameraService.findByStategy(Long.valueOf(id));
     if (cameras.size() > 0) {
-      return "right now there are " + cameras.size() + "cameras using this camera,continued to delete ?";
+      return "当前有" + cameras.size() + "个摄像头正在使用该策略，是否继续删除？";
     }
     return "success";
   }
 
   @DeleteMapping
-  @OpAnnotation(modelName = "Strategy",opration = "delete Strategy")
+  @OpAnnotation(modelName = "布控策略",opration = "删除布控策略")
   public String deleteStrategy(Strategy strategy) {
     strategyService.delete(strategy);
     return "success";

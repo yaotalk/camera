@@ -8,6 +8,7 @@ public class MonitorImage {
   private byte[] image;
   
   private String fileName;
+  private String fileUrl;
   
   public MonitorImage(long serialNo, long timestamp, int cameraId, int trackId,  byte[] image) {
     this.serialNo = serialNo;
@@ -53,6 +54,12 @@ public class MonitorImage {
     this.fileName = fileName;
   }
   
+  public String getFileUrl() {
+    return fileUrl;
+  }
+  public void setFileUrl(String fileUrl) {
+    this.fileUrl = fileUrl;
+  }
   @Override
   public String toString() {
     return "MonitorImage [serialNo=" + serialNo + ", timestamp=" + timestamp + ", cameraId="

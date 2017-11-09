@@ -6,32 +6,32 @@
     <!-- <div th:replace="fragments :: navbar"></div> -->
     <!-- <h1 layout:fragment="page-header">Messages : View all</h1> -->
     <div class="page-header">
-        <h1>Time Plan</h1>
+        <h1>时间方案</h1>
     </div>
     <div class="table-header">
-        Time Plan
+        时间方案
     </div>
     <div id="toolbar">
         <div class="dt-buttons btn-overlap btn-group">
             <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0"
                aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-plus bigger-110 green"></i>
-						<span class="hidden">add Time Plan</span></span>
+						<span class="hidden">新增时间方案</span></span>
             </a>
             <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0"
                aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span><i class="fa fa-edit bigger-110 green"></i>
-				<span class="hidden">edit Time Plan</span></span>
+				<span class="hidden">编辑时间方案</span></span>
             </a>
             <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0"
                aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-trash bigger-110 red"></i>
-				<span class="hidden">delete Time Plan</span></span>
+				<span class="hidden">删除时间方案</span></span>
             </a>
             <a class="dt-button btn btn-white btn-primary btn-bold" tabindex="0"
                aria-controls="dynamic-table" href="#" data-original-title="" title="">
 					<span> <i class="fa fa-refresh bigger-110 blue"></i>
-				<span class="hidden">refresh</span></span>
+				<span class="hidden">重新加载</span></span>
             </a>
         </div>
     </div>
@@ -42,36 +42,36 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="editModalLabel">Time Plan</h4>
+                    <h4 class="modal-title" id="editModalLabel">方案操作</h4>
                 </div>
                 <div class="modal-body">
                     <form id="modal_form" class="form-horizontal">
                         <input type="hidden" name="id" id="editId">
                         <input type="hidden" name="_method" value="patch">
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Plan Name:</label>
+                            <label for="name" class="col-sm-2 control-label">方案名称:</label>
                             <div class="col-sm-9">
                                 <input class="form-control" name="name" id="name"
-                                       required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+                                       required="required">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="recipient-name" class="col-sm-2 control-label">Period:</label>
+                            <label for="recipient-name" class="col-sm-2 control-label">周期:</label>
                             <div class="col-sm-9">
                                 <select class="multiselect chosen-select form-control"
                                         multiple="multiple" name="multi" required="required">
-                                    <option value="1">Mon</option>
-                                    <option value="2">Tue</option>
-                                    <option value="3">Wed</option>
-                                    <option value="4">Thur</option>
-                                    <option value="5">Fri</option>
-                                    <option value="6">Sat</option>
-                                    <option value="0">Sun</option>
+                                    <option value="1">周一</option>
+                                    <option value="2">周二</option>
+                                    <option value="3">周三</option>
+                                    <option value="4">周四</option>
+                                    <option value="5">周五</option>
+                                    <option value="6">周六</option>
+                                    <option value="0">周日</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="recipient-ip" class="col-sm-2 control-label">Start Time:</label>
+                            <label for="recipient-ip" class="col-sm-2 control-label">开始时间:</label>
                             <div class="col-sm-9">
                                 <div class='input-group date'>
                                     <input type='text' class="form-control" name="startTime"
@@ -83,7 +83,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="recipient-name" class="col-sm-2 control-label">End Time:</label>
+                            <label for="recipient-name" class="col-sm-2 control-label">结束时间:</label>
                             <div class="col-sm-9">
                                 <div class='input-group date'>
                                     <input type='text' class="form-control" name="endTime"
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="model_submit">submit
+                            <button type="submit" class="btn btn-primary" id="model_submit">提交
                             </button>
                         </div>
                     </form>
@@ -115,12 +115,12 @@
             <thead>
             <tr>
                 <th data-checkbox="true"></th>
-                <th data-field="id">Plan Id</th>
-                <th data-field="name">Plan Name</th>
-                <th data-field="period" data-formatter="peroidFomartter">Period</th>
-                <th data-field="period" data-formatter="startFormatter">Start Time</th>
+                <th data-field="id">方案ID</th>
+                <th data-field="name">方案名称</th>
+                <th data-field="period" data-formatter="peroidFomartter">方案周期</th>
+                <th data-field="period" data-formatter="startFormatter">开始时间</th>
                 <th data-field="period" data-formatter="endFormatter">
-                    End Time
+                    结束时间
                 </th>
             </tr>
             </thead>
@@ -141,10 +141,10 @@
 							 $('#modal :input').val('');
 							 $('.multiselect').multiselect('destroy');
 							 $('.multiselect').multiselect({
-								nonSelectedText: 'choose period',
+								nonSelectedText: '选择周期',
 								includeSelectAllOption: true,
-								selectAllText: 'select all',
-								allSelectedText: 'all week',
+								selectAllText: '全选',
+								allSelectedText: '周一到周日',
 								selectAllValue:'0,1,2,3,4,5,6,7'
              		 		});
 					 $("#add_modal button.multiselect").addClass("btn-primary")
@@ -171,8 +171,8 @@
 					    var ids = getIdSelections();
     			 		if(ids.length ==0|| ids.length >1){
 							 $.alert({
-								title: 'prompt',
-								content: 'choose one please'
+								title: '提示',
+								content: '请选择一行',
 							  });
 							 return;
 						}
@@ -189,10 +189,10 @@
 						   }
                      $('.multiselect').multiselect('destroy');
 					 $('.multiselect').multiselect({
-							nonSelectedText: 'choose period',
+							nonSelectedText: '选择周期',
 							includeSelectAllOption: true,
-							selectAllText: 'select all',
-							allSelectedText: 'all week',
+							selectAllText: '全选',
+							allSelectedText: '周一到周日',
 							selectAllValue:'0,1,2,3,4,5,6,7'
 					 });
 					   $('#startTime').timepicker({
@@ -231,8 +231,8 @@
     			 		var ids = getIdSelections();
     			 		if(ids.length ==0 || ids.length>1){
 								 $.alert({
-									title: 'prompt',
-									content: 'choose one please'
+									title: '提示',
+									content: '请选择一行',
 								  });
 						 	return;
 						 }
@@ -248,8 +248,8 @@
 								$('#modal').modal('hide');
 								if(result == "success"){
 									$.alert({
-										title: 'prompt',
-										content: 'success'
+										title: '提示',
+										content: '删除成功',
 									});
 									 $('#table').bootstrapTable('refresh');
 								}
@@ -272,7 +272,7 @@
 							 svalue = svalue+$('#startTime').timepicker().val().substring($('#startTime').timepicker().val().indexOf(":"));
 							 evalue =  evalue+ $('#endTime').timepicker().val().substring($('#endTime').timepicker().val().indexOf(":"));
 							if(svalue >  evalue){
-								 $.alert("Begin time must not be more than End time");
+								 $.alert("开始时间不能大于结束时间");
 								 ev.preventDefault();
 								 return;
 							 }
@@ -298,14 +298,14 @@
 	               		    	if(result == "success"){
 	               		    		$('#modal').modal('hide');
 	               		    		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'success'
+	            		    		    title: '提示',
+	            		    		    content: '操作成功',
 	            		    		});
 	               		    	}
 	               		    	else if(result =="failed"){
 	               		    		$.alert({
-	            		    		    title: 'prompt',
-	            		    		    content: 'failed'
+	            		    		    title: '提示',
+	            		    		    content: '操作失败',
 	            		    		});
 	               		    	}
 	               		    }
@@ -329,27 +329,27 @@
 				         data = periodx.join(",");
 				   		 var name = ""
 				   		if(data.length == 13){
-				   			return "everyDay";
+				   			return "每天";
 				   		}
 						if(data.indexOf(1) > -1){
-								name += "Mon、";
+								name += "周一、";
 						}if(data.indexOf(2) > -1){
-								name += "Tue、";
+								name += "周二、";
 						}
 						if(data.indexOf(3) > -1){
-								name += "Wed、";
+								name += "周三、";
 						}
 						if(data.indexOf(4) > -1){
-								name += "Thur、";
+								name += "周四、";
 						}
 						if(data.indexOf(5) > -1){
-								name += "Fri、";
+								name += "周五、";
 						}
 						if(data.indexOf(6) > -1){
-								name += "Sat、";
+								name += "周六、";
 						}
 						if(data.indexOf(0) > -1){
-								name += "Sun、";
+								name += "周日、";
 						}
 						return name.substring(0,name.lastIndexOf("、"));
 			}

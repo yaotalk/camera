@@ -51,40 +51,40 @@
 								</div>
 								<div class="inputlarge">
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-2 control-label">Name:</label>
+										<label for="recipient-name" class="col-sm-2 control-label">姓名:</label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" name="name" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+											<input type="text" class="form-control" name="name" required="required">
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-2 control-label">Sex:</label>
+										<label for="recipient-name" class="col-sm-2 control-label">性别:</label>
 										<div class="col-sm-9">
 											<select name="sex" class="chosen-select form-control" required="required">
-												<option value="1">male</option>
-												<option value="0">female</option>
+												<option value="1">男</option>
+												<option value="0">女</option>
 											</select>
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-2 control-label">EmployeeId:</label>
+										<label for="recipient-name" class="col-sm-2 control-label">工号:</label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" name="employeeId" required="required" oninvalid="setCustomValidity('fill this blank with right format')" oninput="setCustomValidity('')">
+											<input type="text" class="form-control" name="employeeId" required="required">
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-2 control-label">IdCard:</label>
+										<label for="recipient-name" class="col-sm-2 control-label">身份证号:</label>
 										<div class="col-sm-9">
 											<input type="text" class="form-control" name="idCard">
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-2 control-label">PhoneNumber:</label>
+										<label for="recipient-name" class="col-sm-2 control-label">电话:</label>
 										<div class="col-sm-9">
 											<input type="text" class="form-control" name="phoneNumber">
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="recipient-name" class="col-sm-2 control-label">Face DB:</label>
+										<label for="recipient-name" class="col-sm-2 control-label">人脸库:</label>
 										<div class="col-sm-9">
 											<select class="chosen-select form-control" th:remove="none" name="facesetToken" required="required" >
 												<option th:each="faceSet:${faceSets}"
@@ -93,7 +93,7 @@
 										</div>
 									</div>
 									<div class="form-group" style="float: right;padding-right: 12%;">
-										<button type="submit" class="btn btn-primary ladda-button" data-style="slide-up" id="add_submit">submit</button>
+										<button type="submit" class="btn btn-primary ladda-button" data-style="slide-up" id="add_submit">保存</button>
 									</div>
 								</div>
 							</form>
@@ -114,8 +114,8 @@
 				 $("#addform").on("submit", function(ev) {
 					if($(":file").val() == ""){
 					 $.alert({
-						title: 'Tip',
-						content: 'choose pic',
+						title: '提示',
+						content: '选择图片',
 					  });
  					    l.start();
 						ev.preventDefault();
@@ -131,7 +131,7 @@
 									if(data == "success"){
 										$("#addform").resetForm();
 										$('#my-file-input').ace_file_input('reset_input');
-										$.alert("success");
+										$.alert("注册成功");
 										l.stop();
 										return;
 									}
@@ -146,13 +146,13 @@
 								 }
 							});
 						 return false; // 阻止表单自动提交事件
-							ev.preventDefault();
+					ev.preventDefault();
 						 })
 			 $('#my-file-input').ace_file_input({
 					style: 'well',
 					no_file: 'Click to choose or drag & drop',
 					droppable: true, //html5 browsers only
-					btn_choose:"choose pic",
+					btn_choose:"上传图片",
 					thumbnail: 'large', //html5 browsers only
 					maxSize: 5*1024*1024, //~100 KB
 					allowExt:  ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'bmp'],
@@ -165,7 +165,7 @@
 				$(".remove").on('click',function(){
 
 				})
-				$(".ace-file-container").attr("data-title",'choose pic').css("height","200px")
+				$(".ace-file-container").attr("data-title",'上传图片').css("height","200px")
 			});
 
 			function reset(ev){
